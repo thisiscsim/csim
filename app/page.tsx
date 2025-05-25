@@ -130,17 +130,48 @@ export default function Personal() {
       initial="hidden"
       animate="visible"
     >
+      {/* --- TOP SECTION: Info + 3-column grid --- */}
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
+        className="mb-16"
       >
-        <div className="flex-1">
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Focused on creating intuitive and performant web experiences.
-            Bridging the gap between design and development.
+        {/* Info Block */}
+        <div className="mb-8">
+          <h2 className="mb-2">Info</h2>
+          <p>
+            Chris (He/Him) designs interfaces. He thrives in complex, ambiguous problem spaces focused around interactive media, digital tooling, and multimodal interaction. He studied Human-Computer Interaction at the University of Washington. Previously, he's worked with teams at{' '}
+            <a href="https://flexport.com" target="_blank" rel="noopener noreferrer">Flexport</a>,{' '}
+            <a href="https://uber.com" target="_blank" rel="noopener noreferrer">Uber</a> and{' '}
+            <a href="https://arc.com" target="_blank" rel="noopener noreferrer">Arc</a>. Here are some of his featured work.
           </p>
         </div>
+        {/* 3-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Location */}
+          <div>
+            <h3 className="mb-1">Location</h3>
+            <p>37.8044° N, 122.2711° W</p>
+            <p>Oakland, CA</p>
+          </div>
+          {/* Currently */}
+          <div>
+            <h3 className="mb-1">Currently</h3>
+            <p>Member of the Design staff</p>
+            <p>Harvey</p>
+          </div>
+          {/* Connect */}
+          <div>
+            <h3 className="mb-1">Connect</h3>
+            <a href={`mailto:${EMAIL}`} className="hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+              {EMAIL}
+            </a>
+            <br></br>
+            <a href="https://www.instagram.com/thisiscsim/" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">@thisiscsim</a>
+          </div>
+        </div>
       </motion.section>
+      {/* --- END TOP SECTION --- */}
 
       <motion.section
         variants={VARIANTS_SECTION}
@@ -162,49 +193,11 @@ export default function Personal() {
                   {project.name}
                   <span className="absolute bottom-0.5 left-0 block h-[1px] w-full max-w-0 bg-zinc-900 dark:bg-zinc-50 transition-all duration-200 group-hover:max-w-full"></span>
                 </a>
-                <p className="text-base text-zinc-600 dark:text-zinc-400">
+                <p className="text-text-sm">
                   {project.description}
                 </p>
               </div>
             </div>
-          ))}
-        </div>
-      </motion.section>
-
-      <motion.section
-        variants={VARIANTS_SECTION}
-        transition={TRANSITION_SECTION}
-      >
-        <h3 className="mb-5 text-lg font-medium">Work Experience</h3>
-        <div className="flex flex-col space-y-2">
-          {WORK_EXPERIENCE.map((job) => (
-            <a
-              className="relative overflow-hidden rounded-2xl bg-zinc-300/30 p-[1px] dark:bg-zinc-600/30"
-              href={job.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={job.id}
-            >
-              <Spotlight
-                className="from-zinc-900 via-zinc-800 to-zinc-700 blur-2xl dark:from-zinc-100 dark:via-zinc-200 dark:to-zinc-50"
-                size={64}
-              />
-              <div className="relative h-full w-full rounded-[15px] bg-white p-4 dark:bg-zinc-950">
-                <div className="relative flex w-full flex-row justify-between">
-                  <div>
-                    <h4 className="font-normal dark:text-zinc-100">
-                      {job.title}
-                    </h4>
-                    <p className="text-zinc-500 dark:text-zinc-400">
-                      {job.company}
-                    </p>
-                  </div>
-                  <p className="text-zinc-600 dark:text-zinc-400">
-                    {job.start} - {job.end}
-                  </p>
-                </div>
-              </div>
-            </a>
           ))}
         </div>
       </motion.section>
@@ -218,7 +211,7 @@ export default function Personal() {
             <h3 className="text-lg font-medium">Contact</h3>
             <a
               href={`mailto:${EMAIL}`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              className="text-text-md hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             >
               {EMAIL}
             </a>
