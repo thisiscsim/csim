@@ -37,7 +37,7 @@ export default function Writing() {
       >
         <div className="flex-1">
           <h1 className="mb-4 text-2xl font-medium">Writing</h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-base text-zinc-600 dark:text-zinc-400">
             Thoughts, ideas, and insights on technology, design, and development.
           </p>
         </div>
