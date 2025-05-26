@@ -2,7 +2,6 @@
 import { motion } from 'motion/react'
 import { XIcon } from 'lucide-react'
 import { Spotlight } from '@/components/ui/spotlight'
-import { Magnetic } from '@/components/ui/magnetic'
 import {
   MorphingDialog,
   MorphingDialogTrigger,
@@ -12,12 +11,14 @@ import {
 } from '@/components/ui/morphing-dialog'
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
+import { TextScramble } from '@/components/motion-primitives/text-scramble'
 import {
-  PROJECTS,
+  PROJECT_GROUPS,
   WORK_EXPERIENCE,
   EMAIL,
   SOCIAL_LINKS,
 } from './data'
+import { useState, useEffect } from 'react'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -88,44 +89,23 @@ function ProjectVideo({ src }: ProjectVideoProps) {
   )
 }
 
-function MagneticSocialLink({
-  children,
-  link,
-}: {
-  children: React.ReactNode
-  link: string
-}) {
-  return (
-    <Magnetic springOptions={{ bounce: 0 }} intensity={0.3}>
-      <a
-        href={link}
-        className="group relative inline-flex shrink-0 items-center gap-[1px] rounded-full bg-zinc-100 px-2.5 py-1 text-sm text-black transition-colors duration-200 hover:bg-zinc-950 hover:text-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
-      >
-        {children}
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 15 15"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-3 w-3"
-        >
-          <path
-            d="M3.64645 11.3536C3.45118 11.1583 3.45118 10.8417 3.64645 10.6465L10.2929 4L6 4C5.72386 4 5.5 3.77614 5.5 3.5C5.5 3.22386 5.72386 3 6 3L11.5 3C11.6326 3 11.7598 3.05268 11.8536 3.14645C11.9473 3.24022 12 3.36739 12 3.5L12 9.00001C12 9.27615 11.7761 9.50001 11.5 9.50001C11.2239 9.50001 11 9.27615 11 9.00001V4.70711L4.35355 11.3536C4.15829 11.5488 3.84171 11.5488 3.64645 11.3536Z"
-            fill="currentColor"
-            fillRule="evenodd"
-            clipRule="evenodd"
-          ></path>
-        </svg>
-      </a>
-    </Magnetic>
-  )
-}
-
 export default function Personal() {
+  // Info
+  const [infoTrigger, setInfoTrigger] = useState(true);
+  useEffect(() => { setInfoTrigger(true); }, []);
+  // Location
+  const [locationTrigger, setLocationTrigger] = useState(true);
+  useEffect(() => { setLocationTrigger(true); }, []);
+  // Currently
+  const [currentlyTrigger, setCurrentlyTrigger] = useState(true);
+  useEffect(() => { setCurrentlyTrigger(true); }, []);
+  // Connect
+  const [connectTrigger, setConnectTrigger] = useState(true);
+  useEffect(() => { setConnectTrigger(true); }, []);
+
   return (
     <motion.main
-      className="space-y-24"
+      className="space-y-32"
       variants={VARIANTS_CONTAINER}
       initial="hidden"
       animate="visible"
@@ -134,40 +114,72 @@ export default function Personal() {
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
-        className="mb-16"
+        className="mb-28"
       >
         {/* Info Block */}
-        <div className="mb-8">
-          <h2 className="mb-2">Info</h2>
+        <div className="mb-20">
+          <TextScramble
+            as="h2"
+            className="mb-1 text-zinc-400"
+            trigger={infoTrigger}
+            onHoverStart={() => setInfoTrigger(true)}
+            onScrambleComplete={() => setInfoTrigger(false)}
+          >
+            Info
+          </TextScramble>
           <p>
             Chris (He/Him) designs interfaces. He thrives in complex, ambiguous problem spaces focused around interactive media, digital tooling, and multimodal interaction. He studied Human-Computer Interaction at the University of Washington. Previously, he's worked with teams at{' '}
-            <a href="https://flexport.com" target="_blank" rel="noopener noreferrer">Flexport</a>,{' '}
-            <a href="https://uber.com" target="_blank" rel="noopener noreferrer">Uber</a> and{' '}
-            <a href="https://arc.com" target="_blank" rel="noopener noreferrer">Arc</a>. Here are some of his featured work.
+            <a href="https://flexport.com" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-zinc-100 border-b border-dotted border-zinc-400 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100">Flexport</a>,{' '}
+            <a href="https://uber.com" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-zinc-100 border-b border-dotted border-zinc-400 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100">Uber</a> and{' '}
+            <a href="https://arc.com" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-zinc-100 border-b border-dotted border-zinc-400 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100">Arc</a>. Here are some of his featured work.
           </p>
         </div>
         {/* 3-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Location */}
           <div>
-            <h3 className="mb-1">Location</h3>
+            <TextScramble
+              as="h3"
+              className="mb-1 text-zinc-400"
+              trigger={locationTrigger}
+              onHoverStart={() => setLocationTrigger(true)}
+              onScrambleComplete={() => setLocationTrigger(false)}
+            >
+              Location
+            </TextScramble>
             <p>37.8044° N, 122.2711° W</p>
             <p>Oakland, CA</p>
           </div>
           {/* Currently */}
           <div>
-            <h3 className="mb-1">Currently</h3>
+            <TextScramble
+              as="h3"
+              className="mb-1 text-zinc-400"
+              trigger={currentlyTrigger}
+              onHoverStart={() => setCurrentlyTrigger(true)}
+              onScrambleComplete={() => setCurrentlyTrigger(false)}
+            >
+              Currently
+            </TextScramble>
             <p>Member of the Design staff</p>
             <p>Harvey</p>
           </div>
           {/* Connect */}
           <div>
-            <h3 className="mb-1">Connect</h3>
-            <a href={`mailto:${EMAIL}`} className="hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+            <TextScramble
+              as="h3"
+              className="mb-1 text-zinc-400"
+              trigger={connectTrigger}
+              onHoverStart={() => setConnectTrigger(true)}
+              onScrambleComplete={() => setConnectTrigger(false)}
+            >
+              Connect
+            </TextScramble>
+            <a href={`mailto:${EMAIL}`} className="text-zinc-900 dark:text-zinc-100 border-b border-dotted border-zinc-400 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100">
               {EMAIL}
             </a>
             <br></br>
-            <a href="https://www.instagram.com/thisiscsim/" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">@thisiscsim</a>
+            <a href="https://www.instagram.com/thisiscsim/" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-zinc-100 border-b border-dotted border-zinc-400 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100">@thisiscsim</a>
           </div>
         </div>
       </motion.section>
@@ -177,28 +189,67 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <h3 className="mb-5 text-lg font-medium">Selected Projects</h3>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {PROJECTS.map((project) => (
-            <div key={project.name} className="space-y-2">
-              <div className="relative rounded-2xl bg-zinc-50/40 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950/40 dark:ring-zinc-800/50">
-                <ProjectVideo src={project.video} />
+        <div className="flex flex-col gap-20">
+          {PROJECT_GROUPS.map((group, idx) => {
+            // Date
+            const [dateTrigger, setDateTrigger] = useState(true);
+            useEffect(() => { setDateTrigger(true); }, []);
+            // Company
+            const [companyTrigger, setCompanyTrigger] = useState(true);
+            useEffect(() => { setCompanyTrigger(true); }, []);
+            return (
+              <div key={group.company + group.start + group.end} className="flex flex-row gap-8 items-start relative">
+                {/* Left column: Sticky header for date/company */}
+                <div className="w-46 flex-shrink-0 sticky top-4 z-10 self-start bg-transparent backdrop-blur-sm pt-2">
+                  <TextScramble
+                    as="span"
+                    className="block text-md text-zinc-400"
+                    trigger={dateTrigger}
+                    onHoverStart={() => setDateTrigger(true)}
+                    onScrambleComplete={() => setDateTrigger(false)}
+                  >
+                    {`${group.start} - ${group.end}`}
+                  </TextScramble>
+                  <span className="block text-md font-semibold text-zinc-700 dark:text-zinc-200">
+                    <TextScramble
+                      as="span"
+                      trigger={companyTrigger}
+                      onHoverStart={() => setCompanyTrigger(true)}
+                      onScrambleComplete={() => setCompanyTrigger(false)}
+                    >
+                      {group.company}
+                    </TextScramble>
+                  </span>
+                </div>
+                {/* Right column: Projects for this group */}
+                <div className="flex-1 flex flex-col gap-10 mt-2">
+                  {/* Role description paragraph above all projects */}
+                  {group.description && (
+                    <p className="mb-4 text-base">{group.description}</p>
+                  )}
+                  {group.projects.map((project) => (
+                    <div key={project.id} className="space-y-2">
+                      <div className="relative rounded-2xl bg-zinc-50/40 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950/40 dark:ring-zinc-800/50">
+                        <ProjectVideo src={project.video} />
+                      </div>
+                      <div className="px-1">
+                        <a
+                          className="font-base font-medium group relative inline-block font-[450] text-zinc-900 dark:text-zinc-100 transition-colors duration-200 hover:text-zinc-600 dark:hover:text-zinc-300"
+                          href={project.link}
+                          target="_blank"
+                        >
+                          {project.name}
+                        </a>
+                        <p className="font-base text-zinc-600 dark:text-zinc-400">
+                          {project.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="px-1">
-                <a
-                  className="font-base group relative inline-block font-[450] text-zinc-900 dark:text-zinc-50"
-                  href={project.link}
-                  target="_blank"
-                >
-                  {project.name}
-                  <span className="absolute bottom-0.5 left-0 block h-[1px] w-full max-w-0 bg-zinc-900 dark:bg-zinc-50 transition-all duration-200 group-hover:max-w-full"></span>
-                </a>
-                <p className="text-text-sm">
-                  {project.description}
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </motion.section>
 
@@ -211,16 +262,20 @@ export default function Personal() {
             <h3 className="text-lg font-medium">Contact</h3>
             <a
               href={`mailto:${EMAIL}`}
-              className="text-text-md hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              className="text-text-md text-zinc-900 dark:text-zinc-100 border-b border-dotted border-zinc-400 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100"
             >
               {EMAIL}
             </a>
           </div>
           <div className="flex flex-wrap gap-2">
             {SOCIAL_LINKS.map((link) => (
-              <MagneticSocialLink key={link.label} link={link.link}>
+              <a
+                key={link.label}
+                href={link.link}
+                className="group relative inline-flex shrink-0 items-center gap-[1px] rounded-full bg-zinc-100 px-2.5 py-1 text-sm text-black transition-colors duration-200 hover:bg-zinc-950 hover:text-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
+              >
                 {link.label}
-              </MagneticSocialLink>
+              </a>
             ))}
           </div>
         </div>

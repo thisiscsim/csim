@@ -3,16 +3,14 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --scrollbar-thumb: #6b7280;
-  --scrollbar-thumb-hover: #4b5563;
+  --scrollbar-thumb: rgb(212 212 216); /* zinc-300 */
+  --scrollbar-thumb-hover: rgb(161 161 170); /* zinc-400 */
 }
 
 /* Dark mode variables */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --scrollbar-thumb: #1f2937;
-    --scrollbar-thumb-hover: #111827;
-  }
+.dark {
+  --scrollbar-thumb: rgb(39 39 42); /* zinc-800 */
+  --scrollbar-thumb-hover: rgb(63 63 70); /* zinc-700 */
 }
 
 /* Base styles */
@@ -29,6 +27,16 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
+  }
+
+  ::selection {
+    background-color: rgb(228 228 231); /* zinc-200 */
+    color: rgb(24 24 27); /* zinc-900 */
+  }
+
+  .dark ::selection {
+    background-color: rgb(63 63 70); /* zinc-700 */
+    color: rgb(244 244 245); /* zinc-100 */
   }
 }
 
