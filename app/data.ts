@@ -254,3 +254,38 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ]
 
 export const EMAIL = 'your@email.com'
+
+export const WORK_EXPERIENCE: WorkExperience[] = [
+  {
+    company: 'Harvey',
+    title: 'Design Lead',
+    start: '2024',
+    end: 'Current',
+    link: 'https://harvey.com',
+    id: 'harvey'
+  },
+  {
+    company: 'Arc',
+    title: 'Product Designer',
+    start: '2023',
+    end: '2024',
+    link: 'https://arc.com',
+    id: 'arc'
+  },
+  {
+    company: 'Flexport',
+    title: 'Product Designer',
+    start: '2022',
+    end: '2023',
+    link: 'https://flexport.com',
+    id: 'flexport'
+  },
+  {
+    company: 'Uber',
+    title: 'Product Designer',
+    start: '2022',
+    end: '2022',
+    link: 'https://uber.com',
+    id: 'uber'
+  }
+]
