@@ -152,10 +152,10 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
                     }}
                   >
                     <div className="flex flex-row items-center gap-2">
-                      <p className="text-zinc-500 dark:text-zinc-400 min-w-[100px]">
+                      <p className="text-zinc-500 dark:text-zinc-400 min-w-[120px]">
                         {new Date(post.date).toLocaleDateString('en-US', {
                           year: 'numeric',
-                          month: 'long',
+                          month: 'short',
                           day: 'numeric',
                         })}
                       </p>
