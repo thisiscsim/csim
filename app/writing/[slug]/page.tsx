@@ -31,13 +31,16 @@ function BlogPostLoading() {
   );
 }
 
-type Props = {
-  params: { slug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+interface PageProps {
+  params: Promise<{ slug: string }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function WritingPostPage({ params }: Props) {
-  const post = await getBlogPostBySlug(params.slug);
+export default async function WritingPostPage({
+  params,
+}: PageProps) {
+  const resolvedParams = await params;
+  const post = await getBlogPostBySlug(resolvedParams.slug);
 
   if (!post) {
     notFound();
