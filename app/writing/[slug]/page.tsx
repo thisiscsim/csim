@@ -31,11 +31,12 @@ function BlogPostLoading() {
   );
 }
 
-export default async function WritingPostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+type Props = {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function WritingPostPage({ params }: Props) {
   const post = await getBlogPostBySlug(params.slug);
 
   if (!post) {
