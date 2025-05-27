@@ -33,13 +33,14 @@ function BlogPostLoading() {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function WritingPostPage({
   params,
+  searchParams,
 }: PageProps) {
-  const resolvedParams = await params;
+  const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
   const post = await getBlogPostBySlug(resolvedParams.slug);
 
   if (!post) {
