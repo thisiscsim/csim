@@ -114,7 +114,7 @@ export default function Personal() {
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
-        className="mb-28"
+        className="mb-24"
       >
         {/* Info Block */}
         <div className="mb-20">

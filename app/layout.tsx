@@ -53,6 +53,7 @@ export default function RootLayout({
         >
           <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-berkeley-mono)]">
             <div className="relative mx-auto w-full max-w-screen-lg flex-1 px-4 pt-20">
+              <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] dark:bg-zinc-950" />
               <Header />
               {children}
               <Footer />

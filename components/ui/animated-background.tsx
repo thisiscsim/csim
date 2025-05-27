@@ -71,7 +71,7 @@ export function AnimatedBackground({
           {activeId === id && (
             <motion.div
               layoutId={`background-${uniqueId}`}
-              className={cn('absolute inset-0', className)}
+              className={cn('absolute inset-0 -z-10', className)}
               transition={transition}
               initial={{ opacity: defaultValue ? 1 : 0 }}
               animate={{
@@ -83,7 +83,7 @@ export function AnimatedBackground({
             />
           )}
         </AnimatePresence>
-        <div className="z-10">{child.props.children}</div>
+        {child.props.children}
       </>,
     )
   })
