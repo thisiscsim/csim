@@ -30,6 +30,8 @@ type BlogPost = {
   description: string
   link: string
   uid: string
+  date: string
+  categories: string[]
 }
 
 type SocialLink = {
@@ -44,7 +46,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Design Lead',
     start: '2024',
     end: 'Current',
-    description: "I’m currently the design lead for Vault where I work on our multi-document review queries, data management and knowledge base features. I’m also the co-lead of Harvey’s design system, which supports dozens of internal embedded product surfaces.",
+    description: "I'm currently the design lead for Vault where I work on our multi-document review queries, data management and knowledge base features. I'm also the co-lead of Harvey's design system, which supports dozens of internal embedded product surfaces.",
     projects: [
       {
         name: 'Review Tables',
@@ -87,7 +89,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2023',
     end: '2024',
-    description: 'As one of Arc’s earliest designers, I worked across nearly every part of the product. I led design for Cash Management and Spend features like Bill Pay, Deposits, Auto-Transfers, Vendor Management, and Spend Insights, along with infrastructure such as Settings, Notifications, and Onboarding.',
+    description: "As one of Arc's earliest designers, I worked across nearly every part of the product. I led design for Cash Management and Spend features like Bill Pay, Deposits, Auto-Transfers, Vendor Management, and Spend Insights, along with infrastructure such as Settings, Notifications, and Onboarding.",
     projects: [
       {
         name: 'Deposits',
@@ -129,7 +131,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2022',
     end: '2023',
-    description: 'I was a designer on the Operations Tooling team. I worked on the Freight Forwarding App, on a feature called TeamView, an end-to-end shipment visibility tool that enables operations teams to easily track shipments from the factory to the local warehouse.',
+    description: "I was a designer on the Operations Tooling team. I worked on the Freight Forwarding App, on a feature called TeamView, an end-to-end shipment visibility tool that enables operations teams to easily track shipments from the factory to the local warehouse.",
     projects: [
       {
         name: 'Freight Forwarding App',
@@ -147,7 +149,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2022',
     end: '2022',
-    description: 'Worked with the rider team at Uber, designed multiple features across different touchpoints to bridge the trip experience between riders and drivers.',
+    description: "Worked with the rider team at Uber, designed multiple features across different touchpoints to bridge the trip experience between riders and drivers.",
     projects: [
       {
         name: 'En-route Delay Notification',
@@ -173,7 +175,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2024',
     end: 'Current',
-    description: 'On the side, I’m also a design consultant for some of the most promising emerging software companies.',
+    description: "On the side, I'm also a design consultant for some of the most promising emerging software companies.",
     projects: [
       {
         name: 'Moab [Backed by Elad Gil, Karim Atiyeh, SPC]',
@@ -197,30 +199,38 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
-    title: 'Exploring the Intersection of Design, AI, and Design Engineering',
+    title: 'How I built this site',
     description: 'How AI is changing the way we design',
     link: '/blog/exploring-the-intersection-of-design-ai-and-design-engineering',
     uid: 'blog-1',
+    date: '2025.3.14',
+    categories: ['Design', 'Code', 'Tech'],
   },
   {
-    title: 'Why I left my job to start my own company',
+    title: 'Reclaiming my health',
     description:
       'A deep dive into my decision to leave my job and start my own company',
     link: '/blog/exploring-the-intersection-of-design-ai-and-design-engineering',
     uid: 'blog-2',
+    date: '2025.3.14',
+    categories: ['Personal'],
   },
   {
-    title: 'What I learned from my first year of freelancing',
+    title: 'How I prototype and handoff my designs with v0',
     description:
       'A look back at my first year of freelancing and what I learned',
     link: '/blog/exploring-the-intersection-of-design-ai-and-design-engineering',
     uid: 'blog-3',
+    date: '2025.3.14',
+    categories: ['Design', 'Tech', 'Interaction'],
   },
   {
     title: 'How to Export Metadata from MDX for Next.js SEO',
     description: 'A guide on exporting metadata from MDX files to leverage Next.js SEO features.',
     link: '/blog/example-mdx-metadata',
     uid: 'blog-4',
+    date: '2025-05-26',
+    categories: ['Tech'],
   },
 ]
 
