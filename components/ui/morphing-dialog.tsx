@@ -20,6 +20,7 @@ import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
 import { XIcon } from 'lucide-react'
 import useClickOutside from '@/hooks/useClickOutside'
+import { useScrollLock } from '@/hooks/useScrollLock'
 
 export type MorphingDialogContextType = {
   isOpen: boolean
@@ -78,8 +79,8 @@ export type MorphingDialogProps = {
 
 function MorphingDialog({ children, transition }: MorphingDialogProps) {
   return (
-    <MorphingDialogProvider>
-      <MotionConfig transition={transition}>{children}</MotionConfig>
+    <MorphingDialogProvider transition={transition}>
+      {children}
     </MorphingDialogProvider>
   )
 }
@@ -88,14 +89,12 @@ export type MorphingDialogTriggerProps = {
   children: React.ReactNode
   className?: string
   style?: React.CSSProperties
-  triggerRef?: React.RefObject<HTMLDivElement>
 }
 
 function MorphingDialogTrigger({
   children,
   className,
   style,
-  triggerRef,
 }: MorphingDialogTriggerProps) {
   const { setIsOpen, isOpen, uniqueId } = useMorphingDialog()
 
@@ -115,7 +114,6 @@ function MorphingDialogTrigger({
 
   return (
     <motion.div
-      ref={triggerRef}
       layoutId={`dialog-${uniqueId}`}
       className={cn('relative cursor-pointer', className)}
       onClick={handleClick}
@@ -143,7 +141,7 @@ function MorphingDialogContent({
   className,
   style,
 }: MorphingDialogContentProps) {
-  const { setIsOpen, isOpen, uniqueId, triggerRef } = useMorphingDialog()
+  const { setIsOpen, isOpen, uniqueId } = useMorphingDialog()
   const containerRef = useRef<HTMLDivElement>(null!)
   const [firstFocusableElement, setFirstFocusableElement] =
     useState<HTMLElement | null>(null)
@@ -181,7 +179,6 @@ function MorphingDialogContent({
 
   useEffect(() => {
     if (isOpen) {
-      document.body.classList.add('overflow-hidden')
       const focusableElements = containerRef.current?.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       )
@@ -192,11 +189,8 @@ function MorphingDialogContent({
         )
         ;(focusableElements[0] as HTMLElement).focus()
       }
-    } else {
-      document.body.classList.remove('overflow-hidden')
-      triggerRef.current?.focus()
     }
-  }, [isOpen, triggerRef])
+  }, [isOpen])
 
   useClickOutside(containerRef, () => {
     if (isOpen) {
@@ -208,7 +202,10 @@ function MorphingDialogContent({
     <motion.div
       ref={containerRef}
       layoutId={`dialog-${uniqueId}`}
-      className={cn('overflow-hidden', className)}
+      className={cn(
+        'relative bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 mx-auto my-8 border border-gray-200 dark:border-gray-700',
+        className
+      )}
       style={style}
       role="dialog"
       aria-modal="true"
@@ -227,8 +224,54 @@ export type MorphingDialogContainerProps = {
 }
 
 function MorphingDialogContainer({ children }: MorphingDialogContainerProps) {
-  const { isOpen, uniqueId } = useMorphingDialog()
+  const { isOpen, uniqueId, setIsOpen } = useMorphingDialog()
   const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent scrolling with overflow hidden and touch-action
+      document.body.style.overflow = 'hidden'
+      document.body.style.touchAction = 'none'
+      document.documentElement.style.overflow = 'hidden'
+      
+      // Prevent scroll only when it's outside the dialog
+      const preventTouchScroll = (e: TouchEvent) => {
+        const target = e.target as Element
+        const dialogContent = document.querySelector('[role="dialog"]')
+        
+        if (dialogContent && !dialogContent.contains(target)) {
+          e.preventDefault()
+        }
+      }
+      
+      const preventWheelScroll = (e: WheelEvent) => {
+        const target = e.target as Element
+        const dialogContent = document.querySelector('[role="dialog"]')
+        
+        if (dialogContent && !dialogContent.contains(target)) {
+          e.preventDefault()
+        }
+      }
+      
+      document.addEventListener('touchmove', preventTouchScroll, { passive: false })
+      document.addEventListener('wheel', preventWheelScroll, { passive: false })
+      
+      return () => {
+        document.removeEventListener('touchmove', preventTouchScroll)
+        document.removeEventListener('wheel', preventWheelScroll)
+      }
+    } else {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+      document.documentElement.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+      document.documentElement.style.overflow = ''
+    }
+  }, [isOpen])
 
   useEffect(() => {
     setMounted(true)
@@ -247,8 +290,9 @@ function MorphingDialogContainer({ children }: MorphingDialogContainerProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
           />
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
             {children}
           </div>
         </>
@@ -272,14 +316,13 @@ function MorphingDialogTitle({
   const { uniqueId } = useMorphingDialog()
 
   return (
-    <motion.div
-      layoutId={`dialog-title-container-${uniqueId}`}
-      className={className}
+    <motion.h2
+      layoutId={`dialog-title-${uniqueId}`}
+      className={cn('text-lg font-medium', className)}
       style={style}
-      layout
     >
       {children}
-    </motion.div>
+    </motion.h2>
   )
 }
 
@@ -297,13 +340,13 @@ function MorphingDialogSubtitle({
   const { uniqueId } = useMorphingDialog()
 
   return (
-    <motion.div
-      layoutId={`dialog-subtitle-container-${uniqueId}`}
-      className={className}
+    <motion.p
+      layoutId={`dialog-subtitle-${uniqueId}`}
+      className={cn('text-sm text-gray-600', className)}
       style={style}
     >
       {children}
-    </motion.div>
+    </motion.p>
   )
 }
 
@@ -365,8 +408,8 @@ function MorphingDialogImage({
     <motion.img
       src={src}
       alt={alt}
-      className={cn(className)}
-      layoutId={`dialog-img-${uniqueId}`}
+      className={cn('object-cover', className)}
+      layoutId={`dialog-image-${uniqueId}`}
       style={style}
     />
   )
@@ -405,7 +448,7 @@ function MorphingDialogClose({
       exit="exit"
       variants={variants}
     >
-      {children || <XIcon size={24} />}
+      {children || <XIcon size={16} />}
     </motion.button>
   )
 }

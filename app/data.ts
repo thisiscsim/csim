@@ -4,6 +4,28 @@ export type Project = {
   link: string
   video: string
   id: string
+  caseStudy?: {
+    background: string
+    solution: string
+    impact: {
+      stat: string
+      label: string
+      description?: string
+    }[],
+    credits: {
+      text: string
+      people: {
+        name: string
+        role: string
+        image: string
+      }[]
+    },
+    images?: {
+      src: string
+      alt: string
+      caption?: string
+    }[]
+  }
 }
 
 export type ProjectGroup = {
@@ -51,11 +73,66 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
       {
         name: 'Review Tables',
         description:
-          'Multi-document retrieval, extraction, and generation',
+          'Multi-document retrieval, extraction & generation',
         link: 'https://pro.motion-primitives.com/',
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/newProfileItem/d898be8a-7037-4c71-af0c-8997239b050d.mp4?_a=DATAdtAAZAA0',
-        id: 'harvey-1',
+        id: 'harvey-review-table',
+        caseStudy: {
+          background: 'Empowering financial management is central to Arc’s vision as a comprehensive banking platform. With limited functionalities in our payment offerings, our customers have lacked incentives to increase deposits and manage spend directly through our platform. This has led directly to slower growth in Asset Under Management (AUM) and increased customer churn to our competitors offering more complete solutions.',
+          solution: 'We developed Review Tables, a powerful interface that allows users to view and compare data across multiple documents in a structured table format. The solution enables users to extract, organize, and analyze information from various sources simultaneously.',
+          impact: [
+            {
+              stat: '$1.2M+',
+              label: 'Payments processed since launch'
+            },
+            {
+              stat: '100+ Hours Saved',
+              label: 'In time spent on bill consolidation'
+            },
+            {
+              stat: '34% Uptick',
+              label: 'In account deposits (AUM)'
+            }
+          ],
+          credits: {
+            text: "It's a huge privilege to have ownership over such a critical project and while I'm extremely proud of my role, it takes an entire village to get us across the line. Massive thanks to my key collaborators and many others.",
+            people: [
+              {
+                name: 'Christopher Sim',
+                role: 'Design Lead',
+                image: '/images/credits/christopher-sim.jpg'
+              },
+              {
+                name: 'Elliot Bensabat',
+                role: 'Product Lead',
+                image: '/images/credits/elliot-bensabat.jpg'
+              },
+              {
+                name: 'Aniket Joshi',
+                role: 'Engineering Lead',
+                image: '/images/credits/aniket-joshi.jpg'
+              },
+              {
+                name: 'Avi Khemani',
+                role: 'Engineer',
+                image: '/images/credits/avi-khemani.jpg'
+              }
+            ]
+          },
+          images: [
+            {
+              src: '/images/review-tables-1.png',
+              alt: 'Review Tables Interface',
+              caption: 'The main interface showing multiple documents in a table view'
+            },
+            {
+              src: '/images/review-tables-2.png',
+              alt: 'Data Extraction Process',
+              caption: 'The data extraction and organization workflow'
+            }
+          ]
+        }
       },
       {
         name: 'File event log',
