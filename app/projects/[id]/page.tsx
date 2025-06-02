@@ -1,7 +1,14 @@
 import { PROJECT_GROUPS } from '@/app/data'
 import { notFound } from 'next/navigation'
 
-export default function ProjectCaseStudy({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string
+  }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default function ProjectCaseStudy({ params }: PageProps) {
   const { id } = params
   
   // Find the project across all groups
