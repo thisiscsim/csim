@@ -1,14 +1,14 @@
 import { PROJECT_GROUPS } from '@/app/data'
 import { notFound } from 'next/navigation'
 
-interface PageProps {
-  params: {
-    id: string
-  }
+type Props = {
+  params: { id: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default async function ProjectCaseStudy({ params }: PageProps) {
+export default async function ProjectCaseStudy({
+  params,
+}: Props) {
   const { id } = params
   
   // Find the project across all groups
