@@ -1,8 +1,15 @@
 import { PROJECT_GROUPS } from '@/app/data'
 import { notFound } from 'next/navigation'
 
-export default function ProjectCaseStudy({ params }: { params: { id: string } }) {
-  const { id } = params
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function ProjectCaseStudy({
+  params,
+}: Props) {
+  const { id } = await params
   
   // Find the project across all groups
   let project = null
