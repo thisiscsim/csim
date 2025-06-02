@@ -5,7 +5,6 @@ import { AnimatedBackground } from '@/components/ui/animated-background'
 import { TextScramble } from '@/components/motion-primitives/text-scramble'
 import { useState, useMemo, useEffect } from 'react'
 import type { NotionBlogPost } from '@/lib/notion/blog'
-import { ScrollProgress } from '@/components/ui/scroll-progress'
 import { useRouter } from 'next/navigation'
 
 const FILTERS = ['All', 'Design', 'Technology', 'Society', 'Life']
@@ -73,12 +72,6 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
   return (
     <>
       <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] dark:bg-zinc-950" />
-      <ScrollProgress
-        className="fixed top-0 z-20 h-0.5 bg-gray-300 dark:bg-zinc-600"
-        springOptions={{
-          bounce: 0,
-        }}
-      />
 
       <motion.main
         className="space-y-24"
@@ -115,7 +108,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
             {filters.map((filter) => (
               <button
                 key={filter}
-                className={`px-2 py-0.5 rounded-md text-sm font-mono border-none focus:outline-none transition-colors ${
+                className={`px-2 py-0.5 rounded-md text-sm font-mono border-none focus:outline-none transition-colors cursor-pointer ${
                   selectedFilter === filter
                     ? 'bg-zinc-200/70 dark:bg-zinc-700/70 text-zinc-900 font-medium dark:text-zinc-100'
                     : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400'

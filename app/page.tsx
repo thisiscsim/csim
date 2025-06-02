@@ -6,8 +6,8 @@ import {
   MorphingDialog,
   MorphingDialogTrigger,
   MorphingDialogContent,
-  MorphingDialogClose,
   MorphingDialogContainer,
+  MorphingDialogClose,
 } from '@/components/ui/morphing-dialog'
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/animated-background'
@@ -18,7 +18,9 @@ import {
   EMAIL,
   SOCIAL_LINKS,
 } from './data'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import { CaseStudyDialog } from '@/components/case-study-dialog'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -37,56 +39,6 @@ const VARIANTS_SECTION = {
 
 const TRANSITION_SECTION = {
   duration: 0.3,
-}
-
-type ProjectVideoProps = {
-  src: string
-}
-
-function ProjectVideo({ src }: ProjectVideoProps) {
-  return (
-    <MorphingDialog
-      transition={{
-        type: 'spring',
-        bounce: 0,
-        duration: 0.3,
-      }}
-    >
-      <MorphingDialogTrigger>
-        <video
-          src={src}
-          autoPlay
-          loop
-          muted
-          className="aspect-video w-full cursor-zoom-in rounded-xl"
-        />
-      </MorphingDialogTrigger>
-      <MorphingDialogContainer>
-        <MorphingDialogContent className="relative aspect-video rounded-2xl bg-zinc-50 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950 dark:ring-zinc-800/50">
-          <video
-            src={src}
-            autoPlay
-            loop
-            muted
-            className="aspect-video h-[50vh] w-full rounded-xl md:h-[70vh]"
-          />
-        </MorphingDialogContent>
-        <MorphingDialogClose
-          className="fixed top-6 right-6 h-fit w-fit rounded-full bg-white p-1"
-          variants={{
-            initial: { opacity: 0 },
-            animate: {
-              opacity: 1,
-              transition: { delay: 0.3, duration: 0.1 },
-            },
-            exit: { opacity: 0, transition: { duration: 0 } },
-          }}
-        >
-          <XIcon className="h-5 w-5 text-zinc-500" />
-        </MorphingDialogClose>
-      </MorphingDialogContainer>
-    </MorphingDialog>
-  )
 }
 
 export default function Personal() {
@@ -183,7 +135,6 @@ export default function Personal() {
           </div>
         </div>
       </motion.section>
-      {/* --- END TOP SECTION --- */}
 
       <motion.section
         variants={VARIANTS_SECTION}
@@ -200,7 +151,7 @@ export default function Personal() {
             return (
               <div key={group.company + group.start + group.end} className="flex flex-row gap-8 items-start relative">
                 {/* Left column: Sticky header for date/company */}
-                <div className="w-46 flex-shrink-0 sticky top-4 z-10 self-start bg-transparent backdrop-blur-sm pt-2">
+                <div className="w-46 flex-shrink-0 sticky top-10 z-10 self-start bg-transparent backdrop-blur-sm">
                   <TextScramble
                     as="span"
                     className="block text-md text-zinc-400"
@@ -222,27 +173,36 @@ export default function Personal() {
                   </span>
                 </div>
                 {/* Right column: Projects for this group */}
-                <div className="flex-1 flex flex-col gap-10 mt-2">
+                <div className="flex-1 flex flex-col gap-10">
                   {/* Role description paragraph above all projects */}
                   {group.description && (
                     <p className="mb-4 text-base">{group.description}</p>
                   )}
                   {group.projects.map((project) => (
                     <div key={project.id} className="space-y-2">
-                      <div className="relative rounded-2xl bg-zinc-50/40 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950/40 dark:ring-zinc-800/50">
-                        <ProjectVideo src={project.video} />
-                      </div>
-                      <div className="px-1">
-                        <a
-                          className="font-base font-medium group relative inline-block font-[450] text-zinc-900 dark:text-zinc-100 transition-colors duration-200 hover:text-zinc-600 dark:hover:text-zinc-300"
-                          href={project.link}
-                          target="_blank"
-                        >
-                          {project.name}
-                        </a>
-                        <p className="font-base text-zinc-600 dark:text-zinc-400">
-                          {project.description}
-                        </p>
+                      <div className="relative rounded-2xl bg-zinc-50/40 dark:bg-zinc-950/40">
+                        <CaseStudyDialog
+                          trigger={
+                            <div className="cursor-pointer">
+                              <video
+                                src={project.video}
+                                autoPlay
+                                loop
+                                muted
+                                className="aspect-video w-full rounded-lg"
+                              />
+                              <div className="mt-4">
+                                <h3 className="font-base font-medium group relative inline-block font-[450] text-zinc-900 dark:text-zinc-100 transition-colors duration-200 hover:text-zinc-600 dark:hover:text-zinc-300">
+                                  {project.name}
+                                </h3>
+                                <p className="font-base text-zinc-600 dark:text-zinc-400">
+                                  {project.description}
+                                </p>
+                              </div>
+                            </div>
+                          }
+                          project={project}
+                        />
                       </div>
                     </div>
                   ))}
