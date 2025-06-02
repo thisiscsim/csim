@@ -8,7 +8,7 @@ interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default function ProjectCaseStudy({ params }: PageProps) {
+export default async function ProjectCaseStudy({ params }: PageProps) {
   const { id } = params
   
   // Find the project across all groups
