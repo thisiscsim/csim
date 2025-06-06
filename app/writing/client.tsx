@@ -1,13 +1,11 @@
-'use client'
-import { motion, AnimatePresence } from 'framer-motion'
-import Link from 'next/link'
-import { AnimatedBackground } from '@/components/ui/animated-background'
-import { TextScramble } from '@/components/motion-primitives/text-scramble'
-import { useState, useMemo, useEffect } from 'react'
-import type { NotionBlogPost } from '@/lib/notion/blog'
-import { useRouter } from 'next/navigation'
-
-const FILTERS = ['All', 'Design', 'Technology', 'Society', 'Life']
+'use client';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { AnimatedBackground } from '@/components/ui/animated-background';
+import { TextScramble } from '@/components/motion-primitives/text-scramble';
+import { useState, useMemo, useEffect } from 'react';
+import type { NotionBlogPost } from '@/lib/notion/blog';
+import { useRouter } from 'next/navigation';
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -17,7 +15,7 @@ const VARIANTS_CONTAINER = {
       staggerChildren: 0.1,
     },
   },
-}
+};
 
 const VARIANTS_SECTION = {
   hidden: { opacity: 0, y: 20 },
@@ -25,49 +23,49 @@ const VARIANTS_SECTION = {
     opacity: 1,
     y: 0,
   },
-}
+};
 
 const TRANSITION_SECTION = {
   type: 'spring',
   bounce: 0,
   duration: 0.3,
-}
+};
 
 export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
-  const [selectedFilter, setSelectedFilter] = useState('All')
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [infoTrigger, setInfoTrigger] = useState(false)
-  const router = useRouter()
+  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [infoTrigger, setInfoTrigger] = useState(false);
+  const router = useRouter();
 
   // Generate filters dynamically from all unique categories
   const filters = useMemo(() => {
-    const uniqueCategories = new Set<string>()
-    posts.forEach(post => {
-      post.categories?.forEach(category => uniqueCategories.add(category))
-    })
-    return ['All', ...Array.from(uniqueCategories).sort()]
-  }, [posts])
+    const uniqueCategories = new Set<string>();
+    posts.forEach((post) => {
+      post.categories?.forEach((category) => uniqueCategories.add(category));
+    });
+    return ['All', ...Array.from(uniqueCategories).sort()];
+  }, [posts]);
 
   const filteredPosts = posts.filter((post) => {
-    if (selectedFilter === 'All') return true
-    return post.categories?.includes(selectedFilter)
-  })
+    if (selectedFilter === 'All') return true;
+    return post.categories?.includes(selectedFilter);
+  });
 
   // Prefetch the next 3 posts when hovering over a post
   useEffect(() => {
     if (hoveredId) {
-      const currentIndex = filteredPosts.findIndex(post => post.id === hoveredId)
+      const currentIndex = filteredPosts.findIndex((post) => post.id === hoveredId);
       if (currentIndex !== -1) {
         // Prefetch next 3 posts
         for (let i = 1; i <= 3; i++) {
-          const nextPost = filteredPosts[currentIndex + i]
+          const nextPost = filteredPosts[currentIndex + i];
           if (nextPost) {
-            router.prefetch(`/writing/${nextPost.slug}`)
+            router.prefetch(`/writing/${nextPost.slug}`);
           }
         }
       }
     }
-  }, [hoveredId, filteredPosts, router])
+  }, [hoveredId, filteredPosts, router]);
 
   return (
     <>
@@ -79,10 +77,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
         initial="hidden"
         animate="visible"
       >
-        <motion.section
-          variants={VARIANTS_SECTION}
-          transition={TRANSITION_SECTION}
-        >
+        <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
           {/* Info Block */}
           <div className="mb-0">
             <TextScramble
@@ -95,15 +90,14 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
               Writing
             </TextScramble>
             <p>
-              Infrequent thoughts on design, the future, current state of society, and life. These are in no way representative of my employer and are strictly my personal opinions. I use Notion as the CMS, and the list here updates automatically through the Notion API.
+              Infrequent thoughts on design, the future, current state of society, and life. These
+              are in no way representative of my employer and are strictly my personal opinions. I
+              use Notion as the CMS, and the list here updates automatically through the Notion API.
             </p>
           </div>
         </motion.section>
 
-        <motion.section
-          variants={VARIANTS_SECTION}
-          transition={TRANSITION_SECTION}
-        >
+        <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
           <div className="flex flex-row flex-wrap gap-1.5 mb-6">
             {filters.map((filter) => (
               <button
@@ -171,5 +165,5 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
         </motion.section>
       </motion.main>
     </>
-  )
-} 
+  );
+}

@@ -1,10 +1,13 @@
-'use client'
-import { motion } from 'framer-motion'
-import type { NotionBlogPost } from '@/lib/notion/blog'
-import { TextMorph } from '@/components/ui/text-morph'
-import { ScrollProgress } from '@/components/ui/scroll-progress'
-import { useState, useEffect } from 'react'
-import ReactMarkdown from 'react-markdown'
+'use client';
+import { motion } from 'framer-motion';
+import type { NotionBlogPost } from '@/lib/notion/blog';
+import { TextMorph } from '@/components/ui/text-morph';
+import { ScrollProgress } from '@/components/ui/scroll-progress';
+import { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -14,7 +17,7 @@ const VARIANTS_CONTAINER = {
       staggerChildren: 0.1,
     },
   },
-}
+};
 
 const VARIANTS_SECTION = {
   hidden: { opacity: 0, y: 20 },
@@ -22,29 +25,29 @@ const VARIANTS_SECTION = {
     opacity: 1,
     y: 0,
   },
-}
+};
 
 const TRANSITION_SECTION = {
   type: 'spring',
   bounce: 0,
   duration: 0.3,
-}
+};
 
 function CopyButton() {
-  const [text, setText] = useState('Copy')
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const [text, setText] = useState('Copy');
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   useEffect(() => {
     setTimeout(() => {
-      setText('Copy')
-    }, 2000)
-  }, [text])
+      setText('Copy');
+    }, 2000);
+  }, [text]);
 
   return (
     <button
       onClick={() => {
-        setText('Copied')
-        navigator.clipboard.writeText(currentUrl)
+        setText('Copied');
+        navigator.clipboard.writeText(currentUrl);
       }}
       className="font-base flex items-center gap-1 text-center text-sm text-zinc-500 transition-colors dark:text-zinc-400"
       type="button"
@@ -52,12 +55,12 @@ function CopyButton() {
       <TextMorph>{text}</TextMorph>
       <span>URL</span>
     </button>
-  )
+  );
 }
 
 export function BlogPostClient({ post }: { post: NotionBlogPost }) {
   if (typeof window !== 'undefined') {
-    console.log('BlogPostClient is rendering')
+    console.log('BlogPostClient is rendering');
   }
   return (
     <>
@@ -79,10 +82,7 @@ export function BlogPostClient({ post }: { post: NotionBlogPost }) {
         initial="hidden"
         animate="visible"
       >
-        <motion.section
-          variants={VARIANTS_SECTION}
-          transition={TRANSITION_SECTION}
-        >
+        <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
           <article>
             <header className="mb-8">
               <h1 className="text-3xl font-bold">{post.title}</h1>
@@ -110,24 +110,51 @@ export function BlogPostClient({ post }: { post: NotionBlogPost }) {
             <div className="prose prose-gray dark:prose-invert max-w-none prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-h4:text-base prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-hr:border-zinc-200 dark:prose-hr:border-zinc-800 prose-ul:list-disc prose-ol:list-decimal">
               <ReactMarkdown
                 components={{
-                  h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-8 mb-4" {...props} />,
-                  h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-6 mb-3" {...props} />,
-                  h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />,
-                  h4: ({ node, ...props }) => <h4 className="text-base font-bold mt-3 mb-2" {...props} />,
+                  h1: ({ node, ...props }) => (
+                    <h1 className="text-2xl font-bold mt-8 mb-4" {...props} />
+                  ),
+                  h2: ({ node, ...props }) => (
+                    <h2 className="text-xl font-bold mt-6 mb-3" {...props} />
+                  ),
+                  h3: ({ node, ...props }) => (
+                    <h3 className="text-lg font-bold mt-4 mb-2" {...props} />
+                  ),
+                  h4: ({ node, ...props }) => (
+                    <h4 className="text-base font-bold mt-3 mb-2" {...props} />
+                  ),
                   p: ({ node, ...props }) => <p className="my-4" {...props} />,
                   ul: ({ node, ...props }) => <ul className="list-disc pl-6 my-4" {...props} />,
                   ol: ({ node, ...props }) => <ol className="list-decimal pl-6 my-4" {...props} />,
                   li: ({ node, ...props }) => <li className="my-1" {...props} />,
-                  a: ({ node, ...props }) => <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />,
-                  blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic" {...props} />,
-                  code: ({ node, className, children, ...props }: { node?: any; className?: string; children?: React.ReactNode }) => {
+                  a: ({ node, ...props }) => (
+                    <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />
+                  ),
+                  blockquote: ({ node, ...props }) => (
+                    <blockquote
+                      className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic"
+                      {...props}
+                    />
+                  ),
+                  code: ({
+                    node,
+                    className,
+                    children,
+                    ...props
+                  }: {
+                    node?: any;
+                    className?: string;
+                    children?: React.ReactNode;
+                  }) => {
                     const match = /language-(\w+)/.exec(className || '');
                     return !className ? (
                       <code className="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5" {...props}>
                         {children}
                       </code>
                     ) : (
-                      <code className="block bg-gray-100 dark:bg-gray-800 rounded p-4 my-4 overflow-x-auto" {...props}>
+                      <code
+                        className="block bg-gray-100 dark:bg-gray-800 rounded p-4 my-4 overflow-x-auto"
+                        {...props}
+                      >
                         {children}
                       </code>
                     );
@@ -146,5 +173,5 @@ export function BlogPostClient({ post }: { post: NotionBlogPost }) {
         </motion.section>
       </motion.main>
     </>
-  )
-} 
+  );
+}

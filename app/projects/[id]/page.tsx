@@ -1,28 +1,26 @@
-import { PROJECT_GROUPS } from '@/app/data'
-import { notFound } from 'next/navigation'
+import { PROJECT_GROUPS } from '@/app/data';
+import { notFound } from 'next/navigation';
 
 type Props = {
-  params: Promise<{ id: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
-export default async function ProjectCaseStudy({
-  params,
-}: Props) {
-  const { id } = await params
-  
+export default async function ProjectCaseStudy({ params }: Props) {
+  const { id } = await params;
+
   // Find the project across all groups
-  let project = null
+  let project = null;
   for (const group of PROJECT_GROUPS) {
-    const found = group.projects.find(p => p.id === id)
+    const found = group.projects.find((p) => p.id === id);
     if (found) {
-      project = found
-      break
+      project = found;
+      break;
     }
   }
 
   if (!project) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -31,5 +29,5 @@ export default async function ProjectCaseStudy({
       <p className="text-lg mb-8">{project.description}</p>
       {/* Add more project content here */}
     </main>
-  )
-} 
+  );
+}

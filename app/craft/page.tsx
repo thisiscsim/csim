@@ -1,7 +1,5 @@
-'use client'
-import { motion } from 'motion/react'
-import { Spotlight } from '@/components/ui/spotlight'
-import { AnimatedBackground } from '@/components/ui/animated-background'
+'use client';
+import { motion } from 'motion/react';
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -11,18 +9,29 @@ const VARIANTS_CONTAINER = {
       staggerChildren: 0.15,
     },
   },
-}
+};
 
 const VARIANTS_SECTION = {
   hidden: { opacity: 0, y: 20, filter: 'blur(8px)' },
   visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
-}
+};
 
 const TRANSITION_SECTION = {
   duration: 0.3,
-}
+};
+
+// Generate random heights for masonry items
+const generateMasonryItems = () => {
+  const heights = [200, 300, 250, 400, 320, 280, 350, 240, 380, 260, 340, 290];
+  return heights.map((height, index) => ({
+    id: index,
+    height: height,
+  }));
+};
 
 export default function Craft() {
+  const masonryItems = generateMasonryItems();
+
   return (
     <motion.main
       className="space-y-24"
@@ -30,10 +39,7 @@ export default function Craft() {
       initial="hidden"
       animate="visible"
     >
-      <motion.section
-        variants={VARIANTS_SECTION}
-        transition={TRANSITION_SECTION}
-      >
+      <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
         <div className="flex-1">
           <h1 className="mb-4 text-2xl font-medium">Craft</h1>
           <p className="text-zinc-600 dark:text-zinc-400">
@@ -45,24 +51,29 @@ export default function Craft() {
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
+        className="w-full"
       >
-        <h3 className="mb-5 text-lg font-medium">Coming Soon</h3>
-        <div className="flex flex-col space-y-0">
-          <AnimatedBackground
-            enableHover
-            className="h-full w-full rounded-lg bg-zinc-100 dark:bg-zinc-900/80"
-            transition={{
-              type: 'spring',
-              bounce: 0,
-              duration: 0.2,
-            }}
-          >
-            <div className="p-6 text-center text-zinc-600 dark:text-zinc-400">
-              More craft projects coming soon...
-            </div>
-          </AnimatedBackground>
+        {/* Masonry Grid Container */}
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
+          {masonryItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              className="mb-4 break-inside-avoid"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 0.3,
+                delay: index * 0.05,
+              }}
+            >
+              <div
+                className="w-full bg-zinc-700 rounded-lg"
+                style={{ height: `${item.height}px` }}
+              />
+            </motion.div>
+          ))}
         </div>
       </motion.section>
     </motion.main>
-  )
-} 
+  );
+}

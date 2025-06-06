@@ -1,5 +1,4 @@
 import { notion, databaseId } from './client';
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { cache } from 'react';
 import { NotionToMarkdown } from 'notion-to-md';
 
@@ -55,7 +54,7 @@ const fetchDatabase = cache(async () => {
 
 export const getPublishedBlogPosts = cache(async (): Promise<NotionBlogPost[]> => {
   const response = await fetchDatabase();
-  
+
   return response.results.map((page) => {
     if (!('properties' in page)) {
       throw new Error('Invalid page response');
@@ -81,7 +80,7 @@ export const getPublishedBlogPosts = cache(async (): Promise<NotionBlogPost[]> =
 
 export const getBlogPostBySlug = cache(async (slug: string): Promise<NotionBlogPost | null> => {
   const response = await fetchDatabase();
-  
+
   const page = response.results.find((page) => {
     if (!('properties' in page)) return false;
     const properties = page.properties as Record<string, NotionProperty>;
@@ -100,9 +99,7 @@ export const getBlogPostBySlug = cache(async (slug: string): Promise<NotionBlogP
   const status = normalizeStatus(properties.Status.status?.name || 'draft');
 
   // Fetch content in parallel with other operations
-  const [content] = await Promise.all([
-    fetchPostContent(page.id),
-  ]);
+  const [content] = await Promise.all([fetchPostContent(page.id)]);
 
   return {
     id: page.id,
@@ -113,4 +110,4 @@ export const getBlogPostBySlug = cache(async (slug: string): Promise<NotionBlogP
     content,
     status,
   };
-}); 
+});

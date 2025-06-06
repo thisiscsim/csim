@@ -1,42 +1,97 @@
-'use client'
-import ReactMarkdown from 'react-markdown'
-import { memo } from 'react'
+'use client';
+import ReactMarkdown from 'react-markdown';
+import { memo } from 'react';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+const H1Component = memo(function H1Component({ _node, ...props }: any) {
+  return <h1 className="text-2xl font-bold mt-8 mb-4" {...props} />;
+});
+
+const H2Component = memo(function H2Component({ _node, ...props }: any) {
+  return <h2 className="text-xl font-bold mt-6 mb-3" {...props} />;
+});
+
+const H3Component = memo(function H3Component({ _node, ...props }: any) {
+  return <h3 className="text-lg font-bold mt-4 mb-2" {...props} />;
+});
+
+const H4Component = memo(function H4Component({ _node, ...props }: any) {
+  return <h4 className="text-base font-bold mt-3 mb-2" {...props} />;
+});
+
+const PComponent = memo(function PComponent({ _node, ...props }: any) {
+  return <p className="my-4" {...props} />;
+});
+
+const UlComponent = memo(function UlComponent({ _node, ...props }: any) {
+  return <ul className="list-disc pl-6 my-4" {...props} />;
+});
+
+const OlComponent = memo(function OlComponent({ _node, ...props }: any) {
+  return <ol className="list-decimal pl-6 my-4" {...props} />;
+});
+
+const LiComponent = memo(function LiComponent({ _node, ...props }: any) {
+  return <li className="my-1" {...props} />;
+});
+
+const AComponent = memo(function AComponent({ _node, ...props }: any) {
+  return <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />;
+});
+
+const BlockquoteComponent = memo(function BlockquoteComponent({ _node, ...props }: any) {
+  return (
+    <blockquote
+      className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic"
+      {...props}
+    />
+  );
+});
+
+const PreComponent = memo(function PreComponent({ _node, ...props }: any) {
+  return (
+    <pre
+      className="bg-zinc-200 dark:bg-zinc-800 rounded p-4 my-4 overflow-x-auto text-zinc-900 dark:text-zinc-100"
+      {...props}
+    />
+  );
+});
+
+const CodeComponent = memo(function CodeComponent({ _node, className, children, ...props }: any) {
+  return !className ? (
+    <code
+      className="bg-zinc-200 dark:bg-zinc-800 rounded px-1 py-0.5 text-zinc-900 dark:text-zinc-100"
+      {...props}
+    >
+      {children}
+    </code>
+  ) : (
+    <code className="text-zinc-900 dark:text-zinc-100" {...props}>
+      {children}
+    </code>
+  );
+});
 
 const markdownComponents = {
-  h1: memo(({ node, ...props }: any) => <h1 className="text-2xl font-bold mt-8 mb-4" {...props} />),
-  h2: memo(({ node, ...props }: any) => <h2 className="text-xl font-bold mt-6 mb-3" {...props} />),
-  h3: memo(({ node, ...props }: any) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />),
-  h4: memo(({ node, ...props }: any) => <h4 className="text-base font-bold mt-3 mb-2" {...props} />),
-  p: memo(({ node, ...props }: any) => <p className="my-4" {...props} />),
-  ul: memo(({ node, ...props }: any) => <ul className="list-disc pl-6 my-4" {...props} />),
-  ol: memo(({ node, ...props }: any) => <ol className="list-decimal pl-6 my-4" {...props} />),
-  li: memo(({ node, ...props }: any) => <li className="my-1" {...props} />),
-  a: memo(({ node, ...props }: any) => <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />),
-  blockquote: memo(({ node, ...props }: any) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic" {...props} />),
-  pre: memo(({ node, ...props }: any) => (
-    <pre className="bg-zinc-200 dark:bg-zinc-800 rounded p-4 my-4 overflow-x-auto text-zinc-900 dark:text-zinc-100" {...props} />
-  )),
-  code: memo(({ node, className, children, ...props }: any) => {
-    const match = /language-(\w+)/.exec(className || '');
-    return !className ? (
-      <code className="bg-zinc-200 dark:bg-zinc-800 rounded px-1 py-0.5 text-zinc-900 dark:text-zinc-100" {...props}>
-        {children}
-      </code>
-    ) : (
-      <code className="text-zinc-900 dark:text-zinc-100" {...props}>
-        {children}
-      </code>
-    );
-  }),
-}
+  h1: H1Component,
+  h2: H2Component,
+  h3: H3Component,
+  h4: H4Component,
+  p: PComponent,
+  ul: UlComponent,
+  ol: OlComponent,
+  li: LiComponent,
+  a: AComponent,
+  blockquote: BlockquoteComponent,
+  pre: PreComponent,
+  code: CodeComponent,
+};
 
 // Memoize the entire component to prevent unnecessary re-renders
 const MarkdownContent = memo(function MarkdownContent({ content }: { content: string }) {
-  return (
-    <ReactMarkdown components={markdownComponents}>
-      {content}
-    </ReactMarkdown>
-  )
-})
+  return <ReactMarkdown components={markdownComponents}>{content}</ReactMarkdown>;
+});
 
-export default MarkdownContent 
+export default MarkdownContent;
