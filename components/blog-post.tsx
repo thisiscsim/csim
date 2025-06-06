@@ -1,8 +1,7 @@
-'use client'
-import { motion } from 'framer-motion'
-import type { NotionBlogPost } from '@/lib/notion/blog'
-import ReactMarkdown from 'react-markdown'
-import { Suspense, lazy } from 'react'
+'use client';
+import { motion } from 'framer-motion';
+import type { NotionBlogPost } from '@/lib/notion/blog';
+import { Suspense, lazy } from 'react';
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -12,19 +11,19 @@ const VARIANTS_CONTAINER = {
       staggerChildren: 0.15,
     },
   },
-}
+};
 
 const VARIANTS_SECTION = {
   hidden: { opacity: 0, y: 20, filter: 'blur(8px)' },
   visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
-}
+};
 
 const TRANSITION_SECTION = {
   duration: 0.3,
-}
+};
 
 // Lazy load the markdown content
-const MarkdownContent = lazy(() => import('./markdown-content'))
+const MarkdownContent = lazy(() => import('./markdown-content'));
 
 export function BlogPostClient({ post }: { post: NotionBlogPost }) {
   return (
@@ -63,12 +62,16 @@ export function BlogPostClient({ post }: { post: NotionBlogPost }) {
             </div>
           </header>
           <div className="prose prose-zinc dark:prose-invert w-full max-w-none">
-            <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 dark:bg-gray-800 rounded-lg" />}>
+            <Suspense
+              fallback={
+                <div className="animate-pulse h-96 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+              }
+            >
               <MarkdownContent content={post.content || ''} />
             </Suspense>
           </div>
         </article>
       </motion.section>
     </motion.main>
-  )
-} 
+  );
+}

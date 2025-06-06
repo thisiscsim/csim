@@ -1,27 +1,28 @@
-import type { Metadata, Viewport } from 'next'
-import { Geist } from 'next/font/google'
-import localFont from 'next/font/local'
-import './globals.css'
-import { Header } from './header'
-import { Footer } from './footer'
-import { ThemeProvider } from 'next-themes'
+import type { Metadata, Viewport } from 'next';
+import { Geist } from 'next/font/google';
+import localFont from 'next/font/local';
+import './globals.css';
+import { Header } from './header';
+import { Footer } from './footer';
+import { ThemeProvider } from 'next-themes';
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   themeColor: '#ffffff',
-}
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://csim.vercel.app/'),
   alternates: {
-    canonical: '/'
+    canonical: '/',
   },
   title: {
     default: 'Christopher Sim - Software Designer',
-    template: '%s | Christopher Sim'
+    template: '%s | Christopher Sim',
   },
-  description:  'Nim is a free and open-source personal website template built with Next.js 15, React 19 and Motion-Primitives.',
+  description:
+    'Nim is a free and open-source personal website template built with Next.js 15, React 19 and Motion-Primitives.',
   icons: {
     icon: '/logo.svg',
   },
@@ -30,18 +31,18 @@ export const metadata: Metadata = {
 const geist = Geist({
   variable: '--font-geist',
   subsets: ['latin'],
-})
+});
 
 const berkeleyMono = localFont({
   src: '../public/fonts/Berkeley Mono Variable.woff2',
   variable: '--font-berkeley-mono',
   display: 'swap',
-})
+});
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -65,5 +66,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

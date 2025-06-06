@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   MorphingDialog,
@@ -6,44 +6,41 @@ import {
   MorphingDialogContent,
   MorphingDialogContainer,
   MorphingDialogClose,
-  MorphingDialogTitle,
-  MorphingDialogSubtitle,
-  MorphingDialogImage,
-} from '@/components/ui/morphing-dialog'
-import { ScrollArea } from '@/components/ui/scroll-area'
+} from '@/components/ui/morphing-dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type CaseStudyDialogProps = {
-  trigger: React.ReactNode
+  trigger: React.ReactNode;
   project: {
-    id: string
-    name: string
-    description: string
-    video: string
-    dates?: string
+    id: string;
+    name: string;
+    description: string;
+    video: string;
+    dates?: string;
     caseStudy?: {
-      background: string
-      solution: string
+      background: string;
+      solution: string;
       impact: {
-        stat: string
-        label: string
-        description?: string
-      }[]
+        stat: string;
+        label: string;
+        description?: string;
+      }[];
       credits?: {
-        text: string
+        text: string;
         people: {
-          name: string
-          role: string
-          image: string
-        }[]
-      }
+          name: string;
+          role: string;
+          image: string;
+        }[];
+      };
       images?: {
-        src: string
-        alt: string
-        caption?: string
-      }[]
-    }
-  }
-}
+        src: string;
+        alt: string;
+        caption?: string;
+      }[];
+    };
+  };
+};
 
 export function CaseStudyDialog({ trigger, project }: CaseStudyDialogProps) {
   return (
@@ -54,9 +51,7 @@ export function CaseStudyDialog({ trigger, project }: CaseStudyDialogProps) {
         damping: 24,
       }}
     >
-      <MorphingDialogTrigger className="w-full">
-        {trigger}
-      </MorphingDialogTrigger>
+      <MorphingDialogTrigger className="w-full">{trigger}</MorphingDialogTrigger>
       <MorphingDialogContainer>
         <MorphingDialogContent
           className="relative h-[100vh] w-[90vw] max-w-[1120px] border border-zinc-200 bg-white dark:bg-zinc-950 dark:border-zinc-800 p-0 font-[family-name:var(--font-berkeley-mono)]"
@@ -93,7 +88,9 @@ export function CaseStudyDialog({ trigger, project }: CaseStudyDialogProps) {
                 <div className="space-y-12">
                   {/* Background */}
                   <section className="max-w-4xl mx-auto flex flex-col w-full">
-                    <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-1">Background</h3>
+                    <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-1">
+                      Background
+                    </h3>
                     <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                       {project.caseStudy.background}
                     </p>
@@ -101,7 +98,9 @@ export function CaseStudyDialog({ trigger, project }: CaseStudyDialogProps) {
 
                   {/* Solution */}
                   <section className="max-w-4xl mx-auto flex flex-col w-full">
-                    <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-1">Solution</h3>
+                    <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-1">
+                      Solution
+                    </h3>
                     <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                       {project.caseStudy.solution}
                     </p>
@@ -146,16 +145,25 @@ export function CaseStudyDialog({ trigger, project }: CaseStudyDialogProps) {
                   {/* Credits */}
                   {project.caseStudy.credits && (
                     <section className="max-w-4xl mx-auto flex flex-col w-full">
-                      <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">Credits</h3>
-                      <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-6">{project.caseStudy.credits.text}</p>
+                      <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+                        Credits
+                      </h3>
+                      <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-6">
+                        {project.caseStudy.credits.text}
+                      </p>
                       <div className="flex flex-wrap gap-8">
-                        {project.caseStudy.credits.people && project.caseStudy.credits.people.map((person, idx) => (
-                          <div key={idx} className="flex flex-col items-center">
-                            <img src={person.image} alt={person.name} className="w-4 h-4 rounded-full mb-2" />
-                            <div className="font-medium">{person.name}</div>
-                            <div className="text-xs text-zinc-500">{person.role}</div>
-                          </div>
-                        ))}
+                        {project.caseStudy.credits.people &&
+                          project.caseStudy.credits.people.map((person, idx) => (
+                            <div key={idx} className="flex flex-col items-center">
+                              <img
+                                src={person.image}
+                                alt={person.name}
+                                className="w-4 h-4 rounded-full mb-2"
+                              />
+                              <div className="font-medium">{person.name}</div>
+                              <div className="text-xs text-zinc-500">{person.role}</div>
+                            </div>
+                          ))}
                       </div>
                     </section>
                   )}
@@ -167,5 +175,5 @@ export function CaseStudyDialog({ trigger, project }: CaseStudyDialogProps) {
         </MorphingDialogContent>
       </MorphingDialogContainer>
     </MorphingDialog>
-  )
-} 
+  );
+}

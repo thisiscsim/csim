@@ -13,8 +13,7 @@ export type TextScrambleProps = {
   onScrambleComplete?: () => void;
 } & MotionProps;
 
-const defaultChars =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const defaultChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 export function TextScramble({
   children,
@@ -27,9 +26,7 @@ export function TextScramble({
   onScrambleComplete,
   ...props
 }: TextScrambleProps) {
-  const MotionComponent = motion.create(
-    Component as keyof JSX.IntrinsicElements
-  );
+  const MotionComponent = motion.create(Component as keyof JSX.IntrinsicElements);
   const [displayText, setDisplayText] = useState(children);
   const [isAnimating, setIsAnimating] = useState(false);
   const text = children;
@@ -54,8 +51,7 @@ export function TextScramble({
         if (progress * text.length > i) {
           scrambled += text[i];
         } else {
-          scrambled +=
-            characterSet[Math.floor(Math.random() * characterSet.length)];
+          scrambled += characterSet[Math.floor(Math.random() * characterSet.length)];
         }
       }
 

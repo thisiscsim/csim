@@ -36,11 +36,8 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function WritingPostPage({
-  params,
-  searchParams,
-}: PageProps) {
-  const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
+export default async function WritingPostPage({ params }: PageProps) {
+  const resolvedParams = await params;
   const post = await getBlogPostBySlug(resolvedParams.slug);
 
   if (!post) {
@@ -52,4 +49,4 @@ export default async function WritingPostPage({
       <BlogPostClient post={post} />
     </Suspense>
   );
-} 
+}
