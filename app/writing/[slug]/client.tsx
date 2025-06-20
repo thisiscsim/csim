@@ -5,10 +5,7 @@ import { TextMorph } from '@/components/ui/text-morph';
 import { ScrollProgress } from '@/components/ui/scroll-progress';
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import type { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { Components } from 'react-markdown';
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -133,62 +130,55 @@ export function BlogPostClient({ post }: { post: NotionBlogPost }) {
             <div>hello world</div>
             <div className="prose prose-gray dark:prose-invert max-w-none prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-h4:text-base prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-hr:border-zinc-200 dark:prose-hr:border-zinc-800 prose-ul:list-disc prose-ol:list-decimal">
               <ReactMarkdown
-                components={{
-                  h1: ({ node, ...props }: ReactMarkdownProps) => (
-                    <h1 className="text-2xl font-bold mt-8 mb-4" {...props} />
-                  ),
-                  h2: ({ node, ...props }: ReactMarkdownProps) => (
-                    <h2 className="text-xl font-bold mt-6 mb-3" {...props} />
-                  ),
-                  h3: ({ node, ...props }: ReactMarkdownProps) => (
-                    <h3 className="text-lg font-bold mt-4 mb-2" {...props} />
-                  ),
-                  h4: ({ node, ...props }: ReactMarkdownProps) => (
-                    <h4 className="text-base font-bold mt-3 mb-2" {...props} />
-                  ),
-                  p: ({ node, ...props }: ReactMarkdownProps) => <p className="my-4" {...props} />,
-                  ul: ({ node, ...props }: ReactMarkdownProps) => (
-                    <ul className="list-disc pl-6 my-4" {...props} />
-                  ),
-                  ol: ({ node, ...props }: ReactMarkdownProps) => (
-                    <ol className="list-decimal pl-6 my-4" {...props} />
-                  ),
-                  li: ({ node, ...props }: ReactMarkdownProps) => (
-                    <li className="my-1" {...props} />
-                  ),
-                  a: ({ node, ...props }: ReactMarkdownProps) => (
-                    <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />
-                  ),
-                  blockquote: ({ node, ...props }: ReactMarkdownProps) => (
-                    <blockquote
-                      className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic"
-                      {...props}
-                    />
-                  ),
-                  code: ({
-                    node,
-                    className,
-                    children,
-                    ...props
-                  }: {
-                    node?: any;
-                    className?: string;
-                    children?: React.ReactNode;
-                  } & ReactMarkdownProps) => {
-                    return !className ? (
-                      <code className="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5" {...props}>
-                        {children}
-                      </code>
-                    ) : (
-                      <code
-                        className="block bg-gray-100 dark:bg-gray-800 rounded p-4 my-4 overflow-x-auto"
+                components={
+                  {
+                    h1: ({ ...props }) => (
+                      <h1 className="text-2xl font-bold mt-8 mb-4" {...props} />
+                    ),
+                    h2: ({ ...props }) => <h2 className="text-xl font-bold mt-6 mb-3" {...props} />,
+                    h3: ({ ...props }) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />,
+                    h4: ({ ...props }) => (
+                      <h4 className="text-base font-bold mt-3 mb-2" {...props} />
+                    ),
+                    p: ({ ...props }) => <p className="my-4" {...props} />,
+                    ul: ({ ...props }) => <ul className="list-disc pl-6 my-4" {...props} />,
+                    ol: ({ ...props }) => <ol className="list-decimal pl-6 my-4" {...props} />,
+                    li: ({ ...props }) => <li className="my-1" {...props} />,
+                    a: ({ ...props }) => (
+                      <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />
+                    ),
+                    blockquote: ({ ...props }) => (
+                      <blockquote
+                        className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic"
                         {...props}
-                      >
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
+                      />
+                    ),
+                    code: ({
+                      className,
+                      children,
+                      ...props
+                    }: {
+                      className?: string;
+                      children?: React.ReactNode;
+                    } & React.HTMLAttributes<HTMLElement>) => {
+                      return !className ? (
+                        <code
+                          className="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5"
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      ) : (
+                        <code
+                          className="block bg-gray-100 dark:bg-gray-800 rounded p-4 my-4 overflow-x-auto"
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      );
+                    },
+                  } satisfies Components
+                }
               >
                 {post.content || ''}
               </ReactMarkdown>

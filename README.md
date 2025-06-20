@@ -6,10 +6,21 @@ For detailed setup instructions, refer to the [Installation Guide](./INSTALLATIO
 git clone https://github.com/thisiscsim/csim.git
 cd csim
 npm install
+
+# Option 1: Quick setup with 1Password (recommended)
+./scripts/quick-env-setup.sh
+# Then paste your env vars from 1Password and press Ctrl+D
+
+# Option 2: Manual setup
+cp env.example .env.local
+# Edit .env.local with your Notion API credentials
+
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+**Note:** You'll need to set up your Notion API key and database ID. See the [Installation Guide](./INSTALLATION.md) for details.
 
 ## Deployment
 
