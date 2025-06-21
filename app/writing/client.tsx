@@ -1,11 +1,11 @@
 'use client';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { AnimatedBackground } from '@/components/ui/animated-background';
-import { TextScramble } from '@/components/motion-primitives/text-scramble';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import type { NotionBlogPost } from '@/lib/notion/blog';
 import { useRouter } from 'next/navigation';
+import { Breadcrumbs, BreadcrumbItem } from '@heroui/breadcrumbs';
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -34,7 +34,6 @@ const TRANSITION_SECTION = {
 export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [infoTrigger, setInfoTrigger] = useState(false);
   const router = useRouter();
 
   // Generate filters dynamically from all unique categories
@@ -46,26 +45,25 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
     return ['All', ...Array.from(uniqueCategories).sort()];
   }, [posts]);
 
-  const filteredPosts = posts.filter((post) => {
-    if (selectedFilter === 'All') return true;
-    return post.categories?.includes(selectedFilter);
-  });
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      if (selectedFilter === 'All') return true;
+      return post.categories?.includes(selectedFilter);
+    });
+  }, [posts, selectedFilter]);
 
-  // Prefetch the next 3 posts when hovering over a post
-  useEffect(() => {
-    if (hoveredId) {
-      const currentIndex = filteredPosts.findIndex((post) => post.id === hoveredId);
-      if (currentIndex !== -1) {
-        // Prefetch next 3 posts
-        for (let i = 1; i <= 3; i++) {
-          const nextPost = filteredPosts[currentIndex + i];
-          if (nextPost) {
-            router.prefetch(`/writing/${nextPost.slug}`);
-          }
-        }
-      }
-    }
-  }, [hoveredId, filteredPosts, router]);
+  // Prefetch all visible posts on mount for better performance
+  const prefetchPosts = useCallback(() => {
+    // Prefetch the first 5 posts immediately
+    filteredPosts.slice(0, 5).forEach((post) => {
+      router.prefetch(`/writing/${post.slug}`);
+    });
+  }, [filteredPosts, router]);
+
+  // Run prefetch when filtered posts change
+  useMemo(() => {
+    prefetchPosts();
+  }, [prefetchPosts]);
 
   return (
     <>
@@ -80,15 +78,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
           {/* Info Block */}
           <div className="mb-0">
-            <TextScramble
-              as="h2"
-              className="mb-1 text-zinc-400"
-              trigger={infoTrigger}
-              onHoverStart={() => setInfoTrigger(true)}
-              onScrambleComplete={() => setInfoTrigger(false)}
-            >
-              Writing
-            </TextScramble>
+            <h2 className="mb-1 text-zinc-400">Writing</h2>
             <p>
               Infrequent thoughts on design, the future, current state of society, and life. These
               are in no way representative of my employer and are strictly my personal opinions. I
@@ -98,20 +88,31 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
         </motion.section>
 
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-          <div className="flex flex-row flex-wrap gap-1.5 mb-6">
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                className={`px-2 py-0.5 rounded-md text-sm font-mono border-none focus:outline-none transition-colors cursor-pointer ${
-                  selectedFilter === filter
-                    ? 'bg-zinc-200/70 dark:bg-zinc-700/70 text-zinc-900 font-medium dark:text-zinc-100'
-                    : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400'
-                }`}
-                onClick={() => setSelectedFilter(filter)}
-              >
-                {filter}
-              </button>
-            ))}
+          <div className="mb-6">
+            <Breadcrumbs
+              classNames={{
+                list: 'gap-1.5 flex-wrap',
+              }}
+              itemClasses={{
+                item: [
+                  'px-2 py-0.5 rounded-md text-sm font-mono transition-colors cursor-pointer',
+                  'bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400',
+                  'hover:bg-zinc-200/50 hover:dark:bg-zinc-800/50 hover:text-zinc-700 hover:dark:text-zinc-300',
+                  'data-[current=true]:bg-zinc-200/70 data-[current=true]:dark:bg-zinc-700/70',
+                  'data-[current=true]:text-zinc-900 data-[current=true]:font-medium data-[current=true]:dark:text-zinc-100',
+                  'data-[current=true]:hover:bg-zinc-200/70 data-[current=true]:hover:dark:bg-zinc-700/70',
+                ],
+                separator: 'hidden',
+              }}
+              size="sm"
+              onAction={(key) => setSelectedFilter(key as string)}
+            >
+              {filters.map((filter) => (
+                <BreadcrumbItem key={filter} isCurrent={selectedFilter === filter}>
+                  {filter}
+                </BreadcrumbItem>
+              ))}
+            </Breadcrumbs>
           </div>
           <div className="flex flex-col space-y-0">
             <div className="relative">
@@ -128,15 +129,12 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
                 {filteredPosts.map((post) => (
                   <Link
                     key={post.id}
-                    className={`-mx-3 rounded-lg px-3 py-4 block ${
+                    className={`-mx-3 rounded-lg px-3 py-4 block transition-opacity duration-300 ${
                       hoveredId && hoveredId !== post.id ? 'opacity-50' : ''
                     }`}
                     href={`/writing/${post.slug}`}
                     data-id={post.id}
                     prefetch={true}
-                    style={{
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }}
                   >
                     <div className="flex flex-row items-center gap-2">
                       <p className="text-zinc-500 dark:text-zinc-400 min-w-[120px]">

@@ -1,0 +1,21 @@
+{
+  "posts": [
+    {
+      "id": "sample-id-1",
+      "title": "Sample Blog Post 1",
+      "slug": "sample-blog-post-1",
+      "date": "2024-01-01",
+      "categories": ["Design", "Development"],
+      "status": "published"
+    },
+    {
+      "id": "sample-id-2",
+      "title": "Sample Blog Post 2",
+      "slug": "sample-blog-post-2",
+      "date": "2024-01-02",
+      "categories": ["Thoughts"],
+      "status": "published"
+    }
+  ],
+  "generatedAt": "2024-01-01T00:00:00.000Z"
+} 

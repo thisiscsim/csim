@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { XIcon } from 'lucide-react';
 import useClickOutside from '@/hooks/useClickOutside';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 export type MorphingDialogContextType = {
   isOpen: boolean;
@@ -190,51 +191,8 @@ function MorphingDialogContainer({ children }: MorphingDialogContainerProps) {
   const { isOpen, uniqueId, setIsOpen } = useMorphingDialog();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      // Prevent scrolling with overflow hidden and touch-action
-      document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
-      document.documentElement.style.overflow = 'hidden';
-
-      // Prevent scroll only when it's outside the dialog
-      const preventTouchScroll = (e: TouchEvent) => {
-        const target = e.target as Element;
-        const dialogContent = document.querySelector('[role="dialog"]');
-
-        if (dialogContent && !dialogContent.contains(target)) {
-          e.preventDefault();
-        }
-      };
-
-      const preventWheelScroll = (e: WheelEvent) => {
-        const target = e.target as Element;
-        const dialogContent = document.querySelector('[role="dialog"]');
-
-        if (dialogContent && !dialogContent.contains(target)) {
-          e.preventDefault();
-        }
-      };
-
-      document.addEventListener('touchmove', preventTouchScroll, { passive: false });
-      document.addEventListener('wheel', preventWheelScroll, { passive: false });
-
-      return () => {
-        document.removeEventListener('touchmove', preventTouchScroll);
-        document.removeEventListener('wheel', preventWheelScroll);
-      };
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-      document.documentElement.style.overflow = '';
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-      document.documentElement.style.overflow = '';
-    };
-  }, [isOpen]);
+  // Use the scroll lock hook to prevent body scrolling
+  useScrollLock(isOpen);
 
   useEffect(() => {
     setMounted(true);
@@ -249,14 +207,16 @@ function MorphingDialogContainer({ children }: MorphingDialogContainerProps) {
         <>
           <motion.div
             key={`backdrop-${uniqueId}`}
-            className="fixed inset-0 h-full w-full bg-white/40 backdrop-blur-sm dark:bg-black/40"
+            className="fixed inset-0 z-40 h-full w-full bg-white/40 backdrop-blur-sm dark:bg-black/40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
           />
-          <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-            {children}
+          <div className="fixed inset-0 z-50 pointer-events-none">
+            <div className="flex min-h-full items-center justify-center p-4 pointer-events-auto">
+              {children}
+            </div>
           </div>
         </>
       )}

@@ -1,6 +1,13 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
+// Add global type declaration
+declare global {
+  interface Window {
+    lenis?: Lenis;
+  }
+}
+
 export const useLenis = () => {
   useEffect(() => {
     const lenis = new Lenis({
@@ -8,6 +15,9 @@ export const useLenis = () => {
       wheelMultiplier: 1,
       smoothWheel: true,
     });
+
+    // Store lenis instance globally
+    window.lenis = lenis;
 
     function raf(time: number) {
       lenis.raf(time);
@@ -18,6 +28,7 @@ export const useLenis = () => {
 
     return () => {
       lenis.destroy();
+      window.lenis = undefined;
     };
   }, []);
 };

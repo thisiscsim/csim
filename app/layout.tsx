@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Geist } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
-import { Header } from './header';
+import { HeaderWrapper } from './header-wrapper';
 import { Footer } from './footer';
 import { ThemeProvider } from 'next-themes';
 import { LenisProvider } from '@/components/LenisProvider';
@@ -32,12 +32,45 @@ export const metadata: Metadata = {
 const geist = Geist({
   variable: '--font-geist',
   subsets: ['latin'],
+  display: 'swap',
+  preload: true,
 });
 
 const berkeleyMono = localFont({
   src: '../public/fonts/Berkeley Mono Variable.woff2',
   variable: '--font-berkeley-mono',
   display: 'swap',
+  preload: true,
+  fallback: ['monospace'],
+});
+
+const recklessNeue = localFont({
+  src: [
+    {
+      path: '../public/fonts/RecklessNeue-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/RecklessNeue-RegularItalic.woff2',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: '../public/fonts/RecklessNeue-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/RecklessNeue-MediumItalic.woff2',
+      weight: '500',
+      style: 'italic',
+    },
+  ],
+  variable: '--font-reckless-neue',
+  display: 'swap',
+  preload: true,
+  fallback: ['sans-serif'],
 });
 
 export default function RootLayout({
@@ -47,8 +80,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/RecklessNeue-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body
-        className={`${geist.variable} ${berkeleyMono.variable} bg-white tracking-tight antialiased dark:bg-zinc-950`}
+        className={`${geist.variable} ${berkeleyMono.variable} ${recklessNeue.variable} bg-white antialiased dark:bg-zinc-950`}
       >
         <ThemeProvider
           enableSystem={true}
@@ -57,10 +101,10 @@ export default function RootLayout({
           defaultTheme="system"
         >
           <LenisProvider>
-            <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-berkeley-mono)]">
+            <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-reckless-neue)]">
               <div className="relative mx-auto w-full max-w-screen-lg flex-1 px-4 pt-20">
                 <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] dark:bg-zinc-950" />
-                <Header />
+                <HeaderWrapper />
                 {children}
                 <Footer />
               </div>

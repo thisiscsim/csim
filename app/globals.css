@@ -5,22 +5,126 @@
 :root {
   --scrollbar-thumb: rgb(212 212 216); /* zinc-300 */
   --scrollbar-thumb-hover: rgb(161 161 170); /* zinc-400 */
+
+  /* Semantic color tokens - Light mode */
+  --text-primary: 40 42 48; /* #282A30 */
+  --text-primary-inverse: 247 248 248; /* #F7F8F8 */
+  --text-secondary: 111 110 119; /* #6F6E77 */
+  --text-tertiary: 143 143 143; /* #8F8F8F */
+  --text-muted: 161 161 170; /* zinc-400 */
+  --bg-primary: 255 255 255; /* #FFFFFF */
+  --bg-primary-inverse: 8 9 10; /* #08090A */
+  --bg-secondary: 249 248 249; /* #F9F8F9 */
+  --bg-tertiary: 244 242 244; /* #F4F2F4 */
+  --border-primary: 233 232 234; /* #E9E8EA */
+  --border-secondary: 228 228 231; /* zinc-200 */
+  --border-muted: 244 244 245; /* zinc-100 */
 }
 
 /* Dark mode variables */
 .dark {
   --scrollbar-thumb: rgb(39 39 42); /* zinc-800 */
   --scrollbar-thumb-hover: rgb(63 63 70); /* zinc-700 */
+
+  /* Semantic color tokens - Dark mode */
+  --text-primary: 247 248 248; /* #F7F8F8 */
+  --text-primary-inverse: 40 42 48; /* #282A30 */
+  --text-secondary: 138 143 152; /* #8A8F98 */
+  --text-tertiary: 98 102 109; /* #62666D */
+  --text-muted: 113 113 122; /* zinc-500 */
+  --bg-primary: 8 9 10; /* #08090A */
+  --bg-primary-inverse: 255 255 255; /* #FFFFFF */
+  --bg-secondary: 28 28 31; /* #1C1C1F */
+  --bg-tertiary: 35 35 38; /* #232326 */
+  --border-primary: 35 37 42; /* #23252A */
+  --border-secondary: 82 82 91; /* zinc-600 */
+  --border-muted: 113 113 122; /* zinc-500 */
 }
 
 /* Base styles */
 @layer base {
   html {
-    font-size: 13px;
-    line-height: 22px;
-    letter-spacing: -0.3px;
+    font-size: 14px;
+    line-height: 21px;
   }
-  
+
+  /* Semantic color utilities */
+  .text-primary {
+    color: rgb(var(--text-primary));
+  }
+
+  .text-primary-inverse {
+    color: rgb(var(--text-primary-inverse));
+  }
+
+  .text-secondary {
+    color: rgb(var(--text-secondary));
+  }
+
+  .text-tertiary {
+    color: rgb(var(--text-tertiary));
+  }
+
+  .text-muted {
+    color: rgb(var(--text-muted));
+  }
+
+  .bg-primary {
+    background-color: rgb(var(--bg-primary));
+  }
+
+  .bg-primary-inverse {
+    background-color: rgb(var(--bg-primary-inverse));
+  }
+
+  .bg-secondary {
+    background-color: rgb(var(--bg-secondary));
+  }
+
+  .bg-tertiary {
+    background-color: rgb(var(--bg-tertiary));
+  }
+
+  .border-primary {
+    border-color: rgb(var(--border-primary));
+  }
+
+  .border-secondary {
+    border-color: rgb(var(--border-secondary));
+  }
+
+  .border-muted {
+    border-color: rgb(var(--border-muted));
+  }
+
+  /* Use Berkeley Mono for small text (12px or smaller) */
+  .text-xs,
+  .text-sm,
+  .text-[10px],
+  .text-[11px],
+  .text-[12px],
+  [class*='text-xs'],
+  [class*='text-sm'],
+  [class*='text-[10px]'],
+  [class*='text-[11px]'],
+  [class*='text-[12px]'] {
+    font-family: var(--font-berkeley-mono), monospace !important;
+  }
+
+  /* Also apply Berkeley Mono to specific semantic elements */
+  time,
+  .metadata,
+  .caption,
+  .small-text {
+    font-family: var(--font-berkeley-mono), monospace;
+  }
+
+  /* Override parent font for text-xs and text-sm */
+  .font-\[family-name\:var\(--font-reckless-neue\)\] .text-xs,
+  .font-\[family-name\:var\(--font-reckless-neue\)\] .text-sm {
+    font-family: var(--font-berkeley-mono), monospace !important;
+  }
+
   *,
   ::after,
   ::before,
@@ -112,5 +216,21 @@ html:hover::-webkit-scrollbar-thumb:hover {
   --sh-comment: #565f89;
   --sh-jsxliterals: #7aa2f7;
   --sh-property: #73daca;
+  --sh-entity: #e0af68;
+}
+
+.shiki span {
+  color: var(--sh-foreground);
+  --sh-identifier: #d8dee9;
+  --sh-sign: #81a1c1;
+  --sh-property: #5e81ac;
+  --sh-string: #a3be8c;
+  --sh-string-escape: #d08770;
+  --sh-class: #8fbcbb;
+  --sh-constant: #d8dee9;
+  --sh-keyword: #81a1c1;
+  --sh-comment: #616e88;
+  --sh-jsxliterals: #5e81ac;
+  --sh-function: #88c0d0;
   --sh-entity: #e0af68;
 }

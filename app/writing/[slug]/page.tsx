@@ -6,10 +6,10 @@ import { Suspense } from 'react';
 // Revalidate every hour
 export const revalidate = 3600;
 
-// Generate static params for the most recent 5 posts
+// Generate static params for the most recent 10 posts (increased from 5)
 export async function generateStaticParams() {
   const posts = await getPublishedBlogPosts();
-  return posts.slice(0, 5).map((post) => ({
+  return posts.slice(0, 10).map((post) => ({
     slug: post.slug,
   }));
 }
