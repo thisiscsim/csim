@@ -2,7 +2,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { AnimatedBackground } from '@/components/ui/animated-background';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { NotionBlogPost } from '@/lib/notion/blog';
 import { useRouter } from 'next/navigation';
 import { Breadcrumbs, BreadcrumbItem } from '@heroui/breadcrumbs';
@@ -54,14 +54,17 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
 
   // Prefetch all visible posts on mount for better performance
   const prefetchPosts = useCallback(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     // Prefetch the first 5 posts immediately
     filteredPosts.slice(0, 5).forEach((post) => {
       router.prefetch(`/writing/${post.slug}`);
     });
   }, [filteredPosts, router]);
 
-  // Run prefetch when filtered posts change
-  useMemo(() => {
+  // Run prefetch when filtered posts change - only on client side
+  useEffect(() => {
     prefetchPosts();
   }, [prefetchPosts]);
 
