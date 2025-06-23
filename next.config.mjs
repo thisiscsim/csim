@@ -10,6 +10,8 @@ const nextConfig = {
   experimental: {
     // Optimize package imports
     optimizePackageImports: ['@heroui/react', 'motion'],
+    // Disable scroll restoration to handle it manually with Lenis
+    scrollRestoration: false,
   },
 };
 

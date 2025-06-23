@@ -2,7 +2,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { AnimatedBackground } from '@/components/ui/animated-background';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { NotionBlogPost } from '@/lib/notion/blog';
 import { useRouter } from 'next/navigation';
 import { Breadcrumbs, BreadcrumbItem } from '@heroui/breadcrumbs';
@@ -60,8 +60,8 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
     });
   }, [filteredPosts, router]);
 
-  // Run prefetch when filtered posts change
-  useMemo(() => {
+  // Run prefetch when filtered posts change (only on client side)
+  useEffect(() => {
     prefetchPosts();
   }, [prefetchPosts]);
 

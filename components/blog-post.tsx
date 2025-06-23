@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import type { NotionBlogPost } from '@/lib/notion/blog';
 import { Suspense, lazy } from 'react';
 import { Breadcrumbs, BreadcrumbItem } from '@heroui/breadcrumbs';
+import { useScrollToTop } from '@/hooks/useLenis';
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -42,6 +43,9 @@ function MarkdownSkeleton() {
 }
 
 export function BlogPostClient({ post }: { post: NotionBlogPost }) {
+  // Ensure page starts at top
+  useScrollToTop();
+
   return (
     <motion.main
       className="space-y-8"

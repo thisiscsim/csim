@@ -32,3 +32,19 @@ export const useLenis = () => {
     };
   }, []);
 };
+
+// Hook to scroll to top on route change
+export const useScrollToTop = () => {
+  useEffect(() => {
+    // Scroll to top when component mounts
+    const timer = setTimeout(() => {
+      if (window.lenis) {
+        window.lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, []);
+};
