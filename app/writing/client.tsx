@@ -54,13 +54,16 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
 
   // Prefetch all visible posts on mount for better performance
   const prefetchPosts = useCallback(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     // Prefetch the first 5 posts immediately
     filteredPosts.slice(0, 5).forEach((post) => {
       router.prefetch(`/writing/${post.slug}`);
     });
   }, [filteredPosts, router]);
 
-  // Run prefetch when filtered posts change (only on client side)
+  // Run prefetch when filtered posts change - only on client side
   useEffect(() => {
     prefetchPosts();
   }, [prefetchPosts]);
