@@ -1,75 +1,65 @@
 'use client';
-import { AnimatedBackground } from '@/components/ui/animated-background';
-import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-
-const THEMES_OPTIONS = [
-  {
-    label: 'Light',
-    id: 'light',
-    icon: <SunIcon className="h-4 w-4" />,
-  },
-  {
-    label: 'Dark',
-    id: 'dark',
-    icon: <MoonIcon className="h-4 w-4" />,
-  },
-  {
-    label: 'System',
-    id: 'system',
-    icon: <MonitorIcon className="h-4 w-4" />,
-  },
-];
+import Image from 'next/image';
 
 function ThemeSwitch() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    return null;
+    return <div className="h-9 w-9 rounded-full bg-zinc-100 dark:bg-zinc-800" />;
   }
 
+  const toggleTheme = () => {
+    if (theme === 'system') {
+      // If on system, switch to the opposite of current resolved theme
+      setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    } else if (theme === 'dark') {
+      setTheme('light');
+    } else {
+      setTheme('dark');
+    }
+  };
+
+  // Show the rotation based on resolved theme
+  const isDark = resolvedTheme === 'dark';
+
   return (
-    <AnimatedBackground
-      className="pointer-events-none rounded-lg bg-zinc-100 dark:bg-zinc-800"
-      defaultValue={theme}
-      transition={{
-        type: 'spring',
-        bounce: 0,
-        duration: 0.2,
-      }}
-      enableHover={false}
-      onValueChange={(id) => {
-        setTheme(id as string);
-      }}
+    <button
+      onClick={toggleTheme}
+      className="group relative h-6 w-6 rounded-full transition-all duration-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+      type="button"
+      aria-label={`Switch theme (currently ${isDark ? 'dark' : 'light'})`}
     >
-      {THEMES_OPTIONS.map((theme) => {
-        return (
-          <button
-            key={theme.id}
-            className="inline-flex h-7 w-7 items-center justify-center text-zinc-500 transition-colors duration-100 focus-visible:outline-2 data-[checked=true]:text-zinc-950 dark:text-zinc-400 dark:data-[checked=true]:text-zinc-50"
-            type="button"
-            aria-label={`Switch to ${theme.label} theme`}
-            data-id={theme.id}
-          >
-            {theme.icon}
-          </button>
-        );
-      })}
-    </AnimatedBackground>
+      <div className="relative h-full w-full flex items-center justify-center">
+        <div
+          className={`transition-all duration-500 ease-in-out ${
+            isDark ? 'rotate-[225deg]' : 'rotate-45'
+          }`}
+        >
+          <Image
+            src="/half-circle.svg"
+            alt="Theme toggle"
+            width={16}
+            height={16}
+            className="dark:invert"
+          />
+        </div>
+      </div>
+    </button>
   );
 }
 
 export function Footer() {
   return (
-    <footer className="mt-24 px-0 py-4">
+    <footer className="mt-16 px-0 py-6">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-zinc-500">Built with Cursor, Vercel & Next.js</p>
+        <p className="text-sm text-zinc-500">Made with care and gusto from Oakland, CA.</p>
         <div className="text-xs text-zinc-400">
           <ThemeSwitch />
         </div>
