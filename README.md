@@ -1,7 +1,5 @@
 ## Getting Started
 
-For detailed setup instructions, refer to the [Installation Guide](./INSTALLATION.md).
-
 ```bash
 git clone https://github.com/thisiscsim/csim.git
 cd csim
@@ -20,7 +18,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-**Note:** You'll need to set up your Notion API key and database ID. See the [Installation Guide](./INSTALLATION.md) for details.
+**Note:** You'll need to set up your Notion API key and database ID.
 
 ## Deployment
 
