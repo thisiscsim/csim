@@ -84,7 +84,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
-        className={`${geist.variable} ${recklessNeue.variable} bg-white antialiased dark:bg-zinc-950`}
+        className={`${geist.variable} ${recklessNeue.variable} bg-white antialiased dark:bg-[rgb(17,17,17)]`}
       >
         <ThemeProvider
           enableSystem={true}
@@ -95,7 +95,7 @@ export default function RootLayout({
           <LenisProvider>
             <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-geist)]">
               <div className="relative mx-auto w-full max-w-screen-lg flex-1 px-4 pt-20">
-                <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] dark:bg-zinc-950" />
+                <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] dark:bg-[rgb(17,17,17)]" />
                 <HeaderWrapper />
                 <div className="flex-1">{children}</div>
               </div>

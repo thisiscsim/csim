@@ -13,7 +13,7 @@
   --text-tertiary: 143 143 143; /* #8F8F8F */
   --text-muted: 161 161 170; /* zinc-400 */
   --bg-primary: 255 255 255; /* #FFFFFF */
-  --bg-primary-inverse: 8 9 10; /* #08090A */
+  --bg-primary-inverse: 17 17 17; /* #111111 */
   --bg-secondary: 249 248 249; /* #F9F8F9 */
   --bg-tertiary: 244 242 244; /* #F4F2F4 */
   --border-primary: 233 232 234; /* #E9E8EA */
@@ -29,10 +29,10 @@
   /* Semantic color tokens - Dark mode */
   --text-primary: 247 248 248; /* #F7F8F8 */
   --text-primary-inverse: 40 42 48; /* #282A30 */
-  --text-secondary: 138 143 152; /* #8A8F98 */
+  --text-secondary: 153 153 153; /* #999999 */
   --text-tertiary: 98 102 109; /* #62666D */
   --text-muted: 113 113 122; /* zinc-500 */
-  --bg-primary: 8 9 10; /* #08090A */
+  --bg-primary: 17 17 17; /* #111111 */
   --bg-primary-inverse: 255 255 255; /* #FFFFFF */
   --bg-secondary: 28 28 31; /* #1C1C1F */
   --bg-tertiary: 35 35 38; /* #232326 */

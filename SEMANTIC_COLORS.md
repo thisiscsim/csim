@@ -8,14 +8,14 @@ This project now uses semantic color classes instead of specific color values. T
 
 - `text-primary` - Main text color (#282A30 in light mode, #F7F8F8 in dark mode)
 - `text-primary-inverse` - Inverse primary text (#F7F8F8 in light mode, #282A30 in dark mode)
-- `text-secondary` - Secondary text color (#6F6E77 in light mode, #8A8F98 in dark mode)
+- `text-secondary` - Secondary text color (#6F6E77 in light mode, #999999 in dark mode)
 - `text-tertiary` - Tertiary text color (#8F8F8F in light mode, #62666D in dark mode)
 - `text-muted` - Muted text color (zinc-400 in light mode, zinc-500 in dark mode)
 
 ### Background Colors
 
-- `bg-primary` - Main background color (#FFFFFF in light mode, #08090A in dark mode)
-- `bg-primary-inverse` - Inverse primary background (#08090A in light mode, #FFFFFF in dark mode)
+- `bg-primary` - Main background color (#FFFFFF in light mode, #111111 in dark mode)
+- `bg-primary-inverse` - Inverse primary background (#111111 in light mode, #FFFFFF in dark mode)
 - `bg-secondary` - Secondary background color (#F9F8F9 in light mode, #1C1C1F in dark mode)
 - `bg-tertiary` - Tertiary background color (#F4F2F4 in light mode, #232326 in dark mode)
 

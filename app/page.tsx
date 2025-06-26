@@ -61,15 +61,14 @@ export default function HomePage() {
       <motion.section className="mb-24" variants={VARIANTS_SECTION}>
         <div className="flex flex-row gap-8 items-start relative mb-20">
           <div className="w-77 flex-shrink-0">
-            <h1 className="text-xl mb-0.5">Howdy! I&apos;m Chris</h1>
-            <h2 className="font-base text-secondary">Software Designer</h2>
+            <h1 className="text-xl font-medium mb-0.5">Howdy! I&apos;m Chris</h1>
+            <p className="font-base text-secondary">Software Designer</p>
           </div>
           <div className="flex-1">
             <p className="text-secondary">
-              He thrives in complex, ambiguous problem spaces focused around interactive media,
-              digital tooling, and multimodal interaction. He studied Human-Computer Interaction at
-              the University of Washington. Previously, he&apos;s worked with teams at Flexport,
-              Uber, and Arc. Here are some of his featured work.
+              Currently a member of the design staff at Harvey, building the AI platform for legal
+              professionals. Previously, he&apos;s worked with teams at Flexport, Uber, and Arc. He
+              studied Human-Computer Interaction at the University of Washington.
             </p>
           </div>
         </div>
@@ -115,7 +114,7 @@ export default function HomePage() {
                 <span className="block text-sm text-secondary">
                   {group.start} - {group.end}
                 </span>
-                <span className="block text-md text-primary">{group.company}</span>
+                <h2 className="block text-lg font-medium text-primary">{group.company}</h2>
               </div>
               <div className="flex-1 flex flex-col gap-10">
                 <p className="mb-4 text-base text-secondary">{group.description}</p>
@@ -135,9 +134,9 @@ export default function HomePage() {
                           className="aspect-video w-full rounded-lg"
                         />
                         <div className="mt-4">
-                          <h3 className="font-base group relative inline-block text-primary transition-colors duration-200 hover:text-secondary">
+                          <h2 className="font-base font-medium group relative inline-block text-primary transition-colors duration-200 hover:text-secondary">
                             {project.name}
-                          </h3>
+                          </h2>
                           <p className="font-base text-secondary">{project.description}</p>
                         </div>
                       </Link>
