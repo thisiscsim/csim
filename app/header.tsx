@@ -27,7 +27,7 @@ export function Header() {
   // Update active tab when pathname changes
   useEffect(() => {
     setActiveTab(getActiveTab());
-  }, [pathname]);
+  }, [pathname, getActiveTab]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {

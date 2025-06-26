@@ -97,7 +97,7 @@
     border-color: rgb(var(--border-muted));
   }
 
-  /* Use Berkeley Mono for small text (12px or smaller) */
+  /* Use Geist for small text (12px or smaller) */
   .text-xs,
   .text-sm,
   .text-[10px],
@@ -108,21 +108,31 @@
   [class*='text-[10px]'],
   [class*='text-[11px]'],
   [class*='text-[12px]'] {
-    font-family: var(--font-berkeley-mono), monospace !important;
+    font-family: var(--font-geist), sans-serif !important;
   }
 
-  /* Also apply Berkeley Mono to specific semantic elements */
+  /* Also apply Geist to specific semantic elements */
   time,
   .metadata,
   .caption,
   .small-text {
-    font-family: var(--font-berkeley-mono), monospace;
+    font-family: var(--font-geist), sans-serif;
   }
 
   /* Override parent font for text-xs and text-sm */
   .font-\[family-name\:var\(--font-reckless-neue\)\] .text-xs,
   .font-\[family-name\:var\(--font-reckless-neue\)\] .text-sm {
-    font-family: var(--font-berkeley-mono), monospace !important;
+    font-family: var(--font-geist), sans-serif !important;
+  }
+
+  /* Headers use Reckless Neue font */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-reckless-neue), sans-serif;
   }
 
   *,

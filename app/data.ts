@@ -38,29 +38,6 @@ export type ProjectGroup = {
   projects: Project[];
 };
 
-type WorkExperience = {
-  company: string;
-  title: string;
-  start: string;
-  end: string;
-  link: string;
-  id: string;
-};
-
-type BlogPost = {
-  title: string;
-  description: string;
-  link: string;
-  uid: string;
-  date: string;
-  categories: string[];
-};
-
-type SocialLink = {
-  label: string;
-  link: string;
-};
-
 export const PROJECT_GROUPS: ProjectGroup[] = [
   {
     company: 'Harvey',
@@ -80,7 +57,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         id: 'harvey-review-table',
         caseStudy: {
           background:
-            'Empowering financial management is central to Arc’s vision as a comprehensive banking platform. With limited functionalities in our payment offerings, our customers have lacked incentives to increase deposits and manage spend directly through our platform. This has led directly to slower growth in Asset Under Management (AUM) and increased customer churn to our competitors offering more complete solutions.',
+            "Empowering financial management is central to Arc's vision as a comprehensive banking platform. With limited functionalities in our payment offerings, our customers have lacked incentives to increase deposits and manage spend directly through our platform. This has led directly to slower growth in Asset Under Management (AUM) and increased customer churn to our competitors offering more complete solutions.",
           solution:
             'We developed Review Tables, a powerful interface that allows users to view and compare data across multiple documents in a structured table format. The solution enables users to extract, organize, and analyze information from various sources simultaneously.',
           impact: [
@@ -280,93 +257,4 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
   },
 ];
 
-export const BLOG_POSTS: BlogPost[] = [
-  {
-    title: 'How I built this site',
-    description: 'How AI is changing the way we design',
-    link: '/blog/exploring-the-intersection-of-design-ai-and-design-engineering',
-    uid: 'blog-1',
-    date: '2025.3.14',
-    categories: ['Design', 'Code', 'Tech'],
-  },
-  {
-    title: 'Reclaiming my health',
-    description: 'A deep dive into my decision to leave my job and start my own company',
-    link: '/blog/exploring-the-intersection-of-design-ai-and-design-engineering',
-    uid: 'blog-2',
-    date: '2025.3.14',
-    categories: ['Personal'],
-  },
-  {
-    title: 'How I prototype and handoff my designs with v0',
-    description: 'A look back at my first year of freelancing and what I learned',
-    link: '/blog/exploring-the-intersection-of-design-ai-and-design-engineering',
-    uid: 'blog-3',
-    date: '2025.3.14',
-    categories: ['Design', 'Tech', 'Interaction'],
-  },
-  {
-    title: 'How to Export Metadata from MDX for Next.js SEO',
-    description: 'A guide on exporting metadata from MDX files to leverage Next.js SEO features.',
-    link: '/blog/example-mdx-metadata',
-    uid: 'blog-4',
-    date: '2025-05-26',
-    categories: ['Tech'],
-  },
-];
-
-export const SOCIAL_LINKS: SocialLink[] = [
-  {
-    label: 'Github',
-    link: 'https://github.com/ibelick',
-  },
-  {
-    label: 'LinkedIn',
-    link: 'https://www.linkedin.com/in/ibelick',
-  },
-  {
-    label: 'Instagram',
-    link: 'https://www.instagram.com/ibelick',
-  },
-  {
-    label: 'Resume',
-    link: 'https://www.instagram.com/ibelick',
-  },
-];
-
 export const EMAIL = 'your@email.com';
-
-export const WORK_EXPERIENCE: WorkExperience[] = [
-  {
-    company: 'Harvey',
-    title: 'Design Lead',
-    start: '2024',
-    end: 'Current',
-    link: 'https://harvey.com',
-    id: 'harvey',
-  },
-  {
-    company: 'Arc',
-    title: 'Product Designer',
-    start: '2023',
-    end: '2024',
-    link: 'https://arc.com',
-    id: 'arc',
-  },
-  {
-    company: 'Flexport',
-    title: 'Product Designer',
-    start: '2022',
-    end: '2023',
-    link: 'https://flexport.com',
-    id: 'flexport',
-  },
-  {
-    company: 'Uber',
-    title: 'Product Designer',
-    start: '2022',
-    end: '2022',
-    link: 'https://uber.com',
-    id: 'uber',
-  },
-];
