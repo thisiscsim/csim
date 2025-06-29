@@ -1,9 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath, revalidateTag } from 'next/cache';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { Client } from '@notionhq/client';
+import fs from 'fs/promises';
+import path from 'path';
 
-const execAsync = promisify(exec);
+// Generate blog data from Notion
+async function generateBlogData() {
+  const notion = new Client({
+    auth: process.env.NOTION_API_KEY,
+  });
+
+  const databaseId = process.env.NOTION_DATABASE_ID;
+
+  if (!process.env.NOTION_API_KEY || !databaseId) {
+    throw new Error('Missing NOTION_API_KEY or NOTION_DATABASE_ID environment variables');
+  }
+
+  console.log('Fetching blog posts from Notion...');
+
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    filter: {
+      property: 'Status',
+      status: {
+        equals: 'Published',
+      },
+    },
+    sorts: [
+      {
+        property: 'Date',
+        direction: 'descending',
+      },
+    ],
+  });
+
+  const posts = response.results.map((page) => {
+    // @ts-expect-error - Notion API types are complex
+    const properties = page.properties;
+    const title = properties.Title.title?.[0]?.plain_text || '';
+    const slug = properties.Slug.rich_text?.[0]?.plain_text || '';
+    const date = properties.Date.date?.start || '';
+    // @ts-expect-error - Notion API types are complex
+    const categories = properties.Categories.multi_select?.map((cat) => cat.name) || [];
+    const status =
+      properties.Status.status?.name?.toLowerCase() === 'published' ? 'published' : 'draft';
+
+    return {
+      id: page.id,
+      title,
+      slug,
+      date,
+      categories,
+      status,
+    };
+  });
+
+  // Write to public directory for static access
+  const outputPath = path.join(process.cwd(), 'public', 'blog-data.json');
+  await fs.writeFile(
+    outputPath,
+    JSON.stringify({ posts, generatedAt: new Date().toISOString() }, null, 2)
+  );
+
+  console.log(`Generated blog data with ${posts.length} posts`);
+  return posts;
+}
 
 // Verify webhook authenticity
 function verifyWebhook(request: NextRequest): boolean {
@@ -67,7 +128,7 @@ export async function POST(request: NextRequest) {
     // Regenerate the blog data JSON file
     try {
       console.log('Regenerating blog data...');
-      await execAsync('node scripts/generate-blog-data.mjs');
+      await generateBlogData();
       console.log('Blog data regenerated successfully');
     } catch (error) {
       console.error('Failed to regenerate blog data:', error);
