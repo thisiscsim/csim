@@ -23,6 +23,9 @@ export async function POST(request: NextRequest) {
     // Parse the webhook payload
     const body = await request.json().catch(() => ({}));
 
+    // Log the entire body for debugging
+    console.log('Full webhook payload:', JSON.stringify(body, null, 2));
+
     // Check if this is a verification request
     if (body.verification_token) {
       console.log('\n🔐 NOTION WEBHOOK VERIFICATION TOKEN:');
