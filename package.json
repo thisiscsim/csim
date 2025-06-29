@@ -11,7 +11,8 @@
     "prepare": "husky",
     "setup:webhook": "node scripts/setup-notion-webhook.mjs",
     "generate:blog": "node scripts/generate-blog-data.mjs",
-    "test:webhook": "node scripts/test-webhook.mjs"
+    "test:webhook": "node scripts/test-webhook.mjs",
+    "update:webhook-domain": "node scripts/update-webhook-domain.mjs"
   },
   "dependencies": {
     "@heroui/breadcrumbs": "^2.2.18",

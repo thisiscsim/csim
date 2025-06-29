@@ -20,13 +20,45 @@ function verifyWebhook(request: NextRequest): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify the webhook
+    // Parse the webhook payload
+    const body = await request.json().catch(() => ({}));
+
+    // Check if this is a verification request
+    if (body.verification_token) {
+      console.log('\n🔐 NOTION WEBHOOK VERIFICATION TOKEN:');
+      console.log('=====================================');
+      console.log(body.verification_token);
+      console.log('=====================================');
+      console.log('Copy the token above and paste it in Notion to verify your webhook.\n');
+
+      // Store token in helper endpoint for easy retrieval
+      try {
+        const baseUrl = process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : 'http://localhost:3000';
+
+        await fetch(`${baseUrl}/api/webhook/notion/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ verification_token: body.verification_token }),
+        });
+      } catch (error) {
+        console.error('Failed to store verification token:', error);
+      }
+
+      // Return success response for verification
+      return NextResponse.json({
+        success: true,
+        message: 'Verification token received',
+        verification_token: body.verification_token,
+      });
+    }
+
+    // For actual webhook events, verify the authorization
     if (!verifyWebhook(request)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Parse the webhook payload
-    const body = await request.json().catch(() => ({}));
     console.log('Notion webhook received:', JSON.stringify(body, null, 2));
 
     // Regenerate the blog data JSON file
