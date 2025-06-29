@@ -56,15 +56,16 @@ async function regenerateBlogData() {
     ],
   });
 
-  const posts = response.results.map((page: Record<string, any>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const posts = response.results.map((page: any) => {
     const properties = page.properties;
-    const title = properties.Title.title?.[0]?.plain_text || '';
-    const slug = properties.Slug.rich_text?.[0]?.plain_text || '';
-    const date = properties.Date.date?.start || '';
+    const title = properties.Title?.title?.[0]?.plain_text || '';
+    const slug = properties.Slug?.rich_text?.[0]?.plain_text || '';
+    const date = properties.Date?.date?.start || '';
     const categories =
-      properties.Categories.multi_select?.map((cat: { name: string }) => cat.name) || [];
+      properties.Categories?.multi_select?.map((cat: { name: string }) => cat.name) || [];
     const status =
-      properties.Status.status?.name?.toLowerCase() === 'published' ? 'published' : 'draft';
+      properties.Status?.status?.name?.toLowerCase() === 'published' ? 'published' : 'draft';
 
     return {
       id: page.id,
