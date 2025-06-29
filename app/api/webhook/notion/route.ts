@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { createHmac, timingSafeEqual } from 'crypto';
-import { Client } from '@notionhq/client';
-import fs from 'fs/promises';
-import path from 'path';
 
 // Store the verification token (in production, use a database or environment variable)
 let verificationToken: string | null = null;
@@ -26,64 +23,6 @@ function verifyNotionSignature(request: NextRequest, body: unknown): boolean {
   } catch {
     return false;
   }
-}
-
-// Regenerate static blog data from Notion
-async function regenerateBlogData() {
-  const notion = new Client({
-    auth: process.env.NOTION_API_KEY,
-  });
-
-  const databaseId = process.env.NOTION_DATABASE_ID;
-
-  if (!process.env.NOTION_API_KEY || !databaseId) {
-    throw new Error('Missing Notion credentials');
-  }
-
-  const response = await notion.databases.query({
-    database_id: databaseId,
-    filter: {
-      property: 'Status',
-      status: {
-        equals: 'Published',
-      },
-    },
-    sorts: [
-      {
-        property: 'Date',
-        direction: 'descending',
-      },
-    ],
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const posts = response.results.map((page: any) => {
-    const properties = page.properties;
-    const title = properties.Title?.title?.[0]?.plain_text || '';
-    const slug = properties.Slug?.rich_text?.[0]?.plain_text || '';
-    const date = properties.Date?.date?.start || '';
-    const categories =
-      properties.Categories?.multi_select?.map((cat: { name: string }) => cat.name) || [];
-    const status =
-      properties.Status?.status?.name?.toLowerCase() === 'published' ? 'published' : 'draft';
-
-    return {
-      id: page.id,
-      title,
-      slug,
-      date,
-      categories,
-      status,
-    };
-  });
-
-  const outputPath = path.join(process.cwd(), 'public', 'blog-data.json');
-  await fs.writeFile(
-    outputPath,
-    JSON.stringify({ posts, generatedAt: new Date().toISOString() }, null, 2)
-  );
-
-  console.log(`Regenerated blog data with ${posts.length} posts`);
 }
 
 export async function POST(request: NextRequest) {
@@ -134,15 +73,6 @@ export async function POST(request: NextRequest) {
     // Cache invalidation will trigger fresh data fetch from Notion
     console.log('Webhook triggered - will invalidate cache to fetch fresh data');
 
-    // Regenerate static blog data file
-    console.log('Regenerating static blog data...');
-    try {
-      await regenerateBlogData();
-      console.log('Static blog data regenerated successfully');
-    } catch (error) {
-      console.error('Failed to regenerate static blog data:', error);
-    }
-
     // Revalidate Next.js cache
     console.log('Revalidating cache...');
 
@@ -153,6 +83,7 @@ export async function POST(request: NextRequest) {
     // Revalidate specific paths
     revalidatePath('/writing');
     revalidatePath('/writing/[slug]', 'page');
+    revalidatePath('/', 'page'); // Also revalidate home page if it shows blog posts
 
     console.log('Cache revalidated successfully');
 

@@ -2,8 +2,6 @@ import { notion, databaseId } from './client';
 import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
 import { NotionToMarkdown } from 'notion-to-md';
-import fs from 'fs/promises';
-import path from 'path';
 
 export type NotionBlogPost = {
   id: string;
@@ -69,20 +67,6 @@ const fetchDatabase = unstable_cache(
   }
 );
 
-// Fast static data loader for production
-async function getStaticBlogPosts(): Promise<NotionBlogPost[]> {
-  try {
-    const jsonPath = path.join(process.cwd(), 'public', 'blog-data.json');
-    const data = await fs.readFile(jsonPath, 'utf-8');
-    const { posts } = JSON.parse(data);
-    return posts;
-  } catch (error) {
-    console.error('Failed to load static blog data:', error);
-    // Fallback to live data
-    return getPublishedBlogPostsFromNotion();
-  }
-}
-
 async function getPublishedBlogPostsFromNotion(): Promise<NotionBlogPost[]> {
   const response = await fetchDatabase();
 
@@ -110,31 +94,12 @@ async function getPublishedBlogPostsFromNotion(): Promise<NotionBlogPost[]> {
 }
 
 export const getPublishedBlogPosts = cache(async (): Promise<NotionBlogPost[]> => {
-  // Use static data in production for fast loading
-  if (process.env.NODE_ENV === 'production') {
-    return getStaticBlogPosts();
-  }
-  // Use live data in development
+  // Always fetch from Notion with caching
   return getPublishedBlogPostsFromNotion();
 });
 
 export const getBlogPostBySlug = cache(async (slug: string): Promise<NotionBlogPost | null> => {
-  // First try to get from static data for better performance
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      const posts = await getStaticBlogPosts();
-      const post = posts.find((p) => p.slug === slug);
-      if (post) {
-        // For individual posts, we still need to fetch content from Notion
-        const content = await fetchPostContent(post.id);
-        return { ...post, content };
-      }
-    } catch (error) {
-      console.error('Failed to get post from static data:', error);
-    }
-  }
-
-  // Fallback to Notion API
+  // Fetch from Notion API with caching
   const response = await fetchDatabase();
 
   const page = response.results.find((page) => {
