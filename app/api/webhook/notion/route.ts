@@ -1,70 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath, revalidateTag } from 'next/cache';
-import { Client } from '@notionhq/client';
-import fs from 'fs/promises';
-import path from 'path';
-
-// Generate blog data from Notion
-async function generateBlogData() {
-  const notion = new Client({
-    auth: process.env.NOTION_API_KEY,
-  });
-
-  const databaseId = process.env.NOTION_DATABASE_ID;
-
-  if (!process.env.NOTION_API_KEY || !databaseId) {
-    throw new Error('Missing NOTION_API_KEY or NOTION_DATABASE_ID environment variables');
-  }
-
-  console.log('Fetching blog posts from Notion...');
-
-  const response = await notion.databases.query({
-    database_id: databaseId,
-    filter: {
-      property: 'Status',
-      status: {
-        equals: 'Published',
-      },
-    },
-    sorts: [
-      {
-        property: 'Date',
-        direction: 'descending',
-      },
-    ],
-  });
-
-  const posts = response.results.map((page) => {
-    // @ts-expect-error - Notion API types are complex
-    const properties = page.properties;
-    const title = properties.Title.title?.[0]?.plain_text || '';
-    const slug = properties.Slug.rich_text?.[0]?.plain_text || '';
-    const date = properties.Date.date?.start || '';
-    // @ts-expect-error - Notion API types are complex
-    const categories = properties.Categories.multi_select?.map((cat) => cat.name) || [];
-    const status =
-      properties.Status.status?.name?.toLowerCase() === 'published' ? 'published' : 'draft';
-
-    return {
-      id: page.id,
-      title,
-      slug,
-      date,
-      categories,
-      status,
-    };
-  });
-
-  // Write to public directory for static access
-  const outputPath = path.join(process.cwd(), 'public', 'blog-data.json');
-  await fs.writeFile(
-    outputPath,
-    JSON.stringify({ posts, generatedAt: new Date().toISOString() }, null, 2)
-  );
-
-  console.log(`Generated blog data with ${posts.length} posts`);
-  return posts;
-}
 
 // Verify webhook authenticity
 function verifyWebhook(request: NextRequest): boolean {
@@ -125,15 +60,8 @@ export async function POST(request: NextRequest) {
 
     console.log('Notion webhook received:', JSON.stringify(body, null, 2));
 
-    // Regenerate the blog data JSON file
-    try {
-      console.log('Regenerating blog data...');
-      await generateBlogData();
-      console.log('Blog data regenerated successfully');
-    } catch (error) {
-      console.error('Failed to regenerate blog data:', error);
-      // Continue with revalidation even if regeneration fails
-    }
+    // Cache invalidation will trigger fresh data fetch from Notion
+    console.log('Webhook triggered - will invalidate cache to fetch fresh data');
 
     // Revalidate Next.js cache
     console.log('Revalidating cache...');
@@ -172,7 +100,6 @@ export async function POST(request: NextRequest) {
       message: 'Blog content updated',
       timestamp: new Date().toISOString(),
       actions: {
-        dataRegenerated: true,
         cacheRevalidated: true,
         fullRebuild: body.fullRebuild || false,
       },
