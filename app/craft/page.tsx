@@ -41,10 +41,8 @@ export default function Craft() {
     >
       <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
         <div className="flex-1">
-          <h1 className="mb-4 text-2xl font-medium">Craft</h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            A collection of my creative works and craft projects.
-          </p>
+          <h1 className="mb-1 text-xl font-medium">Craft</h1>
+          <p className="text-secondary">A collection of my creative works and craft projects.</p>
         </div>
       </motion.section>
 
