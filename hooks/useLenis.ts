@@ -11,8 +11,8 @@ declare global {
 export const useLenis = () => {
   useEffect(() => {
     const lenis = new Lenis({
-      lerp: 0.1,
-      wheelMultiplier: 1,
+      lerp: 0.2, // Increased from 0.1 for faster, more responsive scrolling
+      wheelMultiplier: 1.2, // Slightly increased for better responsiveness
       smoothWheel: true,
     });
 

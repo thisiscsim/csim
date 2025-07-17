@@ -29,7 +29,7 @@ const generateMasonryItems = () => {
   }));
 };
 
-export default function Craft() {
+export default function CraftPage() {
   const masonryItems = generateMasonryItems();
 
   return (
@@ -39,13 +39,6 @@ export default function Craft() {
       initial="hidden"
       animate="visible"
     >
-      <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-        <div className="flex-1">
-          <h1 className="mb-1 text-xl font-medium">Craft</h1>
-          <p className="text-secondary">A collection of my creative works and craft projects.</p>
-        </div>
-      </motion.section>
-
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}

@@ -6,19 +6,19 @@ import { memo } from 'react';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 const H1Component = memo(function H1Component({ _node, ...props }: any) {
-  return <h1 className="text-2xl font-bold mt-8 mb-4" {...props} />;
+  return <h1 className="text-2xl font-medium mt-8 mb-4" {...props} />;
 });
 
 const H2Component = memo(function H2Component({ _node, ...props }: any) {
-  return <h2 className="text-xl font-bold mt-6 mb-3" {...props} />;
+  return <h2 className="text-xl font-medium mt-6 mb-3" {...props} />;
 });
 
 const H3Component = memo(function H3Component({ _node, ...props }: any) {
-  return <h3 className="text-lg font-bold mt-4 mb-2" {...props} />;
+  return <h3 className="text-lg font-medium mt-4 mb-2" {...props} />;
 });
 
 const H4Component = memo(function H4Component({ _node, ...props }: any) {
-  return <h4 className="text-base font-bold mt-3 mb-2" {...props} />;
+  return <h4 className="text-base font-medium mt-3 mb-2" {...props} />;
 });
 
 const PComponent = memo(function PComponent({ _node, ...props }: any) {
@@ -38,37 +38,24 @@ const LiComponent = memo(function LiComponent({ _node, ...props }: any) {
 });
 
 const AComponent = memo(function AComponent({ _node, ...props }: any) {
-  return <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />;
+  return <a className="text-blue-600 hover:underline" {...props} />;
 });
 
 const BlockquoteComponent = memo(function BlockquoteComponent({ _node, ...props }: any) {
-  return (
-    <blockquote
-      className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic"
-      {...props}
-    />
-  );
+  return <blockquote className="border-l-4 border-gray-300 pl-4 my-4 italic" {...props} />;
 });
 
 const PreComponent = memo(function PreComponent({ _node, ...props }: any) {
-  return (
-    <pre
-      className="bg-zinc-200 dark:bg-zinc-800 rounded p-4 my-4 overflow-x-auto text-zinc-900 dark:text-zinc-100"
-      {...props}
-    />
-  );
+  return <pre className="bg-zinc-200 rounded p-4 my-4 overflow-x-auto text-zinc-900" {...props} />;
 });
 
 const CodeComponent = memo(function CodeComponent({ _node, className, children, ...props }: any) {
   return !className ? (
-    <code
-      className="bg-zinc-200 dark:bg-zinc-800 rounded px-1 py-0.5 text-zinc-900 dark:text-zinc-100"
-      {...props}
-    >
+    <code className="bg-zinc-200 rounded px-1 py-0.5 text-zinc-900" {...props}>
       {children}
     </code>
   ) : (
-    <code className="text-zinc-900 dark:text-zinc-100" {...props}>
+    <code className="text-zinc-900" {...props}>
       {children}
     </code>
   );

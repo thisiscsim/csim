@@ -8,6 +8,26 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    extend: {
+      colors: {
+        primary: 'rgb(var(--bg-primary))',
+        'primary-inverse': 'rgb(var(--bg-primary-inverse))',
+        secondary: 'rgb(var(--bg-secondary))',
+        tertiary: 'rgb(var(--bg-tertiary))',
+        text: {
+          primary: 'rgb(var(--text-primary))',
+          'primary-inverse': 'rgb(var(--text-primary-inverse))',
+          secondary: 'rgb(var(--text-secondary))',
+          tertiary: 'rgb(var(--text-tertiary))',
+          muted: 'rgb(var(--text-muted))',
+        },
+        border: {
+          primary: 'rgb(var(--border-primary))',
+          secondary: 'rgb(var(--border-secondary))',
+          muted: 'rgb(var(--border-muted))',
+        },
+      },
+    },
     fontSize: {
       xs: [
         '10px',

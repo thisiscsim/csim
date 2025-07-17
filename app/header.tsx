@@ -66,11 +66,11 @@ export function Header() {
       <nav className="flex items-center">
         <AnimatedBackground
           defaultValue={activeTab}
-          className="rounded-lg bg-zinc-100 dark:bg-zinc-800"
+          className="rounded-lg bg-zinc-100"
           transition={{
             type: 'spring',
-            bounce: 0.2,
-            duration: 0.3,
+            bounce: 0.1, // Reduced bounce for more responsive feel
+            duration: 0.2, // Reduced duration for faster animations
           }}
           enableHover={false}
           onValueChange={(value) => {
@@ -82,7 +82,7 @@ export function Header() {
               key={item.label}
               href={item.href}
               data-id={item.label}
-              className={`px-2 py-1 text-sm text-zinc-600 transition-colors duration-300 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50 ${
+              className={`px-2 py-1 text-sm text-zinc-600 transition-colors duration-300 hover:text-zinc-950 cursor-pointer ${
                 index > 0 ? 'ml-1' : ''
               }`}
               onClick={() => setActiveTab(item.label)}

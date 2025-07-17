@@ -72,6 +72,9 @@ export function AnimatedBackground({
               exit={{
                 opacity: 0,
               }}
+              style={{
+                willChange: 'opacity', // Optimize for opacity animations
+              }}
             />
           )}
         </AnimatePresence>
