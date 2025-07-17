@@ -45,8 +45,6 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Design Lead',
     start: '2024',
     end: 'Current',
-    description:
-      "I'm currently the design lead for Vault where I work on our multi-document review queries, data management and knowledge base features. I'm also the co-lead of Harvey's design system, which supports dozens of internal embedded product surfaces.",
     projects: [
       {
         name: 'Review Tables',
@@ -145,8 +143,6 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2023',
     end: '2024',
-    description:
-      "As one of Arc's earliest designers, I worked across nearly every part of the product. I led design for Cash Management and Spend features like Bill Pay, Deposits, Auto-Transfers, Vendor Management, and Spend Insights, along with infrastructure such as Settings, Notifications, and Onboarding.",
     projects: [
       {
         name: 'Deposits',
@@ -188,8 +184,6 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2022',
     end: '2023',
-    description:
-      'I was a designer on the Operations Tooling team. I worked on the Freight Forwarding App, on a feature called TeamView, an end-to-end shipment visibility tool that enables operations teams to easily track shipments from the factory to the local warehouse.',
     projects: [
       {
         name: 'Freight Forwarding App',
@@ -207,8 +201,6 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2022',
     end: '2022',
-    description:
-      'Worked with the rider team at Uber, designed multiple features across different touchpoints to bridge the trip experience between riders and drivers.',
     projects: [
       {
         name: 'En-route Delay Notification',
@@ -234,8 +226,6 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     title: 'Product Designer',
     start: '2024',
     end: 'Current',
-    description:
-      "On the side, I'm also a design consultant for some of the most promising emerging software companies.",
     projects: [
       {
         name: 'Moab [Backed by Elad Gil, Karim Atiyeh, SPC]',

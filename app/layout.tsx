@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from 'next';
 import { Geist } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
-import { HeaderWrapper } from './header-wrapper';
 import { Footer } from './footer';
-import { ThemeProvider } from 'next-themes';
 import { LenisProvider } from '@/components/LenisProvider';
+import { PersistentNavigation } from '@/components/persistent-navigation';
+import { getPublishedBlogPosts } from '@/lib/notion/blog';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -65,11 +65,13 @@ const recklessNeue = localFont({
   fallback: ['sans-serif'],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const blogPosts = await getPublishedBlogPosts();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -83,28 +85,27 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body
-        className={`${geist.variable} ${recklessNeue.variable} bg-white antialiased dark:bg-[rgb(17,17,17)]`}
-      >
-        <ThemeProvider
-          enableSystem={true}
-          attribute="class"
-          storageKey="theme"
-          defaultTheme="system"
-        >
-          <LenisProvider>
-            <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-geist)]">
-              <div className="relative mx-auto w-full max-w-screen-lg flex-1 px-4 pt-20">
-                <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] dark:bg-[rgb(17,17,17)]" />
-                <HeaderWrapper />
-                <div className="flex-1">{children}</div>
+      <body className={`${geist.variable} ${recklessNeue.variable} bg-primary antialiased`}>
+        <LenisProvider>
+          <div className="mx-auto max-w-[1440px]">
+            <div className="flex min-h-screen w-full">
+              {/* Left side - Main content */}
+              <div className="flex-1">
+                <div className="mx-auto max-w-screen-lg px-4 pt-20">
+                  <div className="flex-1">{children}</div>
+                </div>
               </div>
-              <div className="mx-auto w-full max-w-screen-lg px-4">
-                <Footer />
+
+              {/* Right side - Persistent navigation */}
+              <div className="w-[440px] flex-shrink-0 pr-16">
+                <div className="sticky top-1/2 -translate-y-1/2">
+                  <PersistentNavigation blogPosts={blogPosts} />
+                  <Footer />
+                </div>
               </div>
             </div>
-          </LenisProvider>
-        </ThemeProvider>
+          </div>
+        </LenisProvider>
       </body>
     </html>
   );

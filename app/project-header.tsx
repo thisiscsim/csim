@@ -18,10 +18,10 @@ export function ProjectHeader() {
       <nav className="flex items-center">
         <Link
           href="/"
-          className="group rounded-lg bg-zinc-100 px-2 py-1 transition-all duration-300 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          className="group rounded-lg bg-zinc-100 px-2 py-1 transition-all duration-300 hover:bg-zinc-200"
           aria-label="Close and return to home"
         >
-          <X className="h-4 w-4 text-zinc-600 transition-colors duration-300 dark:text-zinc-400" />
+          <X className="h-4 w-4 text-zinc-600 transition-colors duration-300" />
         </Link>
       </nav>
     </header>
