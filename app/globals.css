@@ -202,3 +202,73 @@ html:hover::-webkit-scrollbar-thumb:hover {
   --sh-function: #88c0d0;
   --sh-entity: #e0af68;
 }
+
+/* -- Pre-steps before the animation sequence -- */
+@keyframes skeleton_loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* -- Skeleton Wrapper and Loading Animation -- */
+.skeleton_wrapper {
+  display: block;
+  border-radius: 4px;
+  width: 400px;
+  height: 24px;
+  margin-bottom: 8px;
+}
+
+.skeleton_wrapper.skeleton_loaded {
+  width: unset !important;
+}
+
+.skeleton_wrapper:not(.skeleton_animation):not(.skeleton_show) {
+  display: none;
+}
+
+.skeleton_animation:not(.skeleton_show):after {
+  content: none;
+}
+
+.skeleton_wrapper:not(.skeleton_animation):not(.skeleton_loaded) {
+  background-image: linear-gradient(270deg, #fafafa, #ebebeb, #ebebeb, #fafafa);
+  background-size: 400% 100%;
+  animation: skeleton_loading 8s ease-in-out infinite;
+}
+
+.skeleton_animation {
+  display: block;
+  position: relative;
+}
+
+.skeleton_animation:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 4px;
+  background-image: linear-gradient(270deg, #fafafa, #ebebeb, #ebebeb, #fafafa);
+  background-size: 400% 100%;
+  animation: skeleton_loading 8s ease-in-out infinite;
+}
+
+/* Spinner/Loader Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning-icon {
+  animation: spin 2s linear infinite;
+}

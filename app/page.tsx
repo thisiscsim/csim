@@ -27,7 +27,7 @@ export default function HomePage() {
       `}</style>
 
       {/* Left side - Project case studies */}
-      <div className="w-full pt-20 pb-32">
+      <div className="w-full pb-32">
         <div className="space-y-20">
           {PROJECT_GROUPS.map((group, groupIdx) => (
             <div

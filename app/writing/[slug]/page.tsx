@@ -17,14 +17,20 @@ export async function generateStaticParams() {
 // Loading component for the blog post
 function LoadingSkeleton() {
   return (
-    <div className="min-h-screen animate-pulse">
+    <div className="min-h-[60vh] pb-24">
       <div className="space-y-6">
-        <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
+        {/* Title */}
+        <div className="skeleton_wrapper w-3/4 h-10 mb-4"></div>
+        {/* Date */}
+        <div className="skeleton_wrapper w-1/4 h-4 mb-8"></div>
+        {/* Content */}
         <div className="space-y-3">
-          <div className="h-4 bg-gray-200 rounded w-full"></div>
-          <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-          <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+          <div className="skeleton_wrapper w-full h-4"></div>
+          <div className="skeleton_wrapper w-5/6 h-4"></div>
+          <div className="skeleton_wrapper w-4/6 h-4"></div>
+          <div className="skeleton_wrapper w-full h-4 mt-6"></div>
+          <div className="skeleton_wrapper w-5/6 h-4"></div>
+          <div className="skeleton_wrapper w-3/6 h-4"></div>
         </div>
       </div>
     </div>
