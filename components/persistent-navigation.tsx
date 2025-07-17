@@ -32,6 +32,31 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
     });
   }, [pathname]);
 
+  // Add keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      // Only trigger if not typing in an input or textarea
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      switch (event.key.toLowerCase()) {
+        case 'h':
+          handleIndexClick();
+          break;
+        case 'c':
+          handleCraftClick();
+          break;
+        case 'w':
+          handleWritingClick();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [blogPosts]); // Add blogPosts as dependency since handleWritingClick uses it
+
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {
       // If the clicked section is already open, close it
@@ -121,12 +146,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
   }, [pathname]);
 
   return (
-    <motion.div
-      className="w-full bg-white rounded-lg p-6"
-      initial={{ opacity: 0, x: 100 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, type: 'spring', bounce: 0.3 }}
-    >
+    <div className="w-full bg-white rounded-lg p-6">
       {/* Force light mode styles */}
       <style jsx global>{`
         .dotted-border {
@@ -139,10 +159,11 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
         <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
           <button
             onClick={handleIndexClick}
-            className="flex-1 flex items-center gap-3 text-left cursor-pointer"
+            className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
           >
             <div className="w-2 h-2 bg-red-500 rounded-full"></div>
             <span className="text-gray-900 uppercase tracking-wider">INDEX</span>
+            <span className="text-xs text-gray-400 group-hover:text-gray-600">H</span>
           </button>
           <button
             onClick={() => toggleSection('index')}
@@ -205,10 +226,11 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
         <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
           <button
             onClick={handleCraftClick}
-            className="flex-1 flex items-center gap-3 text-left cursor-pointer"
+            className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
           >
             <span className="text-gray-400">■</span>
             <span className="text-gray-900">CRAFT</span>
+            <span className="text-xs text-gray-400 group-hover:text-gray-600">C</span>
           </button>
           <button
             onClick={() => toggleSection('craft')}
@@ -243,10 +265,11 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
         <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
           <button
             onClick={handleWritingClick}
-            className="flex-1 flex items-center gap-3 text-left cursor-pointer"
+            className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
           >
             <span className="text-gray-400">●</span>
             <span className="text-gray-900">WRITING</span>
+            <span className="text-xs text-gray-400 group-hover:text-gray-600">W</span>
           </button>
           <button
             onClick={() => toggleSection('writing')}
@@ -289,6 +312,12 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                               }`}
                               onMouseEnter={() => setHoveredBlogPost(post.slug)}
                               onMouseLeave={() => setHoveredBlogPost(null)}
+                              onClick={() => {
+                                // Immediate scroll reset
+                                window.scrollTo(0, 0);
+                                document.documentElement.scrollTop = 0;
+                                document.body.scrollTop = 0;
+                              }}
                             >
                               <div className="flex items-center">
                                 <span className="w-6 text-gray-900">
@@ -323,6 +352,6 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </div>
   );
 }

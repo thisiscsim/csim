@@ -96,14 +96,15 @@ export default async function RootLayout({
                 </div>
               </div>
 
-              {/* Right side - Persistent navigation */}
-              <div className="w-[440px] flex-shrink-0 pr-16">
-                <div className="sticky top-1/2 -translate-y-1/2">
-                  <PersistentNavigation blogPosts={blogPosts} />
-                  <Footer />
-                </div>
-              </div>
+              {/* Right side - Space for navigation */}
+              <div className="w-[440px] flex-shrink-0"></div>
             </div>
+          </div>
+
+          {/* Fixed navigation */}
+          <div className="fixed top-1/2 -translate-y-1/2 right-16 w-[440px] max-w-[440px]">
+            <PersistentNavigation blogPosts={blogPosts} />
+            <Footer />
           </div>
         </LenisProvider>
       </body>
