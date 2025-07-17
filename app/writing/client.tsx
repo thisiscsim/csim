@@ -73,24 +73,25 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
       <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)]" />
 
       <motion.main
-        className="space-y-24"
+        className="space-y-12"
         variants={VARIANTS_CONTAINER}
         initial="hidden"
         animate="visible"
       >
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
           <div className="mb-0">
-            <h2 className="mb-1 text-zinc-400">Writing</h2>
-            <p>
-              Infrequent thoughts on design, the future, current state of society, and life. These
-              are in no way representative of my employer and are strictly my personal opinions. I
-              use Notion as the CMS, and the list here updates automatically through the Notion API.
+            <h2 className="mb-1 text-xl font-medium">Writing</h2>
+            <p className="text-secondary">
+              Infrequent thoughts on design, the future, current state of society, geopolitics, and
+              life. These are in no way representative of my employer and are strictly my personal
+              opinions. I use Notion as the CMS, and the list here updates automatically through the
+              Notion API.
             </p>
           </div>
         </motion.section>
 
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-          <div className="mb-6">
+          <div className="mb-4">
             <Breadcrumbs
               classNames={{
                 list: 'gap-1.5 flex-wrap',
