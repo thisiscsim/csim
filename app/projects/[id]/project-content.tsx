@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'motion/react';
-import { PROJECT_GROUPS } from '@/app/data';
+import { type Project } from '@/app/data';
 import { ProjectHeader } from '@/app/project-header';
 
 const VARIANTS_CONTAINER = {
@@ -27,13 +27,7 @@ const TRANSITION_SECTION = {
   duration: 0.3,
 };
 
-export function ProjectContent({ id }: { id: string }) {
-  const project = PROJECT_GROUPS.flatMap((group) => group.projects).find((p) => p.id === id);
-
-  if (!project) {
-    return <div>Project not found</div>;
-  }
-
+export function ProjectContent({ project }: { project: Project }) {
   return (
     <motion.div
       className="space-y-16"
@@ -44,78 +38,92 @@ export function ProjectContent({ id }: { id: string }) {
       <ProjectHeader />
 
       <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-        <div className="text-sm text-zinc-500 mb-2">Project Case Study</div>
-        <h1 className="text-4xl font-medium text-zinc-900 mb-4">{project.name}</h1>
-        <p className="text-lg text-zinc-600">{project.description}</p>
+        <div className="text-sm text-text-tertiary mb-2">Project Case Study</div>
+        <h1 className="text-4xl font-medium text-text-primary mb-4">{project.name}</h1>
+        <p className="text-lg text-text-secondary">{project.description}</p>
       </motion.section>
 
       <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-zinc-200">
+        <div className="bg-secondary rounded-xl shadow-lg overflow-hidden border border-border-primary">
           <video src={project.video} autoPlay loop muted playsInline className="w-full h-auto" />
         </div>
       </motion.section>
 
-      <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div>
-            <h2 className="text-2xl font-medium text-zinc-900 mb-4">Challenge</h2>
-            <p className="text-zinc-600 leading-relaxed text-lg">{project.challenge}</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-medium text-zinc-900 mb-4">Solution</h2>
-            <p className="text-zinc-600 leading-relaxed text-lg">{project.solution}</p>
-          </div>
-        </div>
-      </motion.section>
-
-      {project.features && (
+      {project.caseStudy && (
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {project.features.map((feature, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+              <h2 className="text-2xl font-medium text-text-primary mb-4">Challenge</h2>
+              <p className="text-text-secondary leading-relaxed text-lg">
+                {project.caseStudy.background}
+              </p>
+            </div>
+            <div>
+              <h2 className="text-2xl font-medium text-text-primary mb-4">Solution</h2>
+              <p className="text-text-secondary leading-relaxed text-lg">
+                {project.caseStudy.solution}
+              </p>
+            </div>
+          </div>
+        </motion.section>
+      )}
+
+      {project.caseStudy?.impact && (
+        <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
+          <h2 className="text-2xl font-medium text-text-primary mb-8">Impact</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {project.caseStudy.impact.map((impact, index) => (
               <div key={index} className="text-center">
-                <div className="bg-zinc-50 rounded-lg p-6 mb-4">
+                <div className="text-4xl font-bold text-text-primary mb-2">{impact.stat}</div>
+                <div className="text-sm text-text-tertiary">{impact.label}</div>
+                {impact.description && (
+                  <div className="text-sm text-text-muted mt-2">{impact.description}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {project.caseStudy?.images && (
+        <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
+          <h2 className="text-2xl font-medium text-text-primary mb-8">Gallery</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {project.caseStudy.images.map((image, index) => (
+              <div key={index} className="text-center">
+                <div className="bg-tertiary rounded-lg p-6 mb-4">
                   <img
-                    src={feature.image}
-                    alt={feature.title}
+                    src={image.src}
+                    alt={image.alt}
                     className="w-full h-48 object-cover rounded-lg"
                   />
                 </div>
-                <h3 className="text-xl font-medium text-zinc-900 mb-2">{feature.title}</h3>
-                <p className="text-sm text-zinc-500 text-center">{feature.description}</p>
+                {image.caption && (
+                  <p className="text-sm text-text-tertiary text-center">{image.caption}</p>
+                )}
               </div>
             ))}
           </div>
         </motion.section>
       )}
 
-      {project.metrics && (
+      {project.caseStudy?.credits && (
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-          <h2 className="text-2xl font-medium text-zinc-900 mb-8">Results</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {project.metrics.map((metric, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl font-bold text-zinc-900 mb-2">{metric.value}</div>
-                <div className="text-sm text-zinc-500">{metric.label}</div>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-      )}
-
-      {project.technology && (
-        <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-          <h2 className="text-2xl font-medium text-zinc-900 mb-4">Technology</h2>
-          <p className="text-zinc-600 mb-8">{project.technology}</p>
-
+          <h2 className="text-2xl font-medium text-text-primary mb-4">Credits</h2>
+          <p className="text-text-secondary mb-8">{project.caseStudy.credits.text}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {project.techStack?.map((tech, index) => (
+            {project.caseStudy.credits.people.map((person, index) => (
               <div key={index} className="flex items-center gap-4">
-                <div className="w-8 h-8 bg-zinc-100 rounded-lg flex items-center justify-center">
-                  <img src={tech.icon} alt={tech.name} className="w-6 h-6" />
+                <div className="w-12 h-12 bg-tertiary rounded-lg flex items-center justify-center overflow-hidden">
+                  <img
+                    src={person.image}
+                    alt={person.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
-                  <div className="font-medium text-zinc-900">{tech.name}</div>
-                  <div className="text-sm text-zinc-500">{tech.purpose}</div>
+                  <div className="font-medium text-text-primary">{person.name}</div>
+                  <div className="text-sm text-text-tertiary">{person.role}</div>
                 </div>
               </div>
             ))}
@@ -124,8 +132,8 @@ export function ProjectContent({ id }: { id: string }) {
       )}
 
       <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-        <div className="border-t border-zinc-200 pt-8">
-          <div className="text-center text-zinc-500">End of case study</div>
+        <div className="border-t border-border-primary pt-8">
+          <div className="text-center text-text-tertiary">End of case study</div>
         </div>
       </motion.section>
     </motion.div>

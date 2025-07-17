@@ -137,13 +137,16 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
       {/* INDEX Section */}
       <div>
         <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
-          <button onClick={handleIndexClick} className="flex-1 flex items-center gap-3 text-left">
+          <button
+            onClick={handleIndexClick}
+            className="flex-1 flex items-center gap-3 text-left cursor-pointer"
+          >
             <div className="w-2 h-2 bg-red-500 rounded-full"></div>
             <span className="text-gray-900 uppercase tracking-wider">INDEX</span>
           </button>
           <button
             onClick={() => toggleSection('index')}
-            className="text-gray-400 hover:text-gray-600 px-2"
+            className="text-gray-400 hover:text-gray-600 px-2 cursor-pointer"
           >
             {expandedSections.index ? '−' : '+'}
           </button>
@@ -173,7 +176,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                       <div key={groupIdx}>
                         <button
                           onClick={() => scrollToCompany(`company-${groupIdx}`)}
-                          className="block w-full text-left transition-all hover:opacity-80"
+                          className="block w-full text-left transition-all hover:opacity-80 cursor-pointer"
                         >
                           <div className="flex items-center">
                             <span className="w-6 text-gray-900">{isActive ? '•' : ''}</span>
@@ -200,13 +203,16 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
       {/* CRAFT section */}
       <div>
         <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
-          <button onClick={handleCraftClick} className="flex-1 flex items-center gap-3 text-left">
+          <button
+            onClick={handleCraftClick}
+            className="flex-1 flex items-center gap-3 text-left cursor-pointer"
+          >
             <span className="text-gray-400">■</span>
             <span className="text-gray-900">CRAFT</span>
           </button>
           <button
             onClick={() => toggleSection('craft')}
-            className="text-gray-400 hover:text-gray-600 px-2"
+            className="text-gray-400 hover:text-gray-600 px-2 cursor-pointer"
           >
             {expandedSections.craft ? '−' : '+'}
           </button>
@@ -235,13 +241,16 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
       {/* WRITING section */}
       <div>
         <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
-          <button onClick={handleWritingClick} className="flex-1 flex items-center gap-3 text-left">
+          <button
+            onClick={handleWritingClick}
+            className="flex-1 flex items-center gap-3 text-left cursor-pointer"
+          >
             <span className="text-gray-400">●</span>
             <span className="text-gray-900">WRITING</span>
           </button>
           <button
             onClick={() => toggleSection('writing')}
-            className="text-gray-400 hover:text-gray-600 px-2"
+            className="text-gray-400 hover:text-gray-600 px-2 cursor-pointer"
           >
             {expandedSections.writing ? '−' : '+'}
           </button>

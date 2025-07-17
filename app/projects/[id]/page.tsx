@@ -13,10 +13,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
-  // Find which group this project belongs to for date info
-  const projectGroup = PROJECT_GROUPS.find((group) => group.projects.some((p) => p.id === id));
-
-  return <ProjectContent project={project} projectGroup={projectGroup} />;
+  return <ProjectContent project={project} />;
 }
 
 export async function generateStaticParams() {
