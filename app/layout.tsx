@@ -65,6 +65,20 @@ const recklessNeue = localFont({
   fallback: ['sans-serif'],
 });
 
+const berkeleyMono = localFont({
+  src: [
+    {
+      path: '../public/fonts/Berkeley Mono Variable.woff2',
+      weight: '100 900',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-berkeley-mono',
+  display: 'swap',
+  preload: true,
+  fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
+});
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -82,13 +96,22 @@ export default async function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        <link
+          rel="preload"
+          href="/fonts/Berkeley%20Mono%20Variable.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${geist.variable} ${recklessNeue.variable} bg-primary antialiased`}>
+      <body
+        className={`${geist.variable} ${recklessNeue.variable} ${berkeleyMono.variable} bg-primary antialiased`}
+      >
         <LenisProvider>
           <div className="mx-auto max-w-[1440px]">
-            <div className="flex min-h-screen w-full">
+            <div className="flex min-h-screen w-full relative">
               {/* Left side - Main content */}
               <div className="flex-1">
                 <div className="mx-auto max-w-screen-lg px-4 pt-20">
@@ -101,8 +124,13 @@ export default async function RootLayout({
             </div>
           </div>
 
-          {/* Fixed navigation */}
-          <div className="fixed top-1/2 -translate-y-1/2 right-16 w-[440px] max-w-[440px]">
+          {/* Fixed navigation with max-width constraint */}
+          <div
+            className="fixed top-1/2 -translate-y-1/2 w-[440px] max-w-[440px] pr-16"
+            style={{
+              right: 'max(1rem, calc((100vw - 1440px) / 2))',
+            }}
+          >
             <PersistentNavigation blogPosts={blogPosts} />
             <Footer />
           </div>

@@ -5,6 +5,7 @@ import { PROJECT_GROUPS } from '@/app/data';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import type { NotionBlogPost } from '@/lib/notion/blog';
+import Image from 'next/image';
 
 interface PersistentNavigationProps {
   blogPosts?: NotionBlogPost[];
@@ -152,6 +153,10 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
         .dotted-border {
           border-bottom: 2px dotted #d1d5db;
         }
+        /* Berkeley Mono override */
+        .font-mono {
+          font-family: var(--font-berkeley-mono), monospace !important;
+        }
       `}</style>
 
       {/* INDEX Section */}
@@ -161,7 +166,13 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
             onClick={handleIndexClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
           >
-            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+            <Image
+              src="/flower.svg"
+              alt=""
+              width={12}
+              height={12}
+              className={pathname === '/' ? '' : 'grayscale opacity-40'}
+            />
             <span className="text-gray-900 uppercase tracking-wider">INDEX</span>
             <span className="text-xs text-gray-400 group-hover:text-gray-600">H</span>
           </button>
@@ -182,7 +193,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <p className="text-sm leading-relaxed text-gray-700 mb-4">
+                <p className="text-sm leading-snug text-gray-700 mb-4">
                   I&apos;m Christopher Sim, a software designer at Harvey. I work on the
                   intersection of design and engineering. Previously, I&apos;ve worked with teams at
                   Flexport, Uber, and Arc. I studied Human-Computer Interaction at the University of
@@ -204,9 +215,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                             <div className="flex-1 flex items-center justify-between">
                               <div className="font-medium text-gray-900">{group.company}</div>
                               <div className="text-sm font-medium text-gray-900">
-                                {group.start === group.end
-                                  ? group.start
-                                  : `${group.start} - ${group.end}`}
+                                {`${group.start} - ${group.end}`}
                               </div>
                             </div>
                           </div>
@@ -228,7 +237,23 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
             onClick={handleCraftClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
           >
-            <span className="text-gray-400">■</span>
+            <Image
+              src="/star.svg"
+              alt=""
+              width={12}
+              height={12}
+              className={
+                pathname.startsWith('/craft') ? 'brightness-0 saturate-100' : 'grayscale opacity-40'
+              }
+              style={
+                pathname.startsWith('/craft')
+                  ? {
+                      filter:
+                        'invert(24%) sepia(76%) saturate(1431%) hue-rotate(329deg) brightness(88%) contrast(91%)',
+                    }
+                  : {}
+              }
+            />
             <span className="text-gray-900">CRAFT</span>
             <span className="text-xs text-gray-400 group-hover:text-gray-600">C</span>
           </button>
@@ -249,7 +274,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <p className="text-sm leading-relaxed text-gray-700">
+                <p className="text-sm leading-snug text-gray-700">
                   A collection of creative experiments, side projects, and visual explorations. This
                   is where I play with new ideas and push creative boundaries outside of my
                   day-to-day product design work.
@@ -267,7 +292,25 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
             onClick={handleWritingClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
           >
-            <span className="text-gray-400">●</span>
+            <Image
+              src="/feather.svg"
+              alt=""
+              width={12}
+              height={12}
+              className={
+                pathname.startsWith('/writing')
+                  ? 'brightness-0 saturate-100'
+                  : 'grayscale opacity-40'
+              }
+              style={
+                pathname.startsWith('/writing')
+                  ? {
+                      filter:
+                        'invert(24%) sepia(76%) saturate(1431%) hue-rotate(329deg) brightness(88%) contrast(91%)',
+                    }
+                  : {}
+              }
+            />
             <span className="text-gray-900">WRITING</span>
             <span className="text-xs text-gray-400 group-hover:text-gray-600">W</span>
           </button>
@@ -288,7 +331,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <p className="text-sm leading-relaxed text-gray-700">
+                <p className="text-sm leading-snug text-gray-700">
                   Infrequent thoughts on design, tech, relationships, geopolitics, society, and the
                   future. I use Notion as the CMS, and the list here updates automatically through
                   Notion&apos;s API.

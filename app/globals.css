@@ -5,13 +5,16 @@
   --scrollbar-thumb: rgb(212 212 216); /* zinc-300 */
   --scrollbar-thumb-hover: rgb(161 161 170); /* zinc-400 */
 
+  /* Accent color */
+  --accent-red: #c03540;
+
   /* Semantic color tokens - Light mode only */
   --text-primary: 40 42 48; /* #282A30 */
   --text-primary-inverse: 247 248 248; /* #F7F8F8 */
   --text-secondary: 111 110 119; /* #6F6E77 */
   --text-tertiary: 143 143 143; /* #8F8F8F */
   --text-muted: 161 161 170; /* zinc-400 */
-  --bg-primary: 250 250 249; /* #FAFAF9 */
+  --bg-primary: 247 247 247; /* #FAFAF9 */
   --bg-primary-inverse: 17 17 17; /* #111111 */
   --bg-secondary: 249 248 249; /* #F9F8F9 */
   --bg-tertiary: 244 242 244; /* #F4F2F4 */
