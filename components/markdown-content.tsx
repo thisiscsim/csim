@@ -38,7 +38,7 @@ const LiComponent = memo(function LiComponent({ _node, ...props }: any) {
 });
 
 const AComponent = memo(function AComponent({ _node, ...props }: any) {
-  return <a className="text-blue-600 hover:underline" {...props} />;
+  return <a className="text-[#C03540] hover:underline" {...props} />;
 });
 
 const BlockquoteComponent = memo(function BlockquoteComponent({ _node, ...props }: any) {

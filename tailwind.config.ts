@@ -9,7 +9,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        mono: ['var(--font-berkeley-mono)', 'monospace'],
+      },
       colors: {
+        accent: {
+          red: '#C03540',
+        },
         primary: 'rgb(var(--bg-primary))',
         'primary-inverse': 'rgb(var(--bg-primary-inverse))',
         secondary: 'rgb(var(--bg-secondary))',

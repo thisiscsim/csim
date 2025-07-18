@@ -44,7 +44,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     companyLink: 'https://harvey.com',
     title: 'Design Lead',
     start: '2024',
-    end: 'Current',
+    end: 'Now',
     projects: [
       {
         name: 'Review Tables',
@@ -225,7 +225,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     companyLink: 'https://arc.com',
     title: 'Product Designer',
     start: '2024',
-    end: 'Current',
+    end: '?',
     projects: [
       {
         name: 'Moab [Backed by Elad Gil, Karim Atiyeh, SPC]',
