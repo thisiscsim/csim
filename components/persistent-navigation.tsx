@@ -23,6 +23,8 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
   const [activeCompany, setActiveCompany] = useState<string | null>(null);
   const [hoveredBlogPost, setHoveredBlogPost] = useState<string | null>(null);
+  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [pressedKey, setPressedKey] = useState<string | null>(null);
 
   // Update expanded sections when pathname changes
   useEffect(() => {
@@ -41,21 +43,33 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
         return;
       }
 
-      switch (event.key.toLowerCase()) {
-        case 'h':
+      const key = event.key.toLowerCase();
+      switch (key) {
+        case 'i':
+          setPressedKey('i');
           handleIndexClick();
           break;
         case 'c':
+          setPressedKey('c');
           handleCraftClick();
           break;
         case 'w':
+          setPressedKey('w');
           handleWritingClick();
           break;
       }
     };
 
+    const handleKeyUp = () => {
+      setPressedKey(null);
+    };
+
     window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
   }, [blogPosts]); // Add blogPosts as dependency since handleWritingClick uses it
 
   const toggleSection = (section: string) => {
@@ -161,7 +175,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
       {/* INDEX Section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border">
           <button
             onClick={handleIndexClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -174,13 +188,14 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className={pathname === '/' ? '' : 'grayscale opacity-40'}
             />
             <span className="text-gray-900 uppercase tracking-wider">INDEX</span>
-            <span className="text-xs text-gray-400 group-hover:text-gray-600">H</span>
           </button>
           <button
             onClick={() => toggleSection('index')}
-            className="text-gray-400 hover:text-gray-600 px-2 cursor-pointer"
+            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] text-gray-400 rounded-[5px] border border-gray-200 font-sans hover:bg-gray-100 hover:text-gray-600 hover:border-gray-300 transition-colors cursor-pointer ${
+              pressedKey === 'i' ? 'bg-gray-100 text-gray-600 border-gray-300' : ''
+            }`}
           >
-            {expandedSections.index ? '−' : '+'}
+            I
           </button>
         </div>
         <AnimatePresence>
@@ -201,14 +216,21 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                 </p>
 
                 {/* Project list moved here */}
-                <div className="space-y-4 -ml-6">
+                <div className="space-y-2 -ml-6">
                   {PROJECT_GROUPS.map((group, groupIdx) => {
                     const isActive = activeCompany === `company-${groupIdx}`;
+                    const projectKey = `company-${groupIdx}`;
                     return (
                       <div key={groupIdx}>
                         <button
                           onClick={() => scrollToCompany(`company-${groupIdx}`)}
-                          className="block w-full text-left transition-all hover:opacity-80 cursor-pointer"
+                          className={`block w-full text-left transition-all cursor-pointer ${
+                            hoveredProject && hoveredProject !== projectKey
+                              ? 'opacity-50'
+                              : 'opacity-100'
+                          }`}
+                          onMouseEnter={() => setHoveredProject(projectKey)}
+                          onMouseLeave={() => setHoveredProject(null)}
                         >
                           <div className="flex items-center">
                             <span className="w-6 text-gray-900">{isActive ? '•' : ''}</span>
@@ -232,7 +254,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
       {/* CRAFT section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border">
           <button
             onClick={handleCraftClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -255,13 +277,14 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               }
             />
             <span className="text-gray-900">CRAFT</span>
-            <span className="text-xs text-gray-400 group-hover:text-gray-600">C</span>
           </button>
           <button
             onClick={() => toggleSection('craft')}
-            className="text-gray-400 hover:text-gray-600 px-2 cursor-pointer"
+            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] text-gray-400 rounded-[5px] border border-gray-200 font-sans hover:bg-gray-100 hover:text-gray-600 hover:border-gray-300 transition-colors cursor-pointer ${
+              pressedKey === 'c' ? 'bg-gray-100 text-gray-600 border-gray-300' : ''
+            }`}
           >
-            {expandedSections.craft ? '−' : '+'}
+            C
           </button>
         </div>
         <AnimatePresence>
@@ -287,7 +310,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
       {/* WRITING section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border hover:bg-gray-50">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border">
           <button
             onClick={handleWritingClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -312,13 +335,14 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               }
             />
             <span className="text-gray-900">WRITING</span>
-            <span className="text-xs text-gray-400 group-hover:text-gray-600">W</span>
           </button>
           <button
             onClick={() => toggleSection('writing')}
-            className="text-gray-400 hover:text-gray-600 px-2 cursor-pointer"
+            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] text-gray-400 rounded-[5px] border border-gray-200 font-sans hover:bg-gray-100 hover:text-gray-600 hover:border-gray-300 transition-colors cursor-pointer ${
+              pressedKey === 'w' ? 'bg-gray-100 text-gray-600 border-gray-300' : ''
+            }`}
           >
-            {expandedSections.writing ? '−' : '+'}
+            W
           </button>
         </div>
         <AnimatePresence>
