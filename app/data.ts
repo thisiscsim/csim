@@ -4,9 +4,11 @@ export type Project = {
   link: string;
   video: string;
   id: string;
+  duration?: string;
   caseStudy?: {
     background: string;
     solution: string;
+    impactDescription?: string;
     impact: {
       stat: string;
       label: string;
@@ -53,11 +55,14 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/newProfileItem/d898be8a-7037-4c71-af0c-8997239b050d.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-review-table',
+        duration: '6 months',
         caseStudy: {
           background:
             "Empowering financial management is central to Arc's vision as a comprehensive banking platform. With limited functionalities in our payment offerings, our customers have lacked incentives to increase deposits and manage spend directly through our platform. This has led directly to slower growth in Asset Under Management (AUM) and increased customer churn to our competitors offering more complete solutions.",
           solution:
             'We developed Review Tables, a powerful interface that allows users to view and compare data across multiple documents in a structured table format. The solution enables users to extract, organize, and analyze information from various sources simultaneously.',
+          impactDescription:
+            'Review Tables was launched in the November of 2022 to Flex-Go Operators and Import Partners and has significantly improved our operations management process. We achieved a 6.5% increase in shipment on-time performance and saved over 250 hours previously spent triaging issues. These tangible improvements directly enhance customer satisfaction and operational efficiency.',
           impact: [
             {
               stat: '$1.2M+',
