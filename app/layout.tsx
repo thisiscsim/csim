@@ -6,6 +6,7 @@ import { Footer } from './footer';
 import { LenisProvider } from '@/components/LenisProvider';
 import { PersistentNavigation } from '@/components/persistent-navigation';
 import { getPublishedBlogPosts } from '@/lib/notion/blog';
+import { ProjectProvider } from './providers/project-context';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -110,30 +111,32 @@ export default async function RootLayout({
         className={`${geist.variable} ${recklessNeue.variable} ${berkeleyMono.variable} bg-primary antialiased`}
       >
         <LenisProvider>
-          <div className="mx-auto max-w-[1440px]">
-            <div className="flex min-h-screen w-full relative">
-              {/* Left side - Main content */}
-              <div className="flex-1">
-                <div className="mx-auto max-w-screen-lg px-4 pt-20">
-                  <div className="flex-1">{children}</div>
+          <ProjectProvider>
+            <div className="mx-auto max-w-[1440px]">
+              <div className="flex min-h-screen w-full relative">
+                {/* Left side - Main content */}
+                <div className="flex-1">
+                  <div className="mx-auto max-w-screen-lg px-4 pt-20">
+                    <div className="flex-1">{children}</div>
+                  </div>
                 </div>
+
+                {/* Right side - Space for navigation */}
+                <div className="w-[440px] flex-shrink-0"></div>
               </div>
-
-              {/* Right side - Space for navigation */}
-              <div className="w-[440px] flex-shrink-0"></div>
             </div>
-          </div>
 
-          {/* Fixed navigation with max-width constraint */}
-          <div
-            className="fixed top-1/2 -translate-y-1/2 w-[440px] max-w-[440px] pr-16"
-            style={{
-              right: 'max(1rem, calc((100vw - 1440px) / 2))',
-            }}
-          >
-            <PersistentNavigation blogPosts={blogPosts} />
-            <Footer />
-          </div>
+            {/* Fixed navigation with max-width constraint */}
+            <div
+              className="fixed top-1/2 -translate-y-1/2 w-[440px] max-w-[440px] pr-16"
+              style={{
+                right: 'max(1rem, calc((100vw - 1440px) / 2))',
+              }}
+            >
+              <PersistentNavigation blogPosts={blogPosts} />
+              <Footer />
+            </div>
+          </ProjectProvider>
         </LenisProvider>
       </body>
     </html>
