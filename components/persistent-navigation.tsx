@@ -514,7 +514,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                   <p className="text-sm leading-snug text-gray-700">
                     A collection of creative experiments, side projects, and visual explorations.
                     This is where I play with new ideas and push creative boundaries outside of my
-                    day-to-day product design work.
+                    day-to-day work.
                   </p>
                 </div>
               </motion.div>
