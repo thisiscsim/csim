@@ -1,0 +1,248 @@
+/* Paul Calver's Infinite Canvas Styles */
+
+/* Body and container styles */
+body.featured-active {
+  background: #f8f8f8;
+  overflow: hidden;
+}
+
+.infinite-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Featured section */
+.featured {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 500ms;
+}
+
+.featured.active-section {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.featured-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+/* Featured items container - the draggable canvas */
+.featured-items {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  will-change: transform;
+  min-width: 2700px;
+  width: 150vw;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  min-height: 101vh;
+  padding: 7vw;
+}
+
+.featured-items.is-dragging {
+  cursor: grabbing;
+}
+
+@media (max-width: 768px) {
+  .featured-items {
+    width: 100%;
+    min-width: 100%;
+    display: block;
+    padding-top: 60px;
+  }
+}
+
+/* Figure styles - exactly matching Paul's */
+.featured figure {
+  position: relative;
+  padding: 2vw;
+  will-change: transform, opacity;
+  transition:
+    transform 500ms cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 500ms,
+    filter 500ms;
+  opacity: 1;
+  transform: scale(0.9);
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+@media (max-width: 768px) {
+  .featured figure {
+    padding: 3vh 0;
+    width: 85% !important;
+  }
+
+  .featured figure:nth-child(even) {
+    margin-left: auto;
+    text-align: right;
+  }
+}
+
+/* Unfiltered figure state - hidden */
+.featured figure.unfiltered-figure {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Loaded but not staggered - scale to 1 */
+.featured figure:not(.unfiltered-figure).loaded {
+  transform: scale(1);
+}
+
+/* Project link styles */
+.featured .project-link {
+  position: relative;
+  display: block;
+  transition: transform 500ms;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+/* Project link inner - has background until loaded */
+.project-link-inner {
+  position: relative;
+  background: #eee;
+  transition: background 500ms;
+}
+
+/* Remove background when figure is loaded and not staggered */
+figure.loaded:not(.stagger) .project-link-inner {
+  background: transparent;
+}
+
+/* Image styles - hidden by default */
+.featured .project-link img,
+.featured .project-link video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition:
+    opacity 1000ms,
+    transform 500ms;
+}
+
+/* Show images when figure is loaded and not staggered */
+.featured figure.loaded:not(.stagger) .project-link img,
+.featured figure.loaded:not(.stagger) .project-link video {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Figure caption styles */
+.featured figcaption {
+  position: absolute;
+  left: 2vw;
+  bottom: 2vw;
+  padding: 0.5vw 1vw;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 300ms,
+    transform 300ms;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.featured figure.figure-hover figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.featured figcaption h2 {
+  margin: 0;
+  font-size: 1.2vw;
+  font-weight: 400;
+  color: #000;
+}
+
+/* Navigation styles */
+nav {
+  position: fixed;
+  top: 2vw;
+  right: 2vw;
+  z-index: 100;
+  mix-blend-mode: difference;
+}
+
+.title {
+  color: #000;
+  mix-blend-mode: difference;
+}
+
+.page-title {
+  font-size: 1.5vw;
+  font-weight: 400;
+  color: #000;
+}
+
+.page-title a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+/* Hover states */
+.featured figure {
+  cursor: default;
+}
+
+.featured .project-link {
+  cursor: pointer;
+}
+
+.featured .project-link:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .featured .project-link:hover {
+    transform: scale(1);
+  }
+}
+
+/* Prevent hover during drag */
+.featured-items.is-dragging figure {
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .featured figure {
+    padding: 4vw;
+  }
+
+  .featured figcaption h2 {
+    font-size: 3vw;
+  }
+
+  .page-title {
+    font-size: 4vw;
+  }
+
+  .project-link-inner {
+    background: transparent;
+  }
+}

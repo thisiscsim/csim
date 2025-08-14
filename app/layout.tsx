@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Geist } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
-import { Footer } from './footer';
 import { LenisProvider } from '@/components/LenisProvider';
 import { PersistentNavigation } from '@/components/persistent-navigation';
 import { getPublishedBlogPosts } from '@/lib/notion/blog';
@@ -134,7 +133,6 @@ export default async function RootLayout({
               }}
             >
               <PersistentNavigation blogPosts={blogPosts} />
-              <Footer />
             </div>
           </ProjectProvider>
         </LenisProvider>

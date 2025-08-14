@@ -275,3 +275,18 @@ html:hover::-webkit-scrollbar-thumb:hover {
 .spinning-icon {
   animation: spin 2s linear infinite;
 }
+
+/* Paul Calver style hover effect for featured items */
+.featured-items figure {
+  transition: opacity 0.3s ease;
+}
+
+.featured-items figure.not-selected {
+  opacity: 0.3;
+}
+
+/* Prevent initial flash before GSAP sets state */
+.featured-items img {
+  opacity: 0;
+  transform: scale(0.9);
+}
