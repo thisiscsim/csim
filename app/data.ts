@@ -49,6 +49,30 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     end: 'Now',
     projects: [
       {
+        name: 'Artifacts',
+        description: 'Intelligent document templates and generation',
+        link: 'https://motion-primitives.com/',
+        video:
+          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+        id: 'harvey-7',
+      },
+      {
+        name: 'File event log',
+        description: 'Real-time event log for file uploads',
+        link: 'https://motion-primitives.com/',
+        video:
+          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+        id: 'harvey-2',
+      },
+      {
+        name: 'Vault Projects & Knowledge Sources',
+        description: 'Persistent workspaces for long context queries',
+        link: 'https://motion-primitives.com/',
+        video:
+          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+        id: 'harvey-3',
+      },
+      {
         name: 'Review Tables',
         description: 'Multi-document retrieval, extraction & generation',
         link: 'https://pro.motion-primitives.com/',
@@ -117,28 +141,28 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         },
       },
       {
-        name: 'File event log',
-        description: 'Real-time event log for file uploads',
-        link: 'https://motion-primitives.com/',
-        video:
-          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-        id: 'harvey-2',
-      },
-      {
-        name: 'Vault Projects & Knowledge Sources',
-        description: 'Persistent workspaces for long context queries',
-        link: 'https://motion-primitives.com/',
-        video:
-          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-        id: 'harvey-3',
-      },
-      {
         name: 'Vault File Browser',
         description: 'Full-featured DMS',
         link: 'https://motion-primitives.com/',
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-4',
+      },
+      {
+        name: 'Mobile 1.0',
+        description: 'Native mobile experience for legal professionals',
+        link: 'https://motion-primitives.com/',
+        video:
+          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+        id: 'harvey-5',
+      },
+      {
+        name: 'S-1 Workflow',
+        description: 'Streamlined SEC filing preparation and review',
+        link: 'https://motion-primitives.com/',
+        video:
+          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+        id: 'harvey-6',
       },
     ],
   },
@@ -158,12 +182,12 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         id: 'arc-1',
       },
       {
-        name: 'Bill Pay',
-        description: 'Unified platform to capture, scan, and automate invoice payments',
+        name: 'Notifications',
+        description: 'Action center with granular, rule-based notification controls',
         link: 'https://motion-primitives.com/',
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-        id: 'arc-2',
+        id: 'arc-4',
       },
       {
         name: 'Settings & Security',
@@ -174,12 +198,12 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         id: 'arc-3',
       },
       {
-        name: 'Notifications',
-        description: 'Action center with granular, rule-based notification controls',
+        name: 'Bill Pay',
+        description: 'Unified platform to capture, scan, and automate invoice payments',
         link: 'https://motion-primitives.com/',
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-        id: 'arc-4',
+        id: 'arc-2',
       },
     ],
   },
@@ -215,14 +239,6 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'uber-1',
       },
-      {
-        name: 'Driver Onboarding',
-        description: 'Enhanced driver onboarding experience',
-        link: 'https://motion-primitives.com/',
-        video:
-          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-        id: 'uber-2',
-      },
     ],
   },
   {
@@ -247,6 +263,14 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'uber-2',
+      },
+      {
+        name: 'Peach',
+        description: 'Modern collaboration platform for distributed teams',
+        link: 'https://motion-primitives.com/',
+        video:
+          'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+        id: 'independent-3',
       },
     ],
   },
