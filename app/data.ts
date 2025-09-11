@@ -5,6 +5,7 @@ export type Project = {
   video: string;
   id: string;
   duration?: string;
+  tools?: string[];
   caseStudy?: {
     background: string;
     solution: string;
@@ -50,11 +51,12 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     projects: [
       {
         name: 'Artifacts',
-        description: 'Intelligent document templates and generation',
+        description: 'New interface for working with Harvey that goes beyond a simple chat',
         link: 'https://motion-primitives.com/',
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-7',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
       {
         name: 'File event log',
@@ -63,6 +65,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-2',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
       {
         name: 'Vault Projects & Knowledge Sources',
@@ -71,6 +74,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-3',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
       {
         name: 'Review Tables',
@@ -80,6 +84,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/newProfileItem/d898be8a-7037-4c71-af0c-8997239b050d.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-review-table',
         duration: '6 months',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
         caseStudy: {
           background:
             "Empowering financial management is central to Arc's vision as a comprehensive banking platform. With limited functionalities in our payment offerings, our customers have lacked incentives to increase deposits and manage spend directly through our platform. This has led directly to slower growth in Asset Under Management (AUM) and increased customer churn to our competitors offering more complete solutions.",
@@ -147,6 +152,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-4',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
       {
         name: 'Mobile 1.0',
@@ -155,6 +161,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-5',
+        tools: ['Figma', 'Swift', 'Kotlin'],
       },
       {
         name: 'S-1 Workflow',
@@ -163,6 +170,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'harvey-6',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
     ],
   },
@@ -180,6 +188,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'arc-1',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
       {
         name: 'Notifications',
@@ -188,6 +197,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'arc-4',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
       {
         name: 'Settings & Security',
@@ -196,6 +206,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'arc-3',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
       {
         name: 'Bill Pay',
@@ -204,6 +215,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'arc-2',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
     ],
   },
@@ -221,6 +233,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'flexport-1',
+        tools: ['Figma', 'TypeScript', 'React', 'Next.js'],
       },
     ],
   },
@@ -238,6 +251,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'uber-1',
+        tools: ['Figma', 'TypeScript', 'React Native'],
       },
     ],
   },
@@ -255,6 +269,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'uber-1',
+        tools: ['Figma', 'TypeScript', 'Next.js'],
       },
       {
         name: 'Amend AI [Backed by Neo]',
@@ -263,14 +278,16 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'uber-2',
+        tools: ['Figma', 'TypeScript', 'Next.js'],
       },
       {
         name: 'Peach',
-        description: 'Modern collaboration platform for distributed teams',
+        description: 'Agentic dating in the modern age',
         link: 'https://motion-primitives.com/',
         video:
           'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
         id: 'independent-3',
+        tools: ['Figma', 'TypeScript', 'Next.js'],
       },
     ],
   },

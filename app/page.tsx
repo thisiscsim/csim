@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { PROJECT_GROUPS } from './data';
 import Link from 'next/link';
-import Image from 'next/image';
+import { motion } from 'motion/react';
 
 declare global {
   interface Window {
@@ -53,6 +53,32 @@ function getProjectImage(projectId: string, projectName: string): string {
   return imageMap[projectId] || '/temp-cover/placeholder_1.png';
 }
 
+// Animation variants for staggered effect
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
+
 export default function HomePage() {
   const companyRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -63,16 +89,14 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Force light mode styles */}
-      <style jsx global>{`
-        .dotted-border {
-          border-bottom: 2px dotted #d1d5db;
-        }
-      `}</style>
-
       {/* Project case studies grid */}
       <div className="w-full pb-32 px-4 md:px-6 lg:px-8">
-        <div className="space-y-6 lg:space-y-8 max-w-[1400px] mx-auto">
+        <motion.div
+          className="space-y-6 lg:space-y-8 max-w-[1400px] mx-auto"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
           {PROJECT_GROUPS.map((group, groupIdx) => (
             <div
               key={groupIdx}
@@ -82,7 +106,10 @@ export default function HomePage() {
               }}
               className="scroll-mt-20"
             >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+              <motion.div
+                className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8"
+                variants={containerVariants}
+              >
                 {group.projects.map((project, projectIdx) => {
                   // If there's only one project in the group, make it full width
                   const isSingleProject = group.projects.length === 1;
@@ -100,39 +127,39 @@ export default function HomePage() {
                     isSingleProject || isMoab || (!isSpecialGroup && cyclePosition === 0);
 
                   return (
-                    <div
+                    <motion.div
                       key={projectIdx}
-                      className={`relative rounded-2xl bg-secondary/40 ${
-                        isFullWidth ? 'lg:col-span-2' : ''
-                      }`}
+                      className={`relative ${isFullWidth ? 'lg:col-span-2' : ''}`}
+                      variants={itemVariants}
                     >
-                      <Link
-                        href={`/projects/${project.id}`}
-                        className="block cursor-pointer h-full"
-                        prefetch={true}
-                      >
-                        <div className="relative aspect-video w-full">
-                          <Image
-                            src={getProjectImage(project.id, project.name)}
-                            alt={project.name}
-                            fill
-                            className="rounded-lg object-cover"
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <h2 className="font-base font-medium group relative inline-block text-primary transition-colors duration-200 hover:text-secondary">
-                            {project.name}
-                          </h2>
-                          <p className="font-base text-secondary">{project.description}</p>
-                        </div>
-                      </Link>
-                    </div>
+                      <div className="w-full h-full overflow-hidden bg-secondary/40">
+                        <Link
+                          href={`/projects/${project.id}`}
+                          className="block cursor-pointer h-full"
+                          prefetch={true}
+                        >
+                          <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
+                            <img
+                              src={getProjectImage(project.id, project.name)}
+                              alt={project.name}
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="mt-4">
+                            <h2 className="font-base font-medium group relative inline-block text-primary transition-colors duration-200 hover:text-secondary">
+                              {project.name}
+                            </h2>
+                            <p className="font-base text-secondary">{project.description}</p>
+                          </div>
+                        </Link>
+                      </div>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div>
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

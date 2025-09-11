@@ -200,20 +200,9 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
   return (
     <div className="w-full bg-white rounded-lg p-6">
-      {/* Force light mode styles */}
-      <style jsx global>{`
-        .dotted-border {
-          border-bottom: 2px dotted #d1d5db;
-        }
-        /* Berkeley Mono override */
-        .font-mono {
-          font-family: var(--font-berkeley-mono), monospace !important;
-        }
-      `}</style>
-
       {/* INDEX Section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors border-b-2 border-dotted border-gray-300">
           <button
             onClick={handleIndexClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -284,32 +273,40 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                         <p className="text-sm leading-snug text-gray-700">
                           {activeProject.description}
                         </p>
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                           {activeProject.caseStudy?.credits && (
-                            <div className="flex items-center justify-between text-sm">
-                              <span className="text-gray-500">Role</span>
-                              <span className="text-gray-900">
+                            <div className="text-sm">
+                              <div className="text-gray-500">Role</div>
+                              <div className="text-gray-900 mt-1">
                                 {activeProject.caseStudy.credits.people.find(
                                   (p) => p.name === 'Christopher Sim'
                                 )?.role || 'Design Lead'}
-                              </span>
+                              </div>
                             </div>
                           )}
                           {activeProject.duration && (
-                            <div className="flex items-center justify-between text-sm">
-                              <span className="text-gray-500">Duration</span>
-                              <span className="text-gray-900">{activeProject.duration}</span>
+                            <div className="text-sm">
+                              <div className="text-gray-500">Duration</div>
+                              <div className="text-gray-900 mt-1">{activeProject.duration}</div>
                             </div>
                           )}
                           {activeProject.caseStudy?.credits && (
-                            <div className="flex items-center justify-between text-sm">
-                              <span className="text-gray-500">Collaborators</span>
-                              <span className="text-gray-900 text-right">
+                            <div className="text-sm">
+                              <div className="text-gray-500">Collaborators</div>
+                              <div className="text-gray-900 mt-1">
                                 {activeProject.caseStudy.credits.people
                                   .filter((p) => p.name !== 'Christopher Sim')
                                   .map((p) => p.name)
                                   .join(', ')}
-                              </span>
+                              </div>
+                            </div>
+                          )}
+                          {activeProject.tools && activeProject.tools.length > 0 && (
+                            <div className="text-sm">
+                              <div className="text-gray-500">Tools</div>
+                              <div className="text-gray-900 mt-1">
+                                {activeProject.tools.join(', ')}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -320,32 +317,40 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                       <p className="text-sm leading-snug text-gray-700">
                         {activeProject.description}
                       </p>
-                      <div className="space-y-2">
+                      <div className="space-y-4">
                         {activeProject.caseStudy?.credits && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500">Role</span>
-                            <span className="text-gray-900">
+                          <div className="text-sm">
+                            <div className="text-gray-500">Role</div>
+                            <div className="text-gray-900 mt-1">
                               {activeProject.caseStudy.credits.people.find(
                                 (p) => p.name === 'Christopher Sim'
                               )?.role || 'Design Lead'}
-                            </span>
+                            </div>
                           </div>
                         )}
                         {activeProject.duration && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500">Duration</span>
-                            <span className="text-gray-900">{activeProject.duration}</span>
+                          <div className="text-sm">
+                            <div className="text-gray-500">Duration</div>
+                            <div className="text-gray-900 mt-1">{activeProject.duration}</div>
                           </div>
                         )}
                         {activeProject.caseStudy?.credits && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500">Collaborators</span>
-                            <span className="text-gray-900 text-right">
+                          <div className="text-sm">
+                            <div className="text-gray-500">Collaborators</div>
+                            <div className="text-gray-900 mt-1">
                               {activeProject.caseStudy.credits.people
                                 .filter((p) => p.name !== 'Christopher Sim')
                                 .map((p) => p.name)
                                 .join(', ')}
-                            </span>
+                            </div>
+                          </div>
+                        )}
+                        {activeProject.tools && activeProject.tools.length > 0 && (
+                          <div className="text-sm">
+                            <div className="text-gray-500">Tools</div>
+                            <div className="text-gray-900 mt-1">
+                              {activeProject.tools.join(', ')}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -466,7 +471,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
       {/* CRAFT section */}
       {!activeProject && (
         <div>
-          <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border">
+          <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors border-b-2 border-dotted border-gray-300">
             <button
               onClick={handleCraftClick}
               className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -526,7 +531,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
       {/* WRITING section */}
       {!activeProject && (
         <div>
-          <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors dotted-border">
+          <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors border-b-2 border-dotted border-gray-300">
             <button
               onClick={handleWritingClick}
               className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
