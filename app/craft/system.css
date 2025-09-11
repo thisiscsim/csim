@@ -1,5 +1,5 @@
 ::selection {
-  background: var(--color-orange);
+  background: var(--accent-red, #c03540);
   color: white;
 }
 
@@ -189,7 +189,7 @@
   --color-green11: hsl(153, 67%, 28.5%);
   --color-green12: hsl(155, 40%, 14%);
   /* Focus */
-  --color-focus: var(--color-orange);
+  --color-focus: var(--accent-red, #c03540);
   --focus-ring: 2px solid var(--color-focus);
   /* Breakpoints */
   --breakpoint-*: initial;
