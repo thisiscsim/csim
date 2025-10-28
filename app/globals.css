@@ -30,6 +30,10 @@
     line-height: 21px;
   }
 
+  body {
+    font-family: var(--font-geist), sans-serif;
+  }
+
   /* Semantic color utilities */
   .text-primary {
     color: rgb(var(--text-primary));
@@ -79,8 +83,8 @@
     border-color: rgb(var(--border-muted));
   }
 
-  /* Use Geist for small text (12px or smaller) */
-  .text-xs,
+  /* Temporarily disabled Geist overrides to use Reckless everywhere */
+  /* .text-xs,
   .text-sm,
   .text-[10px],
   .text-[11px],
@@ -91,21 +95,21 @@
   [class*='text-[11px]'],
   [class*='text-[12px]'] {
     font-family: var(--font-geist), sans-serif !important;
-  }
+  } */
 
   /* Also apply Geist to specific semantic elements */
-  time,
+  /* time,
   .metadata,
   .caption,
   .small-text {
     font-family: var(--font-geist), sans-serif;
-  }
+  } */
 
   /* Override parent font for text-xs and text-sm */
-  .font-\[family-name\:var\(--font-reckless-neue\)\] .text-xs,
+  /* .font-\[family-name\:var\(--font-reckless-neue\)\] .text-xs,
   .font-\[family-name\:var\(--font-reckless-neue\)\] .text-sm {
     font-family: var(--font-geist), sans-serif !important;
-  }
+  } */
 
   /* Headers use Reckless Neue font */
   h1,
