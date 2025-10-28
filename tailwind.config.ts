@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         mono: ['var(--font-berkeley-mono)', 'monospace'],
+        reckless: ['var(--font-reckless-neue)', 'serif'],
       },
       colors: {
         accent: {

@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { PROJECT_GROUPS } from './data';
-import Link from 'next/link';
 import { motion } from 'motion/react';
+import Image from 'next/image';
 
 declare global {
   interface Window {
@@ -10,44 +10,50 @@ declare global {
   }
 }
 
-// Map project IDs/names to their corresponding images
-function getProjectImage(projectId: string, projectName: string): string {
+// Map aspect ratio to Tailwind classes
+function getAspectRatioClass(aspectRatio?: string): string {
+  switch (aspectRatio) {
+    case 'portrait':
+      return 'aspect-[4/5]';
+    case 'wide':
+      return 'aspect-[3/2]';
+    case 'landscape':
+    default:
+      return 'aspect-[5/4]';
+  }
+}
+
+// Map project IDs to their static image fallbacks
+function getProjectImageFallback(projectId: string, projectName: string): string {
   const imageMap: { [key: string]: string } = {
     // Harvey projects
     'harvey-review-table': '/temp-cover/harvey-review-tables.png',
     'harvey-2': '/temp-cover/harvey-file-event-log.png',
-    'harvey-3': '/temp-cover/placeholder_1.png', // No specific image yet
-    'harvey-4': '/temp-cover/placeholder_1.png', // No specific image yet
-    'harvey-5': '/temp-cover/placeholder_1.png', // Mobile 1.0
-    'harvey-6': '/temp-cover/placeholder_1.png', // S-1 Workflow
-    'harvey-7': '/temp-cover/placeholder_1.png', // Artifacts
+    'harvey-3': '/temp-cover/placeholder_1.png',
+    'harvey-4': '/temp-cover/placeholder_1.png',
+    'harvey-5': '/temp-cover/placeholder_1.png',
+    'harvey-6': '/temp-cover/placeholder_1.png',
+    'harvey-7': '/temp-cover/placeholder_1.png',
 
     // Arc projects
     'arc-1': '/temp-cover/arc-deposit.png',
     'arc-2': '/temp-cover/arc-billpay.png',
     'arc-3': '/temp-cover/arc-settings.png',
-    'arc-4': '/temp-cover/placeholder_1.png', // No specific image yet
+    'arc-4': '/temp-cover/placeholder_1.png',
 
     // Flexport projects
     'flexport-1': '/temp-cover/flexport-teamview.png',
 
     // Uber projects
     'uber-1': '/temp-cover/uber-driver-onboarding.png',
-    'uber-2': '/temp-cover/placeholder_1.png', // For Uber onboarding, using same or placeholder
-
-    // Independent projects - note: these have duplicate IDs 'uber-1' and 'uber-2' in data
-    'independent-3': '/temp-cover/placeholder_1.png', // Peach
   };
 
-  // Special handling for Independent projects with duplicate IDs
+  // Special handling for projects
   if (projectName.includes('Moab')) {
     return '/temp-cover/moab.png';
   }
   if (projectName.includes('Amend')) {
     return '/temp-cover/amend.png';
-  }
-  if (projectName.includes('Peach')) {
-    return '/temp-cover/placeholder_1.png';
   }
 
   return imageMap[projectId] || '/temp-cover/placeholder_1.png';
@@ -59,7 +65,8 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      delayChildren: 0.4,
+      staggerChildren: 0.05,
     },
   },
 };
@@ -88,11 +95,96 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative mt-[90px]">
+      {/* Introduction Section */}
+      <div className="w-full px-4 md:px-6 lg:px-8 mb-32">
+        <div className="max-w-[1400px] mx-auto">
+          <motion.h1
+            className="text-xl font-reckless font-medium text-primary"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: 0 }}
+          >
+            Christopher Sim
+          </motion.h1>
+          <motion.h2
+            className="text-xl text-secondary font-reckless mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+          >
+            Software designer based in San Francisco
+          </motion.h2>
+
+          <motion.div
+            className="space-y-4 text-md text-secondary leading-relaxed max-w-3xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
+          >
+            <p>
+              He&apos;s a software designer at Harvey, designing the frontier agentic AI platform
+              for legal and professional services. Previously, he has worked with teams at Flexport,
+              Uber, and Arc. In his free time, he&apos;s also a design consultant for emerging AI
+              and software companies backed by top VCs.
+            </p>
+            <p>
+              He&apos;s a designer at works on the intersection of design and engineering. He
+              received his master&apos;s in Human-Computer Interaction from the University of
+              Washington.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="mt-8 text-sm font-mono text-secondary flex items-center gap-4 flex-wrap"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
+          >
+            <a
+              href="https://twitter.com/yourusername"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors flex items-center gap-1"
+            >
+              <Image src="/social-icons/IconX.svg" alt="" width={16} height={16} />
+              <span>Twitter</span>
+            </a>
+            <a
+              href="https://threads.net/@yourusername"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors flex items-center gap-1"
+            >
+              <Image src="/social-icons/IconThreads.svg" alt="" width={16} height={16} />
+              <span>Threads</span>
+            </a>
+            <a
+              href="https://instagram.com/yourusername"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors flex items-center gap-1"
+            >
+              <Image src="/social-icons/IconInstagram.svg" alt="" width={16} height={16} />
+              <span>Instagram</span>
+            </a>
+            <a
+              href="https://are.na/yourusername"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors flex items-center gap-1"
+            >
+              <Image src="/social-icons/IconArena.svg" alt="" width={16} height={16} />
+              <span>Are.na</span>
+            </a>
+          </motion.div>
+        </div>
+      </div>
+
       {/* Project case studies grid */}
       <div className="w-full pb-32 px-4 md:px-6 lg:px-8">
         <motion.div
-          className="space-y-6 lg:space-y-8 max-w-[1400px] mx-auto"
+          className="space-y-32 max-w-[1400px] mx-auto"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -104,54 +196,70 @@ export default function HomePage() {
               ref={(el) => {
                 companyRefs.current[`company-${groupIdx}`] = el;
               }}
-              className="scroll-mt-20"
+              className="scroll-mt-32"
             >
-              <motion.div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8"
-                variants={containerVariants}
-              >
+              {/* Company Header */}
+              <motion.div className="mb-8" variants={itemVariants}>
+                <p className="text-sm font-mono text-secondary">
+                  {group.start} — {group.end}
+                </p>
+                <h2 className="text-lg font-reckless font-medium text-primary">
+                  {group.title} at {group.company}
+                </h2>
+                {group.description && (
+                  <p className="text-md text-secondary leading-relaxed max-w-3xl">
+                    {group.description}
+                  </p>
+                )}
+              </motion.div>
+
+              <motion.div className="space-y-8" variants={containerVariants}>
                 {group.projects.map((project, projectIdx) => {
-                  // If there's only one project in the group, make it full width
-                  const isSingleProject = group.projects.length === 1;
+                  // Check if it's a real video URL (not the placeholder Cloudinary URL)
+                  const isPlaceholderVideo =
+                    project.video.includes('XSfIvT7BUWbPRXhrbLed') ||
+                    project.video.includes('ee6871c9-8400-49d2-8be9-e32675eabf7e');
 
-                  // Special case: Moab should always span full width
-                  const isMoab = project.name.includes('Moab');
+                  const isVideo =
+                    project.video &&
+                    !isPlaceholderVideo &&
+                    (project.video.includes('.mp4') ||
+                      project.video.includes('.webm') ||
+                      project.video.includes('.mov'));
 
-                  // For 'Independent' and 'Uber': all projects side-by-side (no full width)
-                  const isSpecialGroup =
-                    group.company === 'Independent' || group.company === 'Uber';
+                  const mediaSrc = isPlaceholderVideo
+                    ? getProjectImageFallback(project.id, project.name)
+                    : project.video;
 
-                  // For other groups: Pattern: 0 (full), 1-2 (half), 3 (full), 4-5 (half), etc.
-                  const cyclePosition = projectIdx % 3;
-                  const isFullWidth =
-                    isSingleProject || isMoab || (!isSpecialGroup && cyclePosition === 0);
+                  const aspectRatioClass = getAspectRatioClass(project.aspectRatio);
 
                   return (
-                    <motion.div
-                      key={projectIdx}
-                      className={`relative ${isFullWidth ? 'lg:col-span-2' : ''}`}
-                      variants={itemVariants}
-                    >
-                      <div className="w-full h-full overflow-hidden bg-secondary/40">
-                        <Link
-                          href={`/projects/${project.id}`}
-                          className="block cursor-pointer h-full"
-                          prefetch={true}
+                    <motion.div key={projectIdx} className="relative" variants={itemVariants}>
+                      <div className="w-full h-full">
+                        <div
+                          className={`relative ${aspectRatioClass} w-full overflow-hidden bg-gray-100`}
                         >
-                          <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
-                            <img
-                              src={getProjectImage(project.id, project.name)}
-                              alt={project.name}
+                          {isVideo ? (
+                            <video
+                              src={mediaSrc}
                               className="absolute inset-0 w-full h-full object-cover"
+                              autoPlay
+                              loop
+                              muted
+                              playsInline
                             />
-                          </div>
-                          <div className="mt-4">
-                            <h2 className="font-base font-medium group relative inline-block text-primary transition-colors duration-200 hover:text-secondary">
-                              {project.name}
-                            </h2>
-                            <p className="font-base text-secondary">{project.description}</p>
-                          </div>
-                        </Link>
+                          ) : (
+                            <Image
+                              src={mediaSrc}
+                              alt={project.name}
+                              fill
+                              className="object-cover"
+                            />
+                          )}
+                        </div>
+                        <p className="mt-3 text-[12px] font-mono text-secondary">
+                          {project.description}
+                        </p>
                       </div>
                     </motion.div>
                   );

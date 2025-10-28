@@ -3,9 +3,8 @@ import { Geist } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
-import { PersistentNavigation } from '@/components/persistent-navigation';
+import { HeaderNavigation } from '@/components/header-navigation';
 import { getPublishedBlogPosts } from '@/lib/notion/blog';
-import { ProjectProvider } from './providers/project-context';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -88,53 +87,35 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link
-          rel="preload"
-          href="/fonts/RecklessNeue-Regular.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/Berkeley%20Mono%20Variable.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
       <body
         className={`${geist.variable} ${recklessNeue.variable} ${berkeleyMono.variable} bg-primary antialiased`}
       >
         <LenisProvider>
-          <ProjectProvider>
-            <div className="mx-auto max-w-[1440px]">
-              <div className="flex min-h-screen w-full relative">
-                {/* Left side - Main content */}
-                <div className="flex-1">
-                  <div className="mx-auto max-w-screen-lg px-4 pt-20">
-                    <div className="flex-1">{children}</div>
-                  </div>
+          {/* Header Navigation */}
+          <HeaderNavigation blogPosts={blogPosts} />
+          <div className="mx-auto max-w-[1440px]">
+            <div className="flex min-h-screen w-full relative">
+              {/* Left side - Main content */}
+              <div className="flex-1">
+                <div className="mx-auto max-w-[740px] px-4 pt-20">
+                  <div className="flex-1">{children}</div>
                 </div>
-
-                {/* Right side - Space for navigation */}
-                <div className="w-[440px] flex-shrink-0"></div>
               </div>
-            </div>
 
-            {/* Fixed navigation with max-width constraint */}
-            <div
-              className="fixed top-1/2 -translate-y-1/2 w-[440px] max-w-[440px] pr-16"
-              style={{
-                right: 'max(1rem, calc((100vw - 1440px) / 2))',
-              }}
-            >
-              <PersistentNavigation blogPosts={blogPosts} />
+              {/* Right side - Space for navigation */}
+              {/* <div className="w-[440px] flex-shrink-0"></div> */}
             </div>
-          </ProjectProvider>
+          </div>
+
+          {/* Fixed navigation with max-width constraint */}
+          {/* <div
+            className="fixed top-1/2 -translate-y-1/2 w-[440px] max-w-[440px] pr-16"
+            style={{
+              right: 'max(1rem, calc((100vw - 1440px) / 2))',
+            }}
+          >
+            <PersistentNavigation blogPosts={blogPosts} />
+          </div> */}
         </LenisProvider>
       </body>
     </html>

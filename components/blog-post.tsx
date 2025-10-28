@@ -64,7 +64,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
   }, [post.slug]);
 
   return (
-    <div className="pb-24">
+    <div className="pb-24 mt-[90px]">
       <motion.div
         key={post.slug} // Force remount on post change
         className="space-y-8"
@@ -75,9 +75,9 @@ export default function BlogPost({ post, content }: BlogPostProps) {
         <motion.header variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
           <div className="space-y-6">
             <div className="space-y-2">
-              <h1 className="text-4xl font-medium text-primary">{post.title}</h1>
-              <div className="flex items-center gap-2 text-sm text-zinc-500">
-                <div className="text-xs text-zinc-400">
+              <h1 className="text-2xl font-medium text-primary">{post.title}</h1>
+              <div className="flex flex-col gap-1 text-sm text-zinc-500">
+                <div className="text-xs text-zinc-400 font-mono">
                   {new Date(post.date).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -85,9 +85,8 @@ export default function BlogPost({ post, content }: BlogPostProps) {
                   })}
                 </div>
                 {post.categories && post.categories.length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <span>•</span>
-                    <div className="text-xs text-zinc-400">{post.categories.join(', ')}</div>
+                  <div className="text-xs text-zinc-400 font-mono">
+                    {post.categories.join(', ')}
                   </div>
                 )}
               </div>
