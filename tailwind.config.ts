@@ -14,6 +14,13 @@ const config: Config = {
         sans: [`var(${typography.fonts.body.variable})`, ...typography.fonts.body.fallback],
         mono: [`var(${typography.fonts.mono.variable})`, ...typography.fonts.mono.fallback],
       },
+      fontSize: Object.entries(typography.sizes).reduce(
+        (acc, [key, value]) => ({
+          ...acc,
+          [key]: [value.fontSize, { lineHeight: value.lineHeight }],
+        }),
+        {}
+      ),
       colors: {
         accent: {
           red: '#C03540',
@@ -36,13 +43,6 @@ const config: Config = {
         },
       },
     },
-    fontSize: Object.entries(typography.sizes).reduce(
-      (acc, [key, value]) => ({
-        ...acc,
-        [key]: [value.fontSize, { lineHeight: value.lineHeight }],
-      }),
-      {}
-    ),
   },
   plugins: [typographyPlugin],
 };
