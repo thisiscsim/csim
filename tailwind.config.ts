@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
-import typography from '@tailwindcss/typography';
+import typographyPlugin from '@tailwindcss/typography';
+import { typography } from './lib/typography.config';
 
 const config: Config = {
   content: [
@@ -10,8 +11,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        mono: ['var(--font-berkeley-mono)', 'monospace'],
-        reckless: ['var(--font-reckless-neue)', 'serif'],
+        sans: [`var(${typography.fonts.body.variable})`, ...typography.fonts.body.fallback],
+        mono: [`var(${typography.fonts.mono.variable})`, ...typography.fonts.mono.fallback],
       },
       colors: {
         accent: {
@@ -35,46 +36,15 @@ const config: Config = {
         },
       },
     },
-    fontSize: {
-      xs: [
-        '10px',
-        {
-          lineHeight: '14px',
-        },
-      ],
-      base: [
-        '14px',
-        {
-          lineHeight: '22px',
-        },
-      ],
-      sm: [
-        '12px',
-        {
-          lineHeight: '16px',
-        },
-      ],
-      lg: [
-        '18px',
-        {
-          lineHeight: '28px',
-        },
-      ],
-      xl: [
-        '20px',
-        {
-          lineHeight: '30px',
-        },
-      ],
-      '2xl': [
-        '24px',
-        {
-          lineHeight: '36px',
-        },
-      ],
-    },
+    fontSize: Object.entries(typography.sizes).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: [value.fontSize, { lineHeight: value.lineHeight }],
+      }),
+      {}
+    ),
   },
-  plugins: [typography],
+  plugins: [typographyPlugin],
 };
 
 export default config;

@@ -51,8 +51,10 @@ export default async function WritingPostPage({ params }: PageProps) {
   }
 
   return (
-    <Suspense fallback={<LoadingSkeleton />}>
-      <BlogPost post={post} content={post.content || ''} />
-    </Suspense>
+    <div className="relative">
+      <Suspense fallback={<LoadingSkeleton />}>
+        <BlogPost post={post} content={post.content || ''} />
+      </Suspense>
+    </div>
   );
 }
