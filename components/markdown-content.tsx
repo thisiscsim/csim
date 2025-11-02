@@ -5,16 +5,36 @@ import { memo } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-const H1Component = memo(function H1Component({ _node, ...props }: any) {
-  return <h1 className="text-2xl font-medium mt-8 mb-4" {...props} />;
+const generateId = (children: any): string => {
+  const text = typeof children === 'string' ? children : children?.toString() || '';
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+};
+
+const H1Component = memo(function H1Component({ _node, children, ...props }: any) {
+  const id = generateId(children);
+  return (
+    <h1 id={id} className="text-2xl font-medium mt-8 mb-4" {...props}>
+      {children}
+    </h1>
+  );
 });
 
-const H2Component = memo(function H2Component({ _node, ...props }: any) {
-  return <h2 className="text-xl font-medium mt-6 mb-3" {...props} />;
+const H2Component = memo(function H2Component({ _node, children, ...props }: any) {
+  const id = generateId(children);
+  return (
+    <h2 id={id} className="text-xl font-medium mt-6 mb-3" {...props}>
+      {children}
+    </h2>
+  );
 });
 
-const H3Component = memo(function H3Component({ _node, ...props }: any) {
-  return <h3 className="text-lg font-medium mt-4 mb-2" {...props} />;
+const H3Component = memo(function H3Component({ _node, children, ...props }: any) {
+  const id = generateId(children);
+  return (
+    <h3 id={id} className="text-lg font-medium mt-4 mb-2" {...props}>
+      {children}
+    </h3>
+  );
 });
 
 const H4Component = memo(function H4Component({ _node, ...props }: any) {

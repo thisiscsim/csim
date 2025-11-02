@@ -100,7 +100,7 @@ export default function HomePage() {
       <div className="w-full px-4 md:px-6 lg:px-8 mb-32">
         <div className="max-w-[1400px] mx-auto">
           <motion.h1
-            className="text-xl font-reckless font-medium text-primary"
+            className="text-xl font-medium text-primary"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0 }}
@@ -108,7 +108,7 @@ export default function HomePage() {
             Christopher Sim
           </motion.h1>
           <motion.h2
-            className="text-xl text-secondary font-reckless mb-4"
+            className="text-xl text-secondary mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
@@ -123,15 +123,54 @@ export default function HomePage() {
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
           >
             <p>
-              He&apos;s a software designer at Harvey, designing the frontier agentic AI platform
-              for legal and professional services. Previously, he has worked with teams at Flexport,
-              Uber, and Arc. In his free time, he&apos;s also a design consultant for emerging AI
-              and software companies backed by top VCs.
+              Currently a software designer at{' '}
+              <a
+                href="https://harvey.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary hover:text-[#C03540] hover:border-b hover:border-dotted hover:border-[#C03540] transition-colors"
+              >
+                Harvey
+                <sup>1</sup>
+              </a>
+              , building the frontier agentic AI platform for legal and professional services.
+              Previously, worked with teams at{' '}
+              <a
+                href="https://flexport.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary hover:text-[#C03540] hover:border-b hover:border-dotted hover:border-[#C03540] transition-colors"
+              >
+                Flexport
+                <sup>2</sup>
+              </a>
+              ,{' '}
+              <a
+                href="https://uber.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary hover:text-[#C03540] hover:border-b hover:border-dotted hover:border-[#C03540] transition-colors"
+              >
+                Uber
+                <sup>3</sup>
+              </a>
+              , and{' '}
+              <a
+                href="https://www.joinarc.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary hover:text-[#C03540] hover:border-b hover:border-dotted hover:border-[#C03540] transition-colors"
+              >
+                Arc
+                <sup>4</sup>
+              </a>
+              . In my free time, I&apos;m a design consultant for emerging software companies backed
+              by top VCs.
             </p>
             <p>
-              He&apos;s a designer at works on the intersection of design and engineering. He
-              received his master&apos;s in Human-Computer Interaction from the University of
-              Washington.
+              I love working on niche problems and simplifying complexities so people can focus on
+              more valuable work. I received my master&apos;s in Human-Computer Interaction from the
+              University of Washington.
             </p>
           </motion.div>
 
@@ -198,21 +237,6 @@ export default function HomePage() {
               }}
               className="scroll-mt-32"
             >
-              {/* Company Header */}
-              <motion.div className="mb-8" variants={itemVariants}>
-                <p className="text-sm font-mono text-secondary">
-                  {group.start} — {group.end}
-                </p>
-                <h2 className="text-lg font-reckless font-medium text-primary">
-                  {group.title} at {group.company}
-                </h2>
-                {group.description && (
-                  <p className="text-md text-secondary leading-relaxed max-w-3xl">
-                    {group.description}
-                  </p>
-                )}
-              </motion.div>
-
               <motion.div className="space-y-8" variants={containerVariants}>
                 {group.projects.map((project, projectIdx) => {
                   // Check if it's a real video URL (not the placeholder Cloudinary URL)

@@ -2,6 +2,10 @@
 @plugin '@tailwindcss/typography';
 
 :root {
+  /* Typography */
+  --base-font-size: 13px;
+  --base-line-height: 20px;
+
   --scrollbar-thumb: rgb(212 212 216); /* zinc-300 */
   --scrollbar-thumb-hover: rgb(161 161 170); /* zinc-400 */
 
@@ -26,12 +30,12 @@
 /* Base styles */
 @layer base {
   html {
-    font-size: 14px;
-    line-height: 21px;
+    font-size: var(--base-font-size, 13px);
+    line-height: var(--base-line-height, 20px);
   }
 
   body {
-    font-family: var(--font-geist), sans-serif;
+    font-family: var(--font-abc-marist), sans-serif;
   }
 
   /* Semantic color utilities */
@@ -111,14 +115,14 @@
     font-family: var(--font-geist), sans-serif !important;
   } */
 
-  /* Headers use Reckless Neue font */
+  /* Headers use ABC Marist font */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: var(--font-reckless-neue), sans-serif;
+    font-family: var(--font-abc-marist), sans-serif;
   }
 
   /* Default border color compatibility styles */

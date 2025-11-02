@@ -144,7 +144,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     start: '2022',
     end: '2023',
     description:
-      'Built tools for modern freight forwarding with real-time visibility and telemetry. Designed experiences for shipment tracking, exception management, and supply chain operations.',
+      'Built tools for supply chain operators that provide real-time obversability and telemetry enabling teams to easily track shipments from factory to warehouse, within every leg of the shipment journey.',
     projects: [
       {
         name: 'Freight Forwarding App',

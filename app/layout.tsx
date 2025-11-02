@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
@@ -28,37 +27,20 @@ export const metadata: Metadata = {
   },
 };
 
-const geist = Geist({
-  variable: '--font-geist',
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-});
-
-const recklessNeue = localFont({
+const abcMarist = localFont({
   src: [
     {
-      path: '../public/fonts/RecklessNeue-Regular.woff2',
-      weight: '400',
+      path: '../public/fonts/ABCMaristVariable-Trial.woff2',
+      weight: '100 900',
       style: 'normal',
     },
     {
-      path: '../public/fonts/RecklessNeue-RegularItalic.woff2',
-      weight: '400',
-      style: 'italic',
-    },
-    {
-      path: '../public/fonts/RecklessNeue-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../public/fonts/RecklessNeue-MediumItalic.woff2',
-      weight: '500',
+      path: '../public/fonts/ABCMaristVariableItalic-Trial.woff2',
+      weight: '100 900',
       style: 'italic',
     },
   ],
-  variable: '--font-reckless-neue',
+  variable: '--font-abc-marist',
   display: 'swap',
   preload: true,
   fallback: ['sans-serif'],
@@ -87,9 +69,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geist.variable} ${recklessNeue.variable} ${berkeleyMono.variable} bg-primary antialiased`}
-      >
+      <body className={`${abcMarist.variable} ${berkeleyMono.variable} bg-primary antialiased`}>
         <LenisProvider>
           {/* Header Navigation */}
           <HeaderNavigation blogPosts={blogPosts} />
@@ -97,7 +77,7 @@ export default async function RootLayout({
             <div className="flex min-h-screen w-full relative">
               {/* Left side - Main content */}
               <div className="flex-1">
-                <div className="mx-auto max-w-[740px] px-4 pt-20">
+                <div className="mx-auto max-w-[700px] px-4 pt-20">
                   <div className="flex-1">{children}</div>
                 </div>
               </div>
