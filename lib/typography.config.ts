@@ -66,11 +66,11 @@ export const typography = {
       lineHeight: '18px',
     },
     sm: {
-      fontSize: '13px',
+      fontSize: '14px',
       lineHeight: '20px',
     },
     base: {
-      fontSize: '13px',
+      fontSize: '14px',
       lineHeight: '20px',
     },
     md: {
@@ -92,7 +92,7 @@ export const typography = {
   },
 
   // Base HTML font size
-  htmlFontSize: '13px',
+  htmlFontSize: '14px',
   htmlLineHeight: '20px',
 } as const;
 
