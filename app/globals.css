@@ -38,6 +38,11 @@
     font-family: var(--font-abc-marist), sans-serif;
   }
 
+  .font-mono {
+    font-family: var(--font-jetbrains-mono), ui-monospace, 'SF Mono', monospace !important;
+    font-weight: 500;
+  }
+
   /* Semantic color utilities */
   .text-primary {
     color: rgb(var(--text-primary));

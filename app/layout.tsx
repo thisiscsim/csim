@@ -46,18 +46,16 @@ const abcMarist = localFont({
   fallback: ['sans-serif'],
 });
 
-const berkeleyMono = localFont({
+const jetbrainsMono = localFont({
   src: [
     {
-      path: '../public/fonts/Berkeley Mono Variable.woff2',
-      weight: '100 900',
+      path: '../public/fonts/JetBrainsMono-Medium.woff2',
+      weight: '500',
       style: 'normal',
     },
   ],
-  variable: '--font-berkeley-mono',
+  variable: '--font-jetbrains-mono',
   display: 'swap',
-  preload: true,
-  fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
 });
 
 export default async function RootLayout({
@@ -69,7 +67,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${abcMarist.variable} ${berkeleyMono.variable} bg-primary antialiased`}>
+      <body className={`${abcMarist.variable} ${jetbrainsMono.variable} bg-primary antialiased`}>
         <LenisProvider>
           {/* Header Navigation */}
           <HeaderNavigation blogPosts={blogPosts} />
