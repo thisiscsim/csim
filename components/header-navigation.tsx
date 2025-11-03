@@ -92,7 +92,7 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
   return (
     <motion.div
       className="fixed left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
-      style={{ top: '40px' }}
+      style={{ top: '32px' }}
     >
       <div
         className="overflow-hidden h-[20px] pointer-events-auto"
