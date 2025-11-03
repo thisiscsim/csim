@@ -45,16 +45,21 @@ export const typography = {
       fallback: ['sans-serif'],
     },
     mono: {
-      name: 'Berkeley Mono',
-      path: '../public/fonts/Berkeley Mono Variable.woff2',
+      name: 'JetBrains Mono',
+      path: '../public/fonts/JetBrainsMono-Medium.woff2',
       sources: [
         {
-          path: '../public/fonts/Berkeley Mono Variable.woff2',
-          weight: '100 900',
+          path: '../public/fonts/JetBrainsMono-Regular.woff2',
+          weight: '400',
+          style: 'normal',
+        },
+        {
+          path: '../public/fonts/JetBrainsMono-Medium.woff2',
+          weight: '500',
           style: 'normal',
         },
       ],
-      variable: '--font-berkeley-mono',
+      variable: '--font-jetbrains-mono',
       fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
     },
   },
