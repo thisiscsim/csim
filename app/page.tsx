@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PROJECT_GROUPS } from './data';
 import { motion } from 'motion/react';
 import Image from 'next/image';
@@ -88,14 +88,68 @@ const itemVariants = {
 
 export default function HomePage() {
   const companyRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [showBottomGradient, setShowBottomGradient] = useState(false);
 
   // Make refs available globally for navigation
   useEffect(() => {
     window.companyRefs = companyRefs;
   }, []);
 
+  // Handle scroll detection for gradients
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
+
+      // Show top gradient when scrolled down from top
+      setIsScrolled(scrollTop > 0);
+
+      // Show bottom gradient when not at the very bottom
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+      setShowBottomGradient(distanceFromBottom > 1);
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen relative mt-[90px]">
+      {/* Top Blur Gradient Overlay */}
+      <div
+        className={`fixed top-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
+          isScrolled ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{
+          height: '96px',
+          backdropFilter: 'blur(5px)',
+          WebkitBackdropFilter: 'blur(5px)',
+          opacity: 0.95,
+          maskImage: 'linear-gradient(to bottom, black 25%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 25%, transparent)',
+        }}
+      />
+
+      {/* Bottom Blur Gradient Overlay */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
+          showBottomGradient ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{
+          height: '96px',
+          backdropFilter: 'blur(5px)',
+          WebkitBackdropFilter: 'blur(5px)',
+          opacity: 0.95,
+          maskImage: 'linear-gradient(to top, black 25%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to top, black 25%, transparent)',
+        }}
+      />
+
       {/* Introduction Section */}
       <div className="w-full px-4 md:px-6 lg:px-8 mb-32">
         <div className="max-w-[1400px] mx-auto">
