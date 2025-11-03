@@ -1,27 +1,8 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import { PROJECT_GROUPS } from './data';
+import { useEffect, useState } from 'react';
+import { PROJECTS } from './data';
 import { motion } from 'motion/react';
 import Image from 'next/image';
-
-declare global {
-  interface Window {
-    companyRefs?: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
-  }
-}
-
-// Map aspect ratio to Tailwind classes
-function getAspectRatioClass(aspectRatio?: string): string {
-  switch (aspectRatio) {
-    case 'portrait':
-      return 'aspect-[4/5]';
-    case 'wide':
-      return 'aspect-[3/2]';
-    case 'landscape':
-    default:
-      return 'aspect-[5/4]';
-  }
-}
 
 // Map project IDs to their static image fallbacks
 function getProjectImageFallback(projectId: string, projectName: string): string {
@@ -59,6 +40,19 @@ function getProjectImageFallback(projectId: string, projectName: string): string
   return imageMap[projectId] || '/temp-cover/placeholder_1.png';
 }
 
+// Map aspect ratio to Tailwind classes
+function getAspectRatioClass(aspectRatio?: string): string {
+  switch (aspectRatio) {
+    case 'portrait':
+      return 'aspect-[4/5]';
+    case 'wide':
+      return 'aspect-[3/2]';
+    case 'landscape':
+    default:
+      return 'aspect-[5/4]';
+  }
+}
+
 // Animation variants for staggered effect
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -87,28 +81,15 @@ const itemVariants = {
 };
 
 export default function HomePage() {
-  const companyRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showBottomGradient, setShowBottomGradient] = useState(false);
 
-  // Make refs available globally for navigation
-  useEffect(() => {
-    window.companyRefs = companyRefs;
-  }, []);
-
-  // Handle scroll detection for gradients
+  // Handle scroll detection for gradient
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = window.innerHeight;
 
       // Show top gradient when scrolled down from top
       setIsScrolled(scrollTop > 0);
-
-      // Show bottom gradient when not at the very bottom
-      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-      setShowBottomGradient(distanceFromBottom > 1);
     };
 
     // Initial check
@@ -119,7 +100,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen relative mt-[90px]">
+    <div className="min-h-screen relative mt-[70px]">
       {/* Top Blur Gradient Overlay */}
       <div
         className={`fixed top-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
@@ -135,26 +116,11 @@ export default function HomePage() {
         }}
       />
 
-      {/* Bottom Blur Gradient Overlay */}
-      <div
-        className={`fixed bottom-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
-          showBottomGradient ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          height: '96px',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)',
-          opacity: 0.95,
-          maskImage: 'linear-gradient(to top, black 25%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to top, black 25%, transparent)',
-        }}
-      />
-
       {/* Introduction Section */}
       <div className="w-full px-4 md:px-6 lg:px-8 mb-32">
         <div className="max-w-[1400px] mx-auto">
           <motion.h1
-            className="text-xl font-medium text-primary"
+            className="text-[17px] leading-[26px] font-medium text-primary"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0 }}
@@ -162,7 +128,7 @@ export default function HomePage() {
             Christopher Sim
           </motion.h1>
           <motion.h2
-            className="text-xl text-secondary mb-4"
+            className="text-[17px] leading-[26px] text-secondary mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
@@ -274,77 +240,67 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Project case studies grid */}
+      {/* Projects */}
       <div className="w-full pb-32 px-4 md:px-6 lg:px-8">
         <motion.div
-          className="space-y-32 max-w-[1400px] mx-auto"
+          className="space-y-16 max-w-[1400px] mx-auto"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
-          {PROJECT_GROUPS.map((group, groupIdx) => (
-            <div
-              key={groupIdx}
-              id={`company-${groupIdx}`}
-              ref={(el) => {
-                companyRefs.current[`company-${groupIdx}`] = el;
-              }}
-              className="scroll-mt-32"
-            >
-              <motion.div className="space-y-8" variants={containerVariants}>
-                {group.projects.map((project, projectIdx) => {
-                  // Check if it's a real video URL (not the placeholder Cloudinary URL)
-                  const isPlaceholderVideo =
-                    project.video.includes('XSfIvT7BUWbPRXhrbLed') ||
-                    project.video.includes('ee6871c9-8400-49d2-8be9-e32675eabf7e');
+          {PROJECTS.map((project, projectIdx) => {
+            // Check if it's a real video URL (not the placeholder Cloudinary URL)
+            const isPlaceholderVideo =
+              project.media.includes('XSfIvT7BUWbPRXhrbLed') ||
+              project.media.includes('ee6871c9-8400-49d2-8be9-e32675eabf7e');
 
-                  const isVideo =
-                    project.video &&
-                    !isPlaceholderVideo &&
-                    (project.video.includes('.mp4') ||
-                      project.video.includes('.webm') ||
-                      project.video.includes('.mov'));
+            const isVideo =
+              project.media &&
+              !isPlaceholderVideo &&
+              (project.media.includes('.mp4') ||
+                project.media.includes('.webm') ||
+                project.media.includes('.mov'));
 
-                  const mediaSrc = isPlaceholderVideo
-                    ? getProjectImageFallback(project.id, project.name)
-                    : project.video;
+            const mediaSrc = isPlaceholderVideo
+              ? getProjectImageFallback(project.id, project.title)
+              : project.media;
 
-                  const aspectRatioClass = getAspectRatioClass(project.aspectRatio);
+            const aspectRatioClass = getAspectRatioClass(project.aspectRatio);
 
-                  return (
-                    <motion.div key={projectIdx} className="relative" variants={itemVariants}>
-                      <div className="w-full h-full">
-                        <div
-                          className={`relative ${aspectRatioClass} w-full overflow-hidden bg-gray-100`}
-                        >
-                          {isVideo ? (
-                            <video
-                              src={mediaSrc}
-                              className="absolute inset-0 w-full h-full object-cover"
-                              autoPlay
-                              loop
-                              muted
-                              playsInline
-                            />
-                          ) : (
-                            <Image
-                              src={mediaSrc}
-                              alt={project.name}
-                              fill
-                              className="object-cover"
-                            />
-                          )}
-                        </div>
-                        <p className="mt-3 text-[12px] font-mono text-secondary">
-                          {project.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+            return (
+              <motion.div key={projectIdx} className="relative" variants={itemVariants}>
+                <div className="w-full h-full">
+                  {/* Caption at top */}
+                  <div className="mb-3 flex items-baseline gap-2">
+                    <span className="text-[14px] leading-[20px] text-secondary">
+                      {project.title}
+                    </span>
+                    <span className="ml-auto text-[12px] leading-[18px] text-secondary font-mono">
+                      {project.year}
+                    </span>
+                  </div>
+
+                  {/* Image/Video */}
+                  <div
+                    className={`relative ${aspectRatioClass} w-full overflow-hidden bg-gray-100 rounded-md`}
+                  >
+                    {isVideo ? (
+                      <video
+                        src={mediaSrc}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <Image src={mediaSrc} alt={project.title} fill className="object-cover" />
+                    )}
+                  </div>
+                </div>
               </motion.div>
-            </div>
-          ))}
+            );
+          })}
         </motion.div>
       </div>
     </div>
