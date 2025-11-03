@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PROJECT_GROUPS } from '@/app/data';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import type { NotionBlogPost } from '@/lib/notion/blog';
@@ -22,9 +21,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
     writing: pathname.startsWith('/writing'),
   });
 
-  const [activeCompany, setActiveCompany] = useState<string | null>(null);
   const [hoveredBlogPost, setHoveredBlogPost] = useState<string | null>(null);
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [pressedKey, setPressedKey] = useState<string | null>(null);
 
   // Update expanded sections when pathname changes
@@ -120,57 +117,6 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
     };
   }, [handleIndexClick, handleCraftClick, handlePhotosClick, handleWritingClick]);
 
-  const scrollToCompany = (companyId: string) => {
-    if (pathname !== '/') {
-      // If not on homepage, navigate to homepage first
-      router.push('/');
-      return;
-    }
-
-    // Use global refs from homepage
-    const companyRefs = window.companyRefs;
-    if (companyRefs) {
-      const element = companyRefs.current[companyId];
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  };
-
-  // Set up intersection observer for scroll-based highlighting (only on homepage)
-  useEffect(() => {
-    if (pathname !== '/') return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveCompany(entry.target.id);
-          }
-        });
-      },
-      {
-        rootMargin: '-20% 0px -70% 0px',
-      }
-    );
-
-    // Use global refs from homepage
-    const companyRefs = window.companyRefs;
-    if (companyRefs) {
-      Object.values(companyRefs.current).forEach((ref) => {
-        if (ref) observer.observe(ref);
-      });
-    }
-
-    return () => {
-      if (companyRefs) {
-        Object.values(companyRefs.current).forEach((ref) => {
-          if (ref) observer.unobserve(ref);
-        });
-      }
-    };
-  }, [pathname]);
-
   return (
     <div className="w-full bg-white rounded-lg p-6">
       {/* INDEX Section */}
@@ -208,46 +154,12 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <div>
-                  <p className="text-sm leading-snug text-gray-700 mb-4">
-                    I&apos;m Christopher Sim, a software designer at Harvey. I work on the
-                    intersection of design and engineering. Previously, I&apos;ve worked with teams
-                    at Flexport, Uber, and Arc. I studied Human-Computer Interaction at the
-                    University of Washington.
-                  </p>
-
-                  {/* Project list */}
-                  <div className="space-y-2 -ml-6">
-                    {PROJECT_GROUPS.map((group, groupIdx) => {
-                      const isActive = activeCompany === `company-${groupIdx}`;
-                      const projectKey = `company-${groupIdx}`;
-                      return (
-                        <div key={groupIdx}>
-                          <button
-                            onClick={() => scrollToCompany(`company-${groupIdx}`)}
-                            className={`block w-full text-left transition-all cursor-pointer ${
-                              hoveredProject && hoveredProject !== projectKey
-                                ? 'opacity-50'
-                                : 'opacity-100'
-                            }`}
-                            onMouseEnter={() => setHoveredProject(projectKey)}
-                            onMouseLeave={() => setHoveredProject(null)}
-                          >
-                            <div className="flex items-center">
-                              <span className="w-6 text-gray-900">{isActive ? '•' : ''}</span>
-                              <div className="flex-1 flex items-center justify-between">
-                                <div className="font-medium text-gray-900">{group.company}</div>
-                                <div className="text-sm font-medium text-gray-900">
-                                  {`${group.start} - ${group.end}`}
-                                </div>
-                              </div>
-                            </div>
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                <p className="text-sm leading-snug text-gray-700">
+                  I&apos;m Christopher Sim, a software designer at Harvey. I work on the
+                  intersection of design and engineering. Previously, I&apos;ve worked with teams at
+                  Flexport, Uber, and Arc. I studied Human-Computer Interaction at the University of
+                  Washington.
+                </p>
               </div>
             </motion.div>
           )}

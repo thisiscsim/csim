@@ -53,7 +53,6 @@ export default function BlogPost({ post, content }: BlogPostProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [activeId, setActiveId] = useState<string>('');
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showBottomGradient, setShowBottomGradient] = useState(false);
 
   // Extract headings from markdown content
   const headings = useMemo(() => {
@@ -88,19 +87,13 @@ export default function BlogPost({ post, content }: BlogPostProps) {
     return () => clearTimeout(timer);
   }, [post.slug]);
 
-  // Handle scroll detection for gradients
+  // Handle scroll detection for gradient
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = window.innerHeight;
 
       // Show top gradient when scrolled down from top
       setIsScrolled(scrollTop > 0);
-
-      // Show bottom gradient when not at the very bottom
-      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-      setShowBottomGradient(distanceFromBottom > 1);
     };
 
     // Initial check
@@ -169,21 +162,6 @@ export default function BlogPost({ post, content }: BlogPostProps) {
         }}
       />
 
-      {/* Bottom Blur Gradient Overlay */}
-      <div
-        className={`fixed bottom-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
-          showBottomGradient ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          height: '96px',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)',
-          opacity: 0.95,
-          maskImage: 'linear-gradient(to top, black 25%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to top, black 25%, transparent)',
-        }}
-      />
-
       {/* Table of Contents - Fixed Left Side */}
       {headings.length > 0 && (
         <aside
@@ -224,7 +202,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
       )}
 
       {/* Main Content */}
-      <div className="pb-24 mt-[90px]">
+      <div className="pb-24 mt-[70px]">
         <motion.div
           key={post.slug}
           className="space-y-8"
