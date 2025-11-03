@@ -1,0 +1,5 @@
+jest.config.js
+jest.setup.js
+.next/
+node_modules/
+
