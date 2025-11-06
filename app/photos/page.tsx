@@ -1,8 +1,8 @@
 'use client';
 
-import ScrollStrip from '../craft/scroll-strip';
+import InfiniteGrid from './infinite-grid';
 import '../craft/system.css';
 
 export default function PhotosPage() {
-  return <ScrollStrip />;
+  return <InfiniteGrid />;
 }
