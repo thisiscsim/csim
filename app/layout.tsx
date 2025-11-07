@@ -67,7 +67,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${abcMarist.variable} ${jetbrainsMono.variable} bg-primary antialiased`}>
+      <body
+        className={`${abcMarist.variable} ${jetbrainsMono.variable} bg-primary antialiased`}
+        suppressHydrationWarning
+      >
         <LenisProvider>
           {/* Header Navigation */}
           <HeaderNavigation blogPosts={blogPosts} />
