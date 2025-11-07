@@ -2,11 +2,39 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import type { NotionBlogPost } from '@/lib/notion/blog';
 
 interface WritingListClientProps {
   posts: NotionBlogPost[];
 }
+
+// Animation variants matching homepage
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.4,
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
 
 export function WritingListClient({ posts }: WritingListClientProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -64,18 +92,25 @@ export function WritingListClient({ posts }: WritingListClientProps) {
       />
 
       <div className="max-w-5xl mx-auto py-16 px-4">
-        <div className="space-y-0">
+        <motion.div
+          className="space-y-0"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
           {years.map((year, yearIndex) => (
             <div key={year}>
               {/* Separator above each year section */}
-              {yearIndex > 0 && <div className="border-b border-zinc-200" />}
+              {yearIndex > 0 && (
+                <motion.div className="border-b border-zinc-200" variants={itemVariants} />
+              )}
 
               {postsByYear[year].map((post, index) => {
                 const isHovered = hoveredId === post.id;
                 const isMuted = hoveredId !== null && !isHovered;
 
                 return (
-                  <div key={post.id}>
+                  <motion.div key={post.id} variants={itemVariants}>
                     <Link
                       href={`/writing/${post.slug}`}
                       className="flex items-center gap-8 py-[12px] -mx-4 px-4 rounded-lg"
@@ -133,12 +168,12 @@ export function WritingListClient({ posts }: WritingListClientProps) {
                     {index < postsByYear[year].length - 1 && (
                       <div className="ml-28 border-b border-zinc-200" />
                     )}
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </>
   );

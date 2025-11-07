@@ -25,23 +25,22 @@ const VARIANTS_CONTAINER = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      delayChildren: 0.4,
+      staggerChildren: 0.05,
     },
   },
 };
 
 const VARIANTS_SECTION = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
   },
-};
-
-const TRANSITION_SECTION = {
-  type: 'spring',
-  bounce: 0,
-  duration: 0.2,
 };
 
 interface BlogPostProps {
@@ -210,7 +209,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
           initial="hidden"
           animate="visible"
         >
-          <motion.header variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
+          <motion.header variants={VARIANTS_SECTION}>
             <div className="space-y-6">
               <div className="space-y-2">
                 <h1 className="text-2xl font-medium text-primary">{post.title}</h1>
@@ -232,7 +231,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
             </div>
           </motion.header>
 
-          <motion.main variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
+          <motion.main variants={VARIANTS_SECTION}>
             <div className="relative">
               {isLoading ? (
                 <LoadingSkeleton />
