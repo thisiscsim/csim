@@ -1,8 +1,8 @@
 'use client';
 
-import InfiniteGrid from './infinite-grid';
+import MasonryGrid from './masonry-grid';
 import './system.css';
 
 export default function CraftPage() {
-  return <InfiniteGrid />;
+  return <MasonryGrid />;
 }
