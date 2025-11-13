@@ -81,6 +81,27 @@ const CodeComponent = memo(function CodeComponent({ _node, className, children, 
   );
 });
 
+const ImgComponent = memo(function ImgComponent({ _node, src, alt, ...props }: any) {
+  // Check if alt text looks like a filename (contains file extension)
+  const isFilename = alt && /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(alt);
+  const shouldShowCaption = alt && !isFilename;
+
+  return (
+    <span className="block my-8">
+      <img
+        src={src}
+        alt={alt || ''}
+        className="w-full h-auto rounded-lg"
+        loading="lazy"
+        {...props}
+      />
+      {shouldShowCaption && (
+        <span className="block text-sm text-zinc-500 text-center mt-1 italic">{alt}</span>
+      )}
+    </span>
+  );
+});
+
 const markdownComponents = {
   h1: H1Component,
   h2: H2Component,
@@ -94,6 +115,7 @@ const markdownComponents = {
   blockquote: BlockquoteComponent,
   pre: PreComponent,
   code: CodeComponent,
+  img: ImgComponent,
 };
 
 // Memoize the entire component to prevent unnecessary re-renders
