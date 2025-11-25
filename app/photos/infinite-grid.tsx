@@ -27,6 +27,8 @@ export default function InfiniteGrid() {
 
   const scrollSpeed = 3;
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const isDraggingRef = useRef(false);
+  const mouseMoveRafRef = useRef<number | null>(null);
 
   const calculateBounds = (container: HTMLElement | SVGElement) => {
     const el = container as HTMLElement;
@@ -63,17 +65,27 @@ export default function InfiniteGrid() {
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!draggableInstanceRef.current || !containerInnerRef.current) return;
-    const maxNudge = 50;
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-    const nudgeAmountX = (mouseX / window.innerWidth - 0.5) * maxNudge;
-    const nudgeAmountY = (mouseY / window.innerHeight - 0.5) * maxNudge;
-    gsap.to(containerInnerRef.current, {
-      x: nudgeAmountX,
-      y: nudgeAmountY,
-      duration: 1.5,
-      ease: 'power3.out',
+    if (!draggableInstanceRef.current || !containerInnerRef.current || isDraggingRef.current)
+      return;
+
+    // Use requestAnimationFrame to throttle updates
+    if (mouseMoveRafRef.current) {
+      cancelAnimationFrame(mouseMoveRafRef.current);
+    }
+
+    mouseMoveRafRef.current = requestAnimationFrame(() => {
+      if (!containerInnerRef.current) return;
+      const maxNudge = 50;
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      const nudgeAmountX = (mouseX / window.innerWidth - 0.5) * maxNudge;
+      const nudgeAmountY = (mouseY / window.innerHeight - 0.5) * maxNudge;
+      gsap.to(containerInnerRef.current, {
+        x: nudgeAmountX,
+        y: nudgeAmountY,
+        duration: 1.5,
+        ease: 'power3.out',
+      });
     });
   };
 
@@ -101,21 +113,41 @@ export default function InfiniteGrid() {
         minDuration: 0.5,
         onDragStart: () => {
           setIsDragging(true);
+          isDraggingRef.current = true;
           if (hoverTimeoutRef.current) {
             clearTimeout(hoverTimeoutRef.current);
             hoverTimeoutRef.current = null;
           }
           const allFigures = container.querySelectorAll('figure');
           allFigures.forEach((figure) => figure.classList.remove('not-selected'));
+
+          // Disable observer during drag for performance
+          if (observerRef.current) {
+            observerRef.current.disconnect();
+          }
         },
         onDrag: () => {
           const bounds = calculateBounds(container);
           gsap.utils.clamp(bounds.minX, bounds.maxX, Number(gsap.getProperty(container, 'x')));
           gsap.utils.clamp(bounds.minY, bounds.maxY, Number(gsap.getProperty(container, 'y')));
         },
-        onDragEnd: () => setIsDragging(false),
+        onDragEnd: () => {
+          setIsDragging(false);
+          isDraggingRef.current = false;
+          // Re-enable observer after drag
+          setTimeout(() => {
+            initializeObserver();
+          }, 100);
+        },
         onThrowUpdate: () => updateBounds(),
-        onThrowComplete: () => setIsDragging(false),
+        onThrowComplete: () => {
+          setIsDragging(false);
+          isDraggingRef.current = false;
+          // Re-enable observer after throw
+          setTimeout(() => {
+            initializeObserver();
+          }, 100);
+        },
       })[0] as unknown as DraggableInstance;
 
       window.addEventListener('wheel', handleMouseWheel);
@@ -187,6 +219,39 @@ export default function InfiniteGrid() {
     }, 100);
   };
 
+  // Prevent browser back gesture
+  useEffect(() => {
+    const preventBackGesture = (e: TouchEvent) => {
+      // Prevent back swipe gesture on touch devices
+      if (e.touches.length > 1) return;
+      e.preventDefault();
+    };
+
+    const preventHistoryNavigation = (e: WheelEvent) => {
+      // Prevent horizontal scroll from triggering back/forward navigation
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+      }
+    };
+
+    // Add event listeners to prevent back gesture
+    document.addEventListener('touchstart', preventBackGesture, { passive: false });
+    document.addEventListener('wheel', preventHistoryNavigation, { passive: false });
+
+    // Prevent back/forward browser gestures
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      document.removeEventListener('touchstart', preventBackGesture);
+      document.removeEventListener('wheel', preventHistoryNavigation);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
   // Fetch images from Bunny CDN
   useEffect(() => {
     const fetchImages = async () => {
@@ -220,6 +285,7 @@ export default function InfiniteGrid() {
       if (draggableInstanceRef.current) draggableInstanceRef.current.kill();
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
       if (observerRef.current) observerRef.current.disconnect();
+      if (mouseMoveRafRef.current) cancelAnimationFrame(mouseMoveRafRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, images]);
@@ -238,7 +304,8 @@ export default function InfiniteGrid() {
     ];
 
     // Create multiple instances of each image for a fuller grid
-    const repeatCount = Math.ceil(50 / images.length);
+    // Reduced from 50 to 30 for better performance
+    const repeatCount = Math.ceil(30 / images.length);
 
     for (let repeat = 0; repeat < repeatCount; repeat++) {
       images.forEach((image, i) => {
@@ -260,6 +327,8 @@ export default function InfiniteGrid() {
               className="block object-cover"
               style={{ opacity: 0, transform: 'scale(0.9)' }}
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
           </figure>
         );
@@ -272,31 +341,32 @@ export default function InfiniteGrid() {
   const initializeObserver = () => {
     if (!containerRef.current) return;
 
+    // Disconnect existing observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
+        // Skip updates if currently dragging
+        if (isDraggingRef.current) return;
+
         entries.forEach((entry) => {
+          const img = entry.target as HTMLElement;
           if (entry.isIntersecting) {
-            // Image is in view, set opacity to 1 and scale to 1
-            gsap.to(entry.target, {
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              ease: 'power2.out',
-            });
+            // Image is in view - use direct style manipulation for better performance
+            gsap.set(img, { opacity: 1, scale: 1 });
           } else {
-            // Image is out of view, set opacity to 0.25 and scale to 0.9
-            gsap.to(entry.target, {
-              opacity: 0.25,
-              scale: 0.9,
-              duration: 1,
-              ease: 'power2.out',
-            });
+            // Image is out of view
+            gsap.set(img, { opacity: 0.25, scale: 0.9 });
           }
         });
       },
       {
-        root: null, // Track visibility relative to the viewport
-        threshold: 0.1, // Trigger when at least 10% of the image is visible
+        root: null,
+        threshold: 0.1,
+        // Add rootMargin to reduce frequency of updates
+        rootMargin: '50px',
       }
     );
 
@@ -339,7 +409,10 @@ export default function InfiniteGrid() {
   }
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-primary">
+    <div
+      className="fixed inset-0 overflow-hidden bg-primary"
+      style={{ overscrollBehavior: 'none', touchAction: 'none' }}
+    >
       <div ref={containerInnerRef} className="container-inner">
         <div
           ref={containerRef}

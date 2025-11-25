@@ -58,7 +58,21 @@ async function generateBlogData() {
     return posts;
   } catch (error) {
     console.error('Error generating blog data:', error);
-    process.exit(1);
+    console.log('Creating fallback blog data...');
+    
+    // Create empty blog data file as fallback
+    try {
+      const outputPath = path.join(process.cwd(), 'public', 'blog-data.json');
+      await fs.writeFile(
+        outputPath,
+        JSON.stringify({ posts: [], generatedAt: new Date().toISOString() }, null, 2)
+      );
+      console.log('Created fallback blog data');
+      return [];
+    } catch (fallbackError) {
+      console.error('Failed to create fallback:', fallbackError);
+      process.exit(1);
+    }
   }
 }
 

@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
-import { HeaderNavigation } from '@/components/header-navigation';
-import { getPublishedBlogPosts } from '@/lib/notion/blog';
+import { CompactNavigation } from '@/components/compact-navigation';
+// import { getPublishedBlogPosts } from '@/lib/notion/blog';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -63,7 +63,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const blogPosts = await getPublishedBlogPosts();
+  // const blogPosts = await getPublishedBlogPosts();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -72,8 +72,8 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <LenisProvider>
-          {/* Header Navigation */}
-          <HeaderNavigation blogPosts={blogPosts} />
+          {/* Compact Navigation */}
+          <CompactNavigation />
           <div className="mx-auto max-w-[1440px]">
             <div className="flex min-h-screen w-full relative">
               {/* Left side - Main content */}

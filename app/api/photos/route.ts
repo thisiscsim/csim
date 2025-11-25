@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-export const dynamic = 'force-dynamic';
+// Cache for 5 minutes
+export const revalidate = 300;
 
 interface BunnyFile {
   ObjectName: string;
@@ -24,12 +25,13 @@ export async function GET() {
     const storageHost = region === 'de' ? 'storage.bunnycdn.com' : `${region}.storage.bunnycdn.com`;
     const apiUrl = `https://${storageHost}/${storageZone}/Photos/`;
 
-    // Fetch the list of files from Bunny Storage
+    // Fetch the list of files from Bunny Storage with caching
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         AccessKey: apiKey,
       },
+      next: { revalidate: 300 }, // Cache for 5 minutes
     });
 
     if (!response.ok) {
@@ -38,7 +40,7 @@ export async function GET() {
 
     const files: BunnyFile[] = await response.json();
 
-    // Filter for image files only and construct CDN URLs
+    // Filter for image files only and construct CDN URLs with optimization parameters
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
     const images = files
       .filter((file) => {
@@ -46,14 +48,26 @@ export async function GET() {
         const ext = file.ObjectName.toLowerCase();
         return imageExtensions.some((imgExt) => ext.endsWith(imgExt));
       })
-      .map((file) => ({
-        url: `https://${pullZoneUrl}/Photos/${encodeURIComponent(file.ObjectName)}`,
-        name: file.ObjectName,
-        size: file.Length,
-        lastModified: file.LastChanged,
-      }));
+      .map((file) => {
+        const baseUrl = `https://${pullZoneUrl}/Photos/${encodeURIComponent(file.ObjectName)}`;
+        // Add Bunny CDN optimization parameters
+        const optimizedUrl = `${baseUrl}?width=800&quality=85`;
+        return {
+          url: optimizedUrl,
+          name: file.ObjectName,
+          size: file.Length,
+          lastModified: file.LastChanged,
+        };
+      });
 
-    return NextResponse.json({ images });
+    return NextResponse.json(
+      { images },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error fetching photos from Bunny:', error);
     return NextResponse.json({ error: 'Failed to fetch photos' }, { status: 500 });
