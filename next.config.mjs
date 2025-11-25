@@ -5,6 +5,15 @@ const nextConfig = {
   // Performance optimizations
   poweredByHeader: false,
   compress: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'csim.b-cdn.net',
+        pathname: '/Photos/**',
+      },
+    ],
+  },
   experimental: {
     // Optimize package imports
     optimizePackageImports: ['@heroui/breadcrumbs', 'motion'],

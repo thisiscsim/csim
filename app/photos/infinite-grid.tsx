@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
+interface PhotoImage {
+  url: string;
+  name: string;
+  size: number;
+  lastModified: string;
+}
+
 export default function InfiniteGrid() {
   const containerRef = useRef<HTMLDivElement>(null);
   const containerInnerRef = useRef<HTMLDivElement>(null);
@@ -15,9 +22,13 @@ export default function InfiniteGrid() {
   const draggableInstanceRef = useRef<DraggableInstance | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [images, setImages] = useState<PhotoImage[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const scrollSpeed = 3;
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const isDraggingRef = useRef(false);
+  const mouseMoveRafRef = useRef<number | null>(null);
 
   const calculateBounds = (container: HTMLElement | SVGElement) => {
     const el = container as HTMLElement;
@@ -54,17 +65,27 @@ export default function InfiniteGrid() {
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!draggableInstanceRef.current || !containerInnerRef.current) return;
-    const maxNudge = 50;
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-    const nudgeAmountX = (mouseX / window.innerWidth - 0.5) * maxNudge;
-    const nudgeAmountY = (mouseY / window.innerHeight - 0.5) * maxNudge;
-    gsap.to(containerInnerRef.current, {
-      x: nudgeAmountX,
-      y: nudgeAmountY,
-      duration: 1.5,
-      ease: 'power3.out',
+    if (!draggableInstanceRef.current || !containerInnerRef.current || isDraggingRef.current)
+      return;
+
+    // Use requestAnimationFrame to throttle updates
+    if (mouseMoveRafRef.current) {
+      cancelAnimationFrame(mouseMoveRafRef.current);
+    }
+
+    mouseMoveRafRef.current = requestAnimationFrame(() => {
+      if (!containerInnerRef.current) return;
+      const maxNudge = 50;
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      const nudgeAmountX = (mouseX / window.innerWidth - 0.5) * maxNudge;
+      const nudgeAmountY = (mouseY / window.innerHeight - 0.5) * maxNudge;
+      gsap.to(containerInnerRef.current, {
+        x: nudgeAmountX,
+        y: nudgeAmountY,
+        duration: 1.5,
+        ease: 'power3.out',
+      });
     });
   };
 
@@ -74,43 +95,68 @@ export default function InfiniteGrid() {
     window.removeEventListener('resize', updateBounds);
     window.removeEventListener('mousemove', handleMouseMove);
 
-    const [{ Draggable }, { InertiaPlugin }] = await Promise.all([
-      import('gsap/Draggable'),
-      import('gsap/InertiaPlugin'),
-    ]);
-    gsap.registerPlugin(Draggable, InertiaPlugin);
+    try {
+      const [{ Draggable }, { InertiaPlugin }] = await Promise.all([
+        import('gsap/Draggable'),
+        import('gsap/InertiaPlugin'),
+      ]);
+      gsap.registerPlugin(Draggable, InertiaPlugin);
 
-    draggableInstanceRef.current = Draggable.create(container, {
-      type: 'x,y',
-      edgeResistance: 0.85,
-      inertia: true,
-      bounds: calculateBounds(container),
-      throwProps: true,
-      throwResistance: 20000,
-      maxDuration: 3,
-      minDuration: 0.5,
-      onDragStart: () => {
-        setIsDragging(true);
-        if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current);
-          hoverTimeoutRef.current = null;
-        }
-        const allFigures = container.querySelectorAll('figure');
-        allFigures.forEach((figure) => figure.classList.remove('not-selected'));
-      },
-      onDrag: () => {
-        const bounds = calculateBounds(container);
-        gsap.utils.clamp(bounds.minX, bounds.maxX, Number(gsap.getProperty(container, 'x')));
-        gsap.utils.clamp(bounds.minY, bounds.maxY, Number(gsap.getProperty(container, 'y')));
-      },
-      onDragEnd: () => setIsDragging(false),
-      onThrowUpdate: () => updateBounds(),
-      onThrowComplete: () => setIsDragging(false),
-    })[0] as unknown as DraggableInstance;
+      draggableInstanceRef.current = Draggable.create(container, {
+        type: 'x,y',
+        edgeResistance: 0.85,
+        inertia: true,
+        bounds: calculateBounds(container),
+        throwProps: true,
+        throwResistance: 20000,
+        maxDuration: 3,
+        minDuration: 0.5,
+        onDragStart: () => {
+          setIsDragging(true);
+          isDraggingRef.current = true;
+          if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+            hoverTimeoutRef.current = null;
+          }
+          const allFigures = container.querySelectorAll('figure');
+          allFigures.forEach((figure) => figure.classList.remove('not-selected'));
 
-    window.addEventListener('wheel', handleMouseWheel);
-    window.addEventListener('resize', updateBounds);
-    window.addEventListener('mousemove', handleMouseMove);
+          // Disable observer during drag for performance
+          if (observerRef.current) {
+            observerRef.current.disconnect();
+          }
+        },
+        onDrag: () => {
+          const bounds = calculateBounds(container);
+          gsap.utils.clamp(bounds.minX, bounds.maxX, Number(gsap.getProperty(container, 'x')));
+          gsap.utils.clamp(bounds.minY, bounds.maxY, Number(gsap.getProperty(container, 'y')));
+        },
+        onDragEnd: () => {
+          setIsDragging(false);
+          isDraggingRef.current = false;
+          // Re-enable observer after drag
+          setTimeout(() => {
+            initializeObserver();
+          }, 100);
+        },
+        onThrowUpdate: () => updateBounds(),
+        onThrowComplete: () => {
+          setIsDragging(false);
+          isDraggingRef.current = false;
+          // Re-enable observer after throw
+          setTimeout(() => {
+            initializeObserver();
+          }, 100);
+        },
+      })[0] as unknown as DraggableInstance;
+
+      window.addEventListener('wheel', handleMouseWheel);
+      window.addEventListener('resize', updateBounds);
+      window.addEventListener('mousemove', handleMouseMove);
+    } catch (error) {
+      console.error('Failed to load GSAP plugins:', error);
+      // Fallback: just allow basic positioning without drag
+    }
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -173,8 +219,62 @@ export default function InfiniteGrid() {
     }, 100);
   };
 
+  // Prevent browser back gesture
   useEffect(() => {
-    if (!containerRef.current || typeof window === 'undefined') return;
+    const preventBackGesture = (e: TouchEvent) => {
+      // Prevent back swipe gesture on touch devices
+      if (e.touches.length > 1) return;
+      e.preventDefault();
+    };
+
+    const preventHistoryNavigation = (e: WheelEvent) => {
+      // Prevent horizontal scroll from triggering back/forward navigation
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+      }
+    };
+
+    // Add event listeners to prevent back gesture
+    document.addEventListener('touchstart', preventBackGesture, { passive: false });
+    document.addEventListener('wheel', preventHistoryNavigation, { passive: false });
+
+    // Prevent back/forward browser gestures
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      document.removeEventListener('touchstart', preventBackGesture);
+      document.removeEventListener('wheel', preventHistoryNavigation);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  // Fetch images from Bunny CDN
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await fetch('/api/photos');
+        const data = await response.json();
+        if (data.images && data.images.length > 0) {
+          setImages(data.images);
+        } else {
+          console.error('No images found');
+        }
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchImages();
+  }, []);
+
+  useEffect(() => {
+    if (!containerRef.current || typeof window === 'undefined' || loading || images.length === 0)
+      return;
     setTimeout(() => {
       initializeFeaturedLayout();
     }, 100);
@@ -185,13 +285,15 @@ export default function InfiniteGrid() {
       if (draggableInstanceRef.current) draggableInstanceRef.current.kill();
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
       if (observerRef.current) observerRef.current.disconnect();
+      if (mouseMoveRafRef.current) cancelAnimationFrame(mouseMoveRafRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loading, images]);
 
   const generateImages = () => {
-    const images: React.ReactNode[] = [];
-    const craftImages = Array.from({ length: 9 }, (_, i) => `/craft/${i + 1}.jpg`);
+    if (images.length === 0) return [];
+
+    const imageNodes: React.ReactNode[] = [];
     const aspectRatios = [
       { width: 4, height: 3 },
       { width: 3, height: 4 },
@@ -200,62 +302,71 @@ export default function InfiniteGrid() {
       { width: 9, height: 16 },
       { width: 3, height: 2 },
     ];
-    const numImages = 150;
-    for (let i = 0; i < numImages; i++) {
-      const imageUrl = craftImages[i % craftImages.length];
-      const ratio = aspectRatios[i % aspectRatios.length];
-      images.push(
-        <figure
-          key={i}
-          className="relative p-8"
-          style={{ margin: 0 }}
-          onMouseEnter={(e) => handleFigureMouseEnter(e.currentTarget)}
-          onMouseLeave={handleFigureMouseLeave}
-        >
-          {/* Using img here for simplicity to match behavior */}
-          <img
-            src={imageUrl}
-            alt={`Image ${i + 1}`}
-            width={ratio.width * 100}
-            height={ratio.height * 100}
-            className="block object-cover"
-            style={{ opacity: 0, transform: 'scale(0.9)' }}
-            draggable={false}
-          />
-        </figure>
-      );
+
+    // Create multiple instances of each image for a fuller grid
+    // Reduced from 50 to 30 for better performance
+    const repeatCount = Math.ceil(30 / images.length);
+
+    for (let repeat = 0; repeat < repeatCount; repeat++) {
+      images.forEach((image, i) => {
+        const uniqueKey = `${repeat}-${i}`;
+        const ratio = aspectRatios[(repeat * images.length + i) % aspectRatios.length];
+        imageNodes.push(
+          <figure
+            key={uniqueKey}
+            className="relative p-8"
+            style={{ margin: 0 }}
+            onMouseEnter={(e) => handleFigureMouseEnter(e.currentTarget)}
+            onMouseLeave={handleFigureMouseLeave}
+          >
+            <img
+              src={image.url}
+              alt={image.name}
+              width={ratio.width * 100}
+              height={ratio.height * 100}
+              className="block object-cover"
+              style={{ opacity: 0, transform: 'scale(0.9)' }}
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        );
+      });
     }
-    return images as React.ReactNode[];
+
+    return imageNodes as React.ReactNode[];
   };
 
   const initializeObserver = () => {
     if (!containerRef.current) return;
 
+    // Disconnect existing observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
+        // Skip updates if currently dragging
+        if (isDraggingRef.current) return;
+
         entries.forEach((entry) => {
+          const img = entry.target as HTMLElement;
           if (entry.isIntersecting) {
-            // Image is in view, set opacity to 1 and scale to 1
-            gsap.to(entry.target, {
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              ease: 'power2.out',
-            });
+            // Image is in view - use direct style manipulation for better performance
+            gsap.set(img, { opacity: 1, scale: 1 });
           } else {
-            // Image is out of view, set opacity to 0.25 and scale to 0.9
-            gsap.to(entry.target, {
-              opacity: 0.25,
-              scale: 0.9,
-              duration: 1,
-              ease: 'power2.out',
-            });
+            // Image is out of view
+            gsap.set(img, { opacity: 0.25, scale: 0.9 });
           }
         });
       },
       {
-        root: null, // Track visibility relative to the viewport
-        threshold: 0.1, // Trigger when at least 10% of the image is visible
+        root: null,
+        threshold: 0.1,
+        // Add rootMargin to reduce frequency of updates
+        rootMargin: '50px',
       }
     );
 
@@ -281,8 +392,27 @@ export default function InfiniteGrid() {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="fixed inset-0 overflow-hidden bg-primary flex items-center justify-center">
+        <p className="text-black/60">Loading photos...</p>
+      </div>
+    );
+  }
+
+  if (images.length === 0) {
+    return (
+      <div className="fixed inset-0 overflow-hidden bg-primary flex items-center justify-center">
+        <p className="text-black/60">No photos found</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 overflow-hidden bg-primary">
+    <div
+      className="fixed inset-0 overflow-hidden bg-primary"
+      style={{ overscrollBehavior: 'none', touchAction: 'none' }}
+    >
       <div ref={containerInnerRef} className="container-inner">
         <div
           ref={containerRef}
@@ -293,7 +423,7 @@ export default function InfiniteGrid() {
         </div>
       </div>
       <div className="fixed top-3 left-3 z-10 text-black/60 pointer-events-none">
-        <p className="text-xs font-medium">Drag to explore</p>
+        <p className="text-xs font-medium">Drag to explore • {images.length} photos</p>
       </div>
     </div>
   );
