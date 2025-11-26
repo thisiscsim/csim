@@ -6,23 +6,21 @@ import { useMobileDetect } from '@/components/use-mobile-detect';
 import { useEvent } from '@/components/use-event';
 import { clamp } from '@/components/clamp';
 import Script from 'next/script';
+import type { PhotoImage } from '@/lib/photos';
 
 const FRAME_HEIGHT = 600; // Fixed height for all images
 const FRAME_GAP = 24; // Gap between images
-
-interface PhotoImage {
-  url: string;
-  name: string;
-  size: number;
-  lastModified: string;
-}
 
 interface ImageDimensions {
   width: number;
   height: number;
 }
 
-export default function PhotoRoll() {
+interface PhotoRollProps {
+  initialImages: PhotoImage[];
+}
+
+export default function PhotoRoll({ initialImages }: PhotoRollProps) {
   const detect = useMobileDetect();
   const isMobile = detect.isMobile();
 
@@ -48,47 +46,60 @@ export default function PhotoRoll() {
     return shuffled;
   };
 
-  // Fetch images from API
+  // Use pre-fetched images
   React.useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const response = await fetch('/api/photos');
-        const data = await response.json();
-        if (data.images && data.images.length > 0) {
-          // Randomize the order of images
-          const randomizedImages = shuffleArray(data.images);
-          setImages(randomizedImages);
+    if (initialImages && initialImages.length > 0) {
+      // Randomize the order of images
+      const randomizedImages = shuffleArray(initialImages);
+      setImages(randomizedImages);
 
-          // Load all images to get dimensions
-          const dimensions = await Promise.all(
-            randomizedImages.map((image: PhotoImage) => {
-              return new Promise<ImageDimensions>((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                  const aspectRatio = img.naturalWidth / img.naturalHeight;
-                  const width = Math.floor(FRAME_HEIGHT * aspectRatio);
-                  resolve({ width, height: FRAME_HEIGHT });
-                };
-                img.onerror = () => {
-                  // Fallback to default dimensions
-                  resolve({ width: FRAME_HEIGHT, height: FRAME_HEIGHT });
-                };
-                img.src = image.url;
-              });
-            })
-          );
-          setImageDimensions(dimensions);
-        } else {
-          console.error('No images found');
-        }
-      } catch (error) {
-        console.error('Error fetching images:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchImages();
-  }, []);
+      // Start with default square dimensions for all images
+      // This allows the page to render immediately
+      const defaultDimensions = randomizedImages.map(() => ({
+        width: FRAME_HEIGHT,
+        height: FRAME_HEIGHT,
+      }));
+      setImageDimensions(defaultDimensions);
+      setLoading(false);
+
+      // Then asynchronously load actual dimensions for first 10 images
+      // This improves initial render performance
+      const loadDimensions = async () => {
+        const dimensions = await Promise.all(
+          randomizedImages.map((image: PhotoImage, index: number) => {
+            // Only load dimensions for first 10 images immediately
+            if (index >= 10) {
+              return Promise.resolve({ width: FRAME_HEIGHT, height: FRAME_HEIGHT });
+            }
+
+            return new Promise<ImageDimensions>((resolve) => {
+              const img = new Image();
+              const timeout = setTimeout(() => {
+                resolve({ width: FRAME_HEIGHT, height: FRAME_HEIGHT });
+              }, 2000); // 2 second timeout
+
+              img.onload = () => {
+                clearTimeout(timeout);
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
+                const width = Math.floor(FRAME_HEIGHT * aspectRatio);
+                resolve({ width, height: FRAME_HEIGHT });
+              };
+              img.onerror = () => {
+                clearTimeout(timeout);
+                resolve({ width: FRAME_HEIGHT, height: FRAME_HEIGHT });
+              };
+              img.src = image.url;
+            });
+          })
+        );
+        setImageDimensions(dimensions);
+      };
+
+      loadDimensions();
+    } else {
+      setLoading(false);
+    }
+  }, [initialImages]);
 
   // Initialize scroll
   React.useEffect(() => {
@@ -381,7 +392,8 @@ export default function PhotoRoll() {
                     alt={image.name}
                     src={image.url}
                     className="h-full w-full object-cover select-none pointer-events-none"
-                    loading="eager"
+                    loading={i < 3 ? 'eager' : 'lazy'}
+                    fetchPriority={i === 0 ? 'high' : 'auto'}
                     decoding="async"
                     draggable={false}
                     style={{

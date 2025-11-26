@@ -9,15 +9,13 @@ import {
   MorphingDialogClose,
   MorphingDialogContainer,
 } from '@/components/motion-primitives/morphing-dialog';
+import type { PhotoImage } from '@/lib/photos';
 
-interface PhotoImage {
-  url: string;
-  name: string;
-  size: number;
-  lastModified: string;
+interface PhotoGridProps {
+  initialImages: PhotoImage[];
 }
 
-export default function PhotoGrid() {
+export default function PhotoGrid({ initialImages }: PhotoGridProps) {
   const [images, setImages] = React.useState<PhotoImage[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -52,27 +50,15 @@ export default function PhotoGrid() {
     return shuffled;
   };
 
-  // Fetch images from API
+  // Use pre-fetched images
   React.useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const response = await fetch('/api/photos');
-        const data = await response.json();
-        if (data.images && data.images.length > 0) {
-          // Randomize the order of images
-          const randomizedImages = shuffleArray(data.images);
-          setImages(randomizedImages);
-        } else {
-          console.error('No images found');
-        }
-      } catch (error) {
-        console.error('Error fetching images:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchImages();
-  }, []);
+    if (initialImages && initialImages.length > 0) {
+      // Randomize the order of images
+      const randomizedImages = shuffleArray(initialImages);
+      setImages(randomizedImages);
+    }
+    setLoading(false);
+  }, [initialImages]);
 
   if (loading) {
     return (
@@ -113,7 +99,7 @@ export default function PhotoGrid() {
             key={`${image.name}-${i}`}
             style={{
               animation:
-                i < 30 ? `fadeInScale 0.5s ease-out ${Math.min(i * 0.015, 0.45)}s both` : 'none',
+                i < 12 ? `fadeInScale 0.4s ease-out ${Math.min(i * 0.02, 0.24)}s both` : 'none',
             }}
           >
             <MorphingDialog
@@ -131,8 +117,11 @@ export default function PhotoGrid() {
                     src={image.url}
                     alt={image.name}
                     className="w-full h-full object-cover"
-                    loading={i < 20 ? 'eager' : 'lazy'}
+                    loading={i < 6 ? 'eager' : 'lazy'}
+                    fetchPriority={i === 0 ? 'high' : 'auto'}
                     decoding="async"
+                    width={800}
+                    height={800}
                     style={{ display: 'block' }}
                   />
                 </div>

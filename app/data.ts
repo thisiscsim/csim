@@ -10,7 +10,7 @@ export const PROJECTS: Project[] = [
   {
     title: 'Exa Search',
     year: '2025',
-    media: 'https://csim.b-cdn.net/Projects/exa_search_cover.webp',
+    media: 'https://csim.b-cdn.net/Projects/exa_search.webp',
     id: 'exa-search',
     aspectRatio: 'wide',
   },
