@@ -7,8 +7,13 @@ import Image from 'next/image';
 // Map project IDs to their static image fallbacks
 function getProjectImageFallback(projectId: string, projectName: string): string {
   const imageMap: { [key: string]: string } = {
+    // Exa projects
+    'exa-search': '/temp-cover/placeholder_1.png',
+
     // Harvey projects
+    'harvey-design-system': '/temp-cover/placeholder_1.png',
     'harvey-review-table': '/temp-cover/harvey-review-tables.png',
+    'harvey-vault': '/temp-cover/placeholder_1.png',
     'harvey-2': '/temp-cover/harvey-file-event-log.png',
     'harvey-3': '/temp-cover/placeholder_1.png',
     'harvey-4': '/temp-cover/placeholder_1.png',
@@ -192,50 +197,6 @@ export default function HomePage() {
               more valuable work. I received my master&apos;s in Human-Computer Interaction from the
               University of Washington.
             </p>
-          </motion.div>
-
-          <motion.div
-            className="mt-8 text-sm font-mono text-secondary flex items-center gap-4 flex-wrap"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
-          >
-            <a
-              href="https://twitter.com/yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors flex items-center gap-1"
-            >
-              <Image src="/social-icons/IconX.svg" alt="" width={16} height={16} />
-              <span>Twitter</span>
-            </a>
-            <a
-              href="https://threads.net/@yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors flex items-center gap-1"
-            >
-              <Image src="/social-icons/IconThreads.svg" alt="" width={16} height={16} />
-              <span>Threads</span>
-            </a>
-            <a
-              href="https://instagram.com/yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors flex items-center gap-1"
-            >
-              <Image src="/social-icons/IconInstagram.svg" alt="" width={16} height={16} />
-              <span>Instagram</span>
-            </a>
-            <a
-              href="https://are.na/yourusername"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors flex items-center gap-1"
-            >
-              <Image src="/social-icons/IconArena.svg" alt="" width={16} height={16} />
-              <span>Are.na</span>
-            </a>
           </motion.div>
         </div>
       </div>

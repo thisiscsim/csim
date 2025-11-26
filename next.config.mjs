@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: 'csim.b-cdn.net',
         pathname: '/Photos/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'csim.b-cdn.net',
+        pathname: '/Projects/**',
+      },
     ],
   },
   experimental: {

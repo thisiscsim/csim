@@ -8,6 +8,21 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
+    title: 'Exa Search',
+    year: '2025',
+    media: 'https://csim.b-cdn.net/Projects/exa_search_cover.webp',
+    id: 'exa-search',
+    aspectRatio: 'wide',
+  },
+  {
+    title: 'Harvey Design System',
+    year: '2025',
+    media:
+      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+    id: 'harvey-design-system',
+    aspectRatio: 'wide',
+  },
+  {
     title: 'Harvey artifacts',
     year: '2025',
     media:
@@ -16,11 +31,19 @@ export const PROJECTS: Project[] = [
     aspectRatio: 'wide',
   },
   {
-    title: 'Harvey multi-document retrieval and extraction',
+    title: 'Harvey multi-document extraction',
     year: '2024',
     media:
       'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/newProfileItem/d898be8a-7037-4c71-af0c-8997239b050d.mp4?_a=DATAdtAAZAA0',
     id: 'harvey-review-table',
+  },
+  {
+    title: 'Harvey vault',
+    year: '2024',
+    media:
+      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
+    id: 'harvey-vault',
+    aspectRatio: 'wide',
   },
   {
     title: 'Harvey mobile',
@@ -30,7 +53,7 @@ export const PROJECTS: Project[] = [
     id: 'harvey-mobile',
   },
   {
-    title: 'Harvey agentic S-1 workflow',
+    title: 'Harvey Agentic Workflow',
     year: '2024',
     media:
       'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
