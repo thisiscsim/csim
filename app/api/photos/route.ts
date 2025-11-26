@@ -16,8 +16,25 @@ export async function GET() {
   const region = process.env.BUNNY_STORAGE_REGION || 'de';
   const pullZoneUrl = process.env.BUNNY_PULL_ZONE_URL;
 
+  console.log('Bunny Config:', {
+    hasStorageZone: !!storageZone,
+    hasApiKey: !!apiKey,
+    region,
+    hasPullZoneUrl: !!pullZoneUrl,
+  });
+
   if (!storageZone || !apiKey || !pullZoneUrl) {
-    return NextResponse.json({ error: 'Bunny CDN configuration is missing' }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Bunny CDN configuration is missing',
+        details: {
+          hasStorageZone: !!storageZone,
+          hasApiKey: !!apiKey,
+          hasPullZoneUrl: !!pullZoneUrl,
+        },
+      },
+      { status: 500 }
+    );
   }
 
   try {
@@ -40,6 +57,8 @@ export async function GET() {
 
     const files: BunnyFile[] = await response.json();
 
+    console.log(`Found ${files.length} total files in Bunny storage`);
+
     // Filter for image files only and construct CDN URLs with optimization parameters
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
     const images = files
@@ -60,6 +79,8 @@ export async function GET() {
         };
       });
 
+    console.log(`Returning ${images.length} image files`);
+
     return NextResponse.json(
       { images },
       {
@@ -70,6 +91,13 @@ export async function GET() {
     );
   } catch (error) {
     console.error('Error fetching photos from Bunny:', error);
-    return NextResponse.json({ error: 'Failed to fetch photos' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      {
+        error: 'Failed to fetch photos',
+        details: errorMessage,
+      },
+      { status: 500 }
+    );
   }
 }
