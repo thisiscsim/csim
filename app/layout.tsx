@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
-import { CompactNavigation } from '@/components/compact-navigation';
+import { BasicNavigation } from '@/components/basic-navigation';
 // import { getPublishedBlogPosts } from '@/lib/notion/blog';
 
 export const viewport: Viewport = {
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description:
     'Nim is a free and open-source personal website template built with Next.js 15, React 19 and Motion-Primitives.',
   icons: {
-    icon: '/logo.svg',
+    icon: '/avatar.svg',
   },
 };
 
@@ -72,8 +72,8 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <LenisProvider>
-          {/* Compact Navigation */}
-          <CompactNavigation />
+          {/* Basic Navigation */}
+          <BasicNavigation />
           <div className="mx-auto max-w-[1440px]">
             <div className="flex min-h-screen w-full relative">
               {/* Left side - Main content */}

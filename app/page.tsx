@@ -26,6 +26,8 @@ function getProjectImageFallback(projectId: string, projectName: string): string
     'arc-2': '/temp-cover/arc-billpay.png',
     'arc-3': '/temp-cover/arc-settings.png',
     'arc-4': '/temp-cover/placeholder_1.png',
+    'arc-design-system': '/temp-cover/placeholder_1.png',
+    'arc-onboarding': '/temp-cover/placeholder_1.png',
 
     // Flexport projects
     'flexport-1': '/temp-cover/flexport-teamview.png',
@@ -122,7 +124,7 @@ export default function HomePage() {
       />
 
       {/* Introduction Section */}
-      <div className="w-full px-4 md:px-6 lg:px-8 mb-32">
+      <div className="w-full px-4 md:px-6 lg:px-8">
         <div className="max-w-[1400px] mx-auto">
           <motion.h1
             className="text-[17px] leading-[26px] font-medium text-primary"
@@ -198,6 +200,21 @@ export default function HomePage() {
               University of Washington.
             </p>
           </motion.div>
+        </div>
+      </div>
+
+      {/* Separator */}
+      <div
+        className="w-full px-4 md:px-6 lg:px-8"
+        style={{ marginTop: '56px', marginBottom: '56px' }}
+      >
+        <div className="max-w-[1400px] mx-auto flex justify-center">
+          <motion.div
+            className="w-[40px] h-[1px] bg-gray-300"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
+          />
         </div>
       </div>
 
