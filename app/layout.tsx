@@ -78,7 +78,7 @@ export default async function RootLayout({
             <div className="flex min-h-screen w-full relative">
               {/* Left side - Main content */}
               <div className="flex-1">
-                <div className="mx-auto max-w-[700px] px-4 pt-[70px]">
+                <div className="mx-auto max-w-[700px] px-4 pt-[80px]">
                   <div className="flex-1">{children}</div>
                 </div>
               </div>

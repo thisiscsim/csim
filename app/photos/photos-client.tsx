@@ -15,6 +15,7 @@ interface PhotosClientProps {
 export default function PhotosClient({ initialImages }: PhotosClientProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('strip');
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Detect mobile viewport
   useEffect(() => {
@@ -35,8 +36,39 @@ export default function PhotosClient({ initialImages }: PhotosClientProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Handle scroll detection for gradient
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+      // Show top gradient when scrolled down from top
+      setIsScrolled(scrollTop > 0);
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <>
+      {/* Top Blur Gradient Overlay */}
+      <div
+        className={`fixed top-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
+          isScrolled ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{
+          height: '96px',
+          backdropFilter: 'blur(5px)',
+          WebkitBackdropFilter: 'blur(5px)',
+          opacity: 0.95,
+          maskImage: 'linear-gradient(to bottom, black 25%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 25%, transparent)',
+        }}
+      />
+
       {viewMode === 'strip' ? (
         <PhotoRoll initialImages={initialImages} />
       ) : (
@@ -46,7 +78,7 @@ export default function PhotosClient({ initialImages }: PhotosClientProps) {
       {/* View Mode Toggle - Hidden on mobile */}
       {!isMobile && (
         <div
-          className="fixed top-3 right-3 z-10 flex gap-2 text-black/60 text-xs"
+          className="fixed top-3 right-3 z-50 flex gap-2 text-black/60 text-xs"
           style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
         >
           <button
