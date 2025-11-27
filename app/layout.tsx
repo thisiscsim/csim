@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
 import { BasicNavigation } from '@/components/basic-navigation';
+import { Analytics } from '@vercel/analytics/react';
 // import { getPublishedBlogPosts } from '@/lib/notion/blog';
 
 export const viewport: Viewport = {
@@ -98,6 +99,7 @@ export default async function RootLayout({
             <PersistentNavigation blogPosts={blogPosts} />
           </div> */}
         </LenisProvider>
+        <Analytics />
       </body>
     </html>
   );
