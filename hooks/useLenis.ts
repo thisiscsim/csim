@@ -25,7 +25,6 @@ export const useLenis = () => {
         lerp: 0.25, // Slightly faster for better responsiveness
         wheelMultiplier: 1.1,
         smoothWheel: true,
-        smoothTouch: false, // Disable on touch devices
       });
 
       // Store lenis instance globally
