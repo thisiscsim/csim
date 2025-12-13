@@ -60,14 +60,14 @@ function getAspectRatioClass(aspectRatio?: string): string {
   }
 }
 
-// Animation variants for staggered effect
+// Animation variants for staggered effect - optimized for faster initial render
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      delayChildren: 0.4,
-      staggerChildren: 0.05,
+      delayChildren: 0.1, // Reduced from 0.4s to 0.1s
+      staggerChildren: 0.03, // Reduced from 0.05s to 0.03s
     },
   },
 };
@@ -75,13 +75,13 @@ const containerVariants = {
 const itemVariants = {
   hidden: {
     opacity: 0,
-    y: 20,
+    y: 10, // Reduced from 20px to 10px for subtler, faster animation
   },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.3, // Reduced from 0.5s to 0.3s
       ease: 'easeOut',
     },
   },
@@ -128,26 +128,26 @@ export default function HomePage() {
         <div className="max-w-[1400px] mx-auto">
           <motion.h1
             className="text-[17px] leading-[26px] font-medium text-primary"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0 }}
           >
             Christopher Sim
           </motion.h1>
           <motion.h2
             className="text-[17px] leading-[26px] text-secondary mb-4"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
           >
             Software designer based in San Francisco
           </motion.h2>
 
           <motion.div
             className="space-y-4 text-md text-secondary leading-relaxed max-w-3xl"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
           >
             <p>
               Currently a software designer at{' '}
@@ -213,7 +213,7 @@ export default function HomePage() {
             className="w-[40px] h-[1px] bg-gray-300"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.15 }}
           />
         </div>
       </div>
@@ -270,9 +270,21 @@ export default function HomePage() {
                         loop
                         muted
                         playsInline
+                        preload={projectIdx < 2 ? 'auto' : 'metadata'} // Only preload first 2 videos
+                        loading={projectIdx < 2 ? 'eager' : 'lazy'}
                       />
                     ) : (
-                      <Image src={mediaSrc} alt={project.title} fill className="object-cover" />
+                      <Image
+                        src={mediaSrc}
+                        alt={project.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1400px) 80vw, 1200px"
+                        priority={projectIdx < 2}
+                        loading={projectIdx < 2 ? 'eager' : 'lazy'}
+                        placeholder="blur"
+                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg=="
+                      />
                     )}
                   </div>
                 </div>

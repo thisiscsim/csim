@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
+import Image from 'next/image';
 import {
   MorphingDialog,
   MorphingDialogTrigger,
@@ -62,8 +63,28 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-primary">
-        <p className="text-black/60">Loading photos...</p>
+      <div
+        className="min-h-screen bg-primary"
+        style={{
+          width: '100vw',
+          marginLeft: 'calc(-50vw + 50%)',
+          padding: '40px 32px',
+        }}
+      >
+        <div
+          className="grid gap-1"
+          style={{
+            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+          }}
+        >
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="w-full bg-gray-100 animate-pulse"
+              style={{ aspectRatio: '1 / 1' }}
+            />
+          ))}
+        </div>
       </div>
     );
   }
@@ -99,7 +120,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
             key={`${image.name}-${i}`}
             style={{
               animation:
-                i < 12 ? `fadeInScale 0.4s ease-out ${Math.min(i * 0.02, 0.24)}s both` : 'none',
+                i < 12 ? `fadeInScale 0.3s ease-out ${Math.min(i * 0.015, 0.18)}s both` : 'none',
             }}
           >
             <MorphingDialog
@@ -110,30 +131,36 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
             >
               <MorphingDialogTrigger className="w-full block cursor-pointer group overflow-hidden focus:outline-none focus-visible:outline-none">
                 <div
-                  className="w-full transition-transform duration-200 group-hover:scale-[1.02]"
+                  className="w-full relative transition-transform duration-200 group-hover:scale-[1.02]"
                   style={{ aspectRatio: '1 / 1' }}
                 >
-                  <img
+                  <Image
                     src={image.url}
                     alt={image.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    className="object-cover"
                     loading={i < 6 ? 'eager' : 'lazy'}
-                    fetchPriority={i === 0 ? 'high' : 'auto'}
-                    decoding="async"
-                    width={800}
-                    height={800}
-                    style={{ display: 'block' }}
+                    priority={i < 2}
+                    placeholder="blur"
+                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg=="
                   />
                 </div>
               </MorphingDialogTrigger>
               <MorphingDialogContainer>
                 <MorphingDialogContent className="relative flex items-center justify-center">
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <img
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="relative max-h-[90vh] max-w-[90vw]"
+                  >
+                    <Image
                       src={image.url}
                       alt={image.name}
-                      className="max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain rounded-[4px]"
-                      style={{ display: 'block' }}
+                      width={1600}
+                      height={1600}
+                      className="w-auto h-auto max-h-[90vh] max-w-[90vw] object-contain rounded-[4px]"
+                      quality={90}
+                      priority
                     />
                   </div>
                 </MorphingDialogContent>

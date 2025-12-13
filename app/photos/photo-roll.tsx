@@ -379,7 +379,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
               return (
                 <div
                   key={`${image.name}-${i}`}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 relative bg-gray-100"
                   style={{
                     width: dimensions.width,
                     height: dimensions.height,
@@ -388,12 +388,13 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
                     backfaceVisibility: 'hidden',
                   }}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt={image.name}
                     src={image.url}
                     className="h-full w-full object-cover select-none pointer-events-none"
-                    loading={i < 3 ? 'eager' : 'lazy'}
-                    fetchPriority={i === 0 ? 'high' : 'auto'}
+                    loading="eager"
+                    fetchPriority={i < 3 ? 'high' : 'auto'}
                     decoding="async"
                     draggable={false}
                     style={{
