@@ -271,7 +271,6 @@ export default function HomePage() {
                         muted
                         playsInline
                         preload={projectIdx < 2 ? 'auto' : 'metadata'} // Only preload first 2 videos
-                        loading={projectIdx < 2 ? 'eager' : 'lazy'}
                       />
                     ) : (
                       <Image
