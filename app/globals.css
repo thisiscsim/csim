@@ -6,25 +6,31 @@
   --base-font-size: 14px;
   --base-line-height: 20px;
 
-  --scrollbar-thumb: rgb(212 212 216); /* zinc-300 */
-  --scrollbar-thumb-hover: rgb(161 161 170); /* zinc-400 */
+  /* Color tokens - Light mode (default) */
+  --bg-base: #fafaf9;
+  --fg-base: #0f0d0d;
+  --fg-subtle: rgba(15, 14, 13, 0.7);
+  --fg-muted: rgba(15, 14, 13, 0.6);
+  --border-base: rgba(15, 14, 13, 0.1);
+  --interactive-base: #f0f0f0;
 
-  /* Accent color */
-  --accent-red: #c03540;
+  /* Scrollbar colors */
+  --scrollbar-thumb: rgba(15, 14, 13, 0.2);
+  --scrollbar-thumb-hover: rgba(15, 14, 13, 0.35);
+}
 
-  /* Semantic color tokens - Light mode only */
-  --text-primary: 40 42 48; /* #282A30 */
-  --text-primary-inverse: 247 248 248; /* #F7F8F8 */
-  --text-secondary: 111 110 119; /* #6F6E77 */
-  --text-tertiary: 143 143 143; /* #8F8F8F */
-  --text-muted: 161 161 170; /* zinc-400 */
-  --bg-primary: 250 250 250; /* #FAFAFA */
-  --bg-primary-inverse: 17 17 17; /* #111111 */
-  --bg-secondary: 249 248 249; /* #F9F8F9 */
-  --bg-tertiary: 244 242 244; /* #F4F2F4 */
-  --border-primary: 233 232 234; /* #E9E8EA */
-  --border-secondary: 228 228 231; /* zinc-200 */
-  --border-muted: 244 244 245; /* zinc-100 */
+.dark {
+  /* Color tokens - Dark mode */
+  --bg-base: #0f0e0d;
+  --fg-base: #fafaf9;
+  --fg-subtle: rgba(250, 250, 249, 0.7);
+  --fg-muted: rgba(250, 250, 249, 0.6);
+  --border-base: rgba(250, 250, 249, 0.1);
+  --interactive-base: #1d1d1d;
+
+  /* Scrollbar colors */
+  --scrollbar-thumb: rgba(250, 250, 249, 0.2);
+  --scrollbar-thumb-hover: rgba(250, 250, 249, 0.35);
 }
 
 /* Base styles */
@@ -43,53 +49,38 @@
     font-weight: 500;
   }
 
-  /* Semantic color utilities */
-  .text-primary {
-    color: rgb(var(--text-primary));
+  /* Design token utilities */
+  .bg-base {
+    background-color: var(--bg-base);
   }
 
-  .text-primary-inverse {
-    color: rgb(var(--text-primary-inverse));
+  .fg-base {
+    color: var(--fg-base);
   }
 
-  .text-secondary {
-    color: rgb(var(--text-secondary));
+  .fg-subtle {
+    color: var(--fg-subtle);
   }
 
-  .text-tertiary {
-    color: rgb(var(--text-tertiary));
+  .fg-muted {
+    color: var(--fg-muted);
   }
 
-  .text-muted {
-    color: rgb(var(--text-muted));
+  .border-base {
+    border-color: var(--border-base);
   }
 
-  .bg-primary {
-    background-color: rgb(var(--bg-primary));
+  .bg-interactive {
+    background-color: var(--interactive-base);
   }
 
-  .bg-primary-inverse {
-    background-color: rgb(var(--bg-primary-inverse));
-  }
-
-  .bg-secondary {
-    background-color: rgb(var(--bg-secondary));
-  }
-
-  .bg-tertiary {
-    background-color: rgb(var(--bg-tertiary));
-  }
-
-  .border-primary {
-    border-color: rgb(var(--border-primary));
-  }
-
-  .border-secondary {
-    border-color: rgb(var(--border-secondary));
-  }
-
-  .border-muted {
-    border-color: rgb(var(--border-muted));
+  /* Theme transition */
+  body {
+    background-color: var(--bg-base);
+    color: var(--fg-base);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
   }
 
   /* Temporarily disabled Geist overrides to use Reckless everywhere */
@@ -130,18 +121,18 @@
     font-family: var(--font-abc-marist), sans-serif;
   }
 
-  /* Default border color compatibility styles */
+  /* Default border color */
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--border-base);
   }
 
   ::selection {
-    background-color: rgb(228 228 231); /* zinc-200 */
-    color: rgb(24 24 27); /* zinc-900 */
+    background-color: var(--interactive-base);
+    color: var(--fg-base);
   }
 }
 
@@ -252,7 +243,13 @@ html:hover::-webkit-scrollbar-thumb:hover {
 }
 
 .skeleton_wrapper:not(.skeleton_animation):not(.skeleton_loaded) {
-  background-image: linear-gradient(270deg, #fafafa, #ebebeb, #ebebeb, #fafafa);
+  background-image: linear-gradient(
+    270deg,
+    var(--bg-base),
+    var(--interactive-base),
+    var(--interactive-base),
+    var(--bg-base)
+  );
   background-size: 400% 100%;
   animation: skeleton_loading 8s ease-in-out infinite;
 }
@@ -270,7 +267,13 @@ html:hover::-webkit-scrollbar-thumb:hover {
   right: 0;
   bottom: 0;
   border-radius: 4px;
-  background-image: linear-gradient(270deg, #fafafa, #ebebeb, #ebebeb, #fafafa);
+  background-image: linear-gradient(
+    270deg,
+    var(--bg-base),
+    var(--interactive-base),
+    var(--interactive-base),
+    var(--bg-base)
+  );
   background-size: 400% 100%;
   animation: skeleton_loading 8s ease-in-out infinite;
 }

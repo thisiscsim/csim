@@ -5,7 +5,6 @@ import { motion, AnimatePresence, MotionConfig, Transition, Variant } from 'moti
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { XIcon } from 'lucide-react';
-import useClickOutside from '@/hooks/useClickOutside';
 
 export type MorphingDialogContextType = {
   isOpen: boolean;
@@ -169,17 +168,11 @@ function MorphingDialogContent({ children, className, style }: MorphingDialogCon
     }
   }, [isOpen, triggerRef]);
 
-  useClickOutside(containerRef, () => {
-    if (isOpen) {
-      setIsOpen(false);
-    }
-  });
-
   return (
     <motion.div
       ref={containerRef}
       layoutId={`dialog-${uniqueId}`}
-      className={cn('overflow-hidden', className)}
+      className={cn('overflow-hidden pointer-events-auto', className)}
       style={style}
       role="dialog"
       aria-modal="true"
@@ -198,7 +191,7 @@ export type MorphingDialogContainerProps = {
 };
 
 function MorphingDialogContainer({ children }: MorphingDialogContainerProps) {
-  const { isOpen, uniqueId } = useMorphingDialog();
+  const { isOpen, setIsOpen, uniqueId } = useMorphingDialog();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -214,12 +207,16 @@ function MorphingDialogContainer({ children }: MorphingDialogContainerProps) {
         <>
           <motion.div
             key={`backdrop-${uniqueId}`}
-            className="fixed inset-0 h-full w-full bg-white/40 backdrop-blur-xs dark:bg-black/40"
+            className="fixed inset-0 h-full w-full backdrop-blur-xs cursor-pointer z-40"
+            style={{ backgroundColor: 'var(--bg-base)' }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: 0.4 }}
             exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
           />
-          <div className="fixed inset-0 z-50 flex items-center justify-center">{children}</div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+            {children}
+          </div>
         </>
       )}
     </AnimatePresence>,
@@ -347,13 +344,13 @@ function MorphingDialogClose({ children, className, variants }: MorphingDialogCl
       type="button"
       aria-label="Close dialog"
       key={`dialog-close-${uniqueId}`}
-      className={cn('absolute top-6 right-6', className)}
+      className={cn(children !== undefined ? '' : 'absolute top-6 right-6', className)}
       initial="initial"
       animate="animate"
       exit="exit"
       variants={variants}
     >
-      {children || <XIcon size={24} />}
+      {children !== undefined ? children : <XIcon size={24} />}
     </motion.button>
   );
 }

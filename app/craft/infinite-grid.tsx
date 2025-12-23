@@ -282,7 +282,7 @@ export default function InfiniteGrid() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-primary">
+    <div className="fixed inset-0 overflow-hidden bg-base transition-colors duration-300">
       <div ref={containerInnerRef} className="container-inner">
         <div
           ref={containerRef}
@@ -292,7 +292,7 @@ export default function InfiniteGrid() {
           {generateImages()}
         </div>
       </div>
-      <div className="fixed top-3 left-3 z-10 text-black/60 pointer-events-none">
+      <div className="fixed top-3 left-3 z-10 fg-muted pointer-events-none transition-colors duration-300">
         <p className="text-xs font-medium">Drag to explore</p>
       </div>
     </div>

@@ -1,6 +1,6 @@
 ::selection {
-  background: var(--accent-red, #c03540);
-  color: white;
+  background: var(--interactive-base);
+  color: var(--fg-base);
 }
 
 @theme {
@@ -189,7 +189,7 @@
   --color-green11: hsl(153, 67%, 28.5%);
   --color-green12: hsl(155, 40%, 14%);
   /* Focus */
-  --color-focus: var(--accent-red, #c03540);
+  --color-focus: var(--fg-base);
   --focus-ring: 2px solid var(--color-focus);
   /* Breakpoints */
   --breakpoint-*: initial;

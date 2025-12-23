@@ -394,23 +394,23 @@ export default function InfiniteGrid() {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 overflow-hidden bg-primary flex items-center justify-center">
-        <p className="text-black/60">Loading photos...</p>
+      <div className="fixed inset-0 overflow-hidden bg-base flex items-center justify-center transition-colors duration-300">
+        <p className="fg-muted transition-colors duration-300">Loading photos...</p>
       </div>
     );
   }
 
   if (images.length === 0) {
     return (
-      <div className="fixed inset-0 overflow-hidden bg-primary flex items-center justify-center">
-        <p className="text-black/60">No photos found</p>
+      <div className="fixed inset-0 overflow-hidden bg-base flex items-center justify-center transition-colors duration-300">
+        <p className="fg-muted transition-colors duration-300">No photos found</p>
       </div>
     );
   }
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden bg-primary"
+      className="fixed inset-0 overflow-hidden bg-base transition-colors duration-300"
       style={{ overscrollBehavior: 'none', touchAction: 'none' }}
     >
       <div ref={containerInnerRef} className="container-inner">
@@ -422,7 +422,7 @@ export default function InfiniteGrid() {
           {generateImages()}
         </div>
       </div>
-      <div className="fixed top-3 left-3 z-10 text-black/60 pointer-events-none">
+      <div className="fixed top-3 left-3 z-10 fg-muted pointer-events-none transition-colors duration-300">
         <p className="text-xs font-medium">Drag to explore • {images.length} photos</p>
       </div>
     </div>

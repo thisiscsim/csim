@@ -70,7 +70,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
 
   return (
     <>
-      <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-gray-100 to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)]" />
+      <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-base to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] transition-colors duration-300" />
 
       <motion.main
         className="space-y-12"
@@ -81,7 +81,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
           <div className="mb-0">
             <h2 className="mb-1 text-xl font-medium">Writing</h2>
-            <p className="text-secondary">
+            <p className="fg-subtle transition-colors duration-300">
               Infrequent thoughts on design, the future, current state of society, geopolitics, and
               life. These are in no way representative of my employer and are strictly my personal
               opinions. I use Notion as the CMS, and the list here updates automatically through the
@@ -98,12 +98,11 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
               }}
               itemClasses={{
                 item: [
-                  'px-2 py-0.5 rounded-md text-sm font-mono transition-colors cursor-pointer',
-                  'bg-zinc-100 text-zinc-500',
-                  'hover:bg-zinc-200/50 hover:text-zinc-700',
-                  'data-[current=true]:bg-zinc-200/70',
-                  'data-[current=true]:text-zinc-900 data-[current=true]:font-medium',
-                  'data-[current=true]:hover:bg-zinc-200/70',
+                  'px-2 py-0.5 rounded-md text-sm font-mono transition-colors duration-300 cursor-pointer',
+                  'bg-interactive fg-muted',
+                  'hover:opacity-80',
+                  'data-[current=true]:opacity-100',
+                  'data-[current=true]:fg-base data-[current=true]:font-medium',
                 ],
                 separator: 'hidden',
               }}
@@ -121,7 +120,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
             <div className="relative">
               <AnimatedBackground
                 enableHover
-                className="h-full w-full rounded-lg bg-zinc-100"
+                className="h-full w-full rounded-lg bg-interactive transition-colors duration-300"
                 transition={{
                   type: 'spring',
                   bounce: 0,
@@ -140,17 +139,21 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
                     prefetch={true}
                   >
                     <div className="flex flex-row items-center gap-2">
-                      <p className="text-zinc-500 min-w-[120px]">
+                      <p className="fg-muted min-w-[120px] transition-colors duration-300">
                         {new Date(post.date).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
                           day: 'numeric',
                         })}
                       </p>
-                      <h4 className="font-medium min-w-[200px] flex-1">{post.title}</h4>
+                      <h4 className="font-medium min-w-[200px] flex-1 fg-base transition-colors duration-300">
+                        {post.title}
+                      </h4>
                       {post.categories && post.categories.length > 0 && (
                         <div className="flex flex-row gap-2 ml-auto">
-                          <p className="text-zinc-500">{post.categories.join(', ')}</p>
+                          <p className="fg-muted transition-colors duration-300">
+                            {post.categories.join(', ')}
+                          </p>
                         </div>
                       )}
                     </div>

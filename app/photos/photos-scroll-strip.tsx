@@ -283,16 +283,16 @@ export default function PhotosScrollStrip() {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-primary">
-        <p className="text-black/60">Loading photos...</p>
+      <div className="fixed inset-0 flex items-center justify-center bg-base transition-colors duration-300">
+        <p className="fg-muted transition-colors duration-300">Loading photos...</p>
       </div>
     );
   }
 
   if (images.length === 0) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-primary">
-        <p className="text-black/60">No photos found</p>
+      <div className="fixed inset-0 flex items-center justify-center bg-base transition-colors duration-300">
+        <p className="fg-muted transition-colors duration-300">No photos found</p>
       </div>
     );
   }
@@ -347,7 +347,7 @@ export default function PhotosScrollStrip() {
             })}
           </motion.div>
         </div>
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 text-black/60 pointer-events-none">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 fg-muted pointer-events-none transition-colors duration-300">
           <p className="text-xs font-medium">
             {activeIndex !== null
               ? `${activeIndex + 1} / ${images.length}`

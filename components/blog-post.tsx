@@ -185,10 +185,8 @@ export default function BlogPost({ post, content }: BlogPostProps) {
                         window.scrollTo({ top: y, behavior: 'smooth' });
                       }
                     }}
-                    className={`block transition-colors font-mono ${
-                      activeId === heading.id
-                        ? 'text-gray-900'
-                        : 'text-gray-400 hover:text-gray-600'
+                    className={`block transition-colors duration-300 font-mono ${
+                      activeId === heading.id ? 'fg-base' : 'fg-muted hover:fg-subtle'
                     }`}
                   >
                     {heading.text}
@@ -212,9 +210,11 @@ export default function BlogPost({ post, content }: BlogPostProps) {
           <motion.header variants={VARIANTS_SECTION}>
             <div className="space-y-6">
               <div className="space-y-2">
-                <h1 className="text-2xl font-medium text-primary">{post.title}</h1>
-                <div className="flex flex-col gap-1 text-sm text-zinc-500">
-                  <div className="text-xs text-zinc-400 font-mono">
+                <h1 className="text-2xl font-medium fg-base transition-colors duration-300">
+                  {post.title}
+                </h1>
+                <div className="flex flex-col gap-1 text-sm fg-muted transition-colors duration-300">
+                  <div className="text-xs fg-muted font-mono transition-colors duration-300">
                     {new Date(post.date).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -222,7 +222,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
                     })}
                   </div>
                   {post.categories && post.categories.length > 0 && (
-                    <div className="text-xs text-zinc-400 font-mono">
+                    <div className="text-xs fg-muted font-mono transition-colors duration-300">
                       {post.categories.join(', ')}
                     </div>
                   )}
@@ -236,7 +236,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
-                <div className="prose prose-zinc w-full max-w-none prose-md">
+                <div className="w-full max-w-none fg-base transition-colors duration-300">
                   <MarkdownContent content={content} />
                 </div>
               )}

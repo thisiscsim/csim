@@ -75,24 +75,24 @@ export default function PhotosClient({ initialImages }: PhotosClientProps) {
         <PhotoGrid initialImages={initialImages} />
       )}
 
-      {/* View Mode Toggle - Hidden on mobile */}
+      {/* View Mode Toggle - Hidden on mobile, positioned at bottom right */}
       {!isMobile && (
         <div
-          className="fixed top-3 right-3 z-50 flex gap-2 text-black/60 text-xs"
+          className="fixed bottom-4 right-8 z-50 flex gap-4 text-xs pointer-events-auto"
           style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
         >
           <button
             onClick={() => setViewMode('strip')}
-            className={`transition-colors ${
-              viewMode === 'strip' ? 'text-black' : 'text-black/40 hover:text-black/60'
+            className={`cursor-pointer transition-colors duration-300 ${
+              viewMode === 'strip' ? 'fg-base' : 'fg-muted hover:fg-subtle'
             }`}
           >
             [S] STRIP
           </button>
           <button
             onClick={() => setViewMode('grid')}
-            className={`transition-colors ${
-              viewMode === 'grid' ? 'text-black' : 'text-black/40 hover:text-black/60'
+            className={`cursor-pointer transition-colors duration-300 ${
+              viewMode === 'grid' ? 'fg-base' : 'fg-muted hover:fg-subtle'
             }`}
           >
             [G] GRID

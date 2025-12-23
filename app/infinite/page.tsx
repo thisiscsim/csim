@@ -376,7 +376,7 @@ export default function InfinitePage() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-50 overflow-hidden">
+    <div className="fixed inset-0 bg-base overflow-hidden transition-colors duration-300">
       {/* Container inner for nudging effect */}
       <div ref={containerInnerRef} className="container-inner">
         {/* Draggable Canvas */}
@@ -392,7 +392,7 @@ export default function InfinitePage() {
       </div>
 
       {/* Simple instructions */}
-      <div className="fixed top-8 left-8 z-50 text-black/60 pointer-events-none">
+      <div className="fixed top-8 left-8 z-50 fg-muted pointer-events-none transition-colors duration-300">
         <p className="text-sm font-medium">Drag to explore</p>
       </div>
     </div>

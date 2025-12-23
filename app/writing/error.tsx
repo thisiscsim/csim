@@ -17,10 +17,12 @@ export default function Error({
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-4">Something went wrong!</h2>
-        <p className="text-gray-500 mb-4">An error occurred while loading the writing page.</p>
+        <p className="fg-muted mb-4 transition-colors duration-300">
+          An error occurred while loading the writing page.
+        </p>
         <button
           onClick={reset}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800"
+          className="rounded-md bg-interactive px-4 py-2 fg-base hover:opacity-80 transition-all duration-300"
         >
           Try again
         </button>

@@ -3,6 +3,7 @@ import typographyPlugin from '@tailwindcss/typography';
 import { typography } from './lib/typography.config';
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -22,25 +23,13 @@ const config: Config = {
         {}
       ),
       colors: {
-        accent: {
-          red: '#C03540',
-        },
-        primary: 'rgb(var(--bg-primary))',
-        'primary-inverse': 'rgb(var(--bg-primary-inverse))',
-        secondary: 'rgb(var(--bg-secondary))',
-        tertiary: 'rgb(var(--bg-tertiary))',
-        text: {
-          primary: 'rgb(var(--text-primary))',
-          'primary-inverse': 'rgb(var(--text-primary-inverse))',
-          secondary: 'rgb(var(--text-secondary))',
-          tertiary: 'rgb(var(--text-tertiary))',
-          muted: 'rgb(var(--text-muted))',
-        },
-        border: {
-          primary: 'rgb(var(--border-primary))',
-          secondary: 'rgb(var(--border-secondary))',
-          muted: 'rgb(var(--border-muted))',
-        },
+        // Design tokens only - no Tailwind default colors
+        'bg-base': 'var(--bg-base)',
+        'fg-base': 'var(--fg-base)',
+        'fg-subtle': 'var(--fg-subtle)',
+        'fg-muted': 'var(--fg-muted)',
+        'border-base': 'var(--border-base)',
+        'interactive-base': 'var(--interactive-base)',
       },
     },
   },
