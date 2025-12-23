@@ -19,7 +19,7 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
 
   // Determine current page and subtitle
   const getCurrentPage = () => {
-    if (pathname === '/') return { name: 'Index', subtitle: null };
+    if (pathname.startsWith('/info')) return { name: 'Info', subtitle: null };
     if (pathname.startsWith('/craft')) return { name: 'Craft', subtitle: null };
     if (pathname.startsWith('/photos')) return { name: 'Photos', subtitle: null };
     if (pathname.startsWith('/writing')) {
@@ -35,14 +35,14 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
       }
       return { name: 'Writing', subtitle: null };
     }
-    return { name: 'Index', subtitle: null };
+    return { name: 'Info', subtitle: null };
   };
 
   const currentPage = getCurrentPage();
   const isSubPage = currentPage.subtitle !== null;
 
   const navItems = [
-    { name: 'Index', href: '/', key: 'I' },
+    { name: 'Info', href: '/info', key: 'I' },
     { name: 'Photos', href: '/photos', key: 'P' },
     { name: 'Craft', href: '/craft', key: 'C' },
     { name: 'Writing', href: '/writing', key: 'W' },
@@ -60,7 +60,7 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
       switch (key) {
         case 'i':
           setPressedKey('I');
-          router.push('/');
+          router.push('/info');
           break;
         case 'c':
           setPressedKey('C');
@@ -113,24 +113,26 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
               className="flex items-center cursor-pointer"
             >
               <span className="font-mono font-medium text-sm whitespace-nowrap flex items-center gap-2">
-                <span className="text-gray-400 text-base">[ </span>
+                <span className="fg-muted text-base transition-colors duration-300">[ </span>
                 <span className="flex items-center gap-2">
-                  <span className="text-gray-900">{currentPage.name}</span>
+                  <span className="fg-base transition-colors duration-300">{currentPage.name}</span>
                   <span
-                    className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono leading-none h-4 w-4 text-[10px] transition-all ${
+                    className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono leading-none h-4 w-4 text-[10px] transition-all duration-300 ${
                       pressedKey === navItems.find((item) => item.name === currentPage.name)?.key
-                        ? 'bg-gray-100 text-black border-gray-900'
-                        : 'border-gray-900 hover:bg-gray-100 hover:text-black'
+                        ? 'bg-interactive fg-base border-base'
+                        : 'border-base hover:bg-interactive hover:fg-base'
                     }`}
                   >
                     {navItems.find((item) => item.name === currentPage.name)?.key}
                   </span>
                 </span>
-                <span className="text-gray-400 text-base"> ]</span>
+                <span className="fg-muted text-base transition-colors duration-300"> ]</span>
                 {isSubPage && (
                   <>
-                    <span className="text-gray-400 mx-2">—</span>
-                    <span className="text-gray-600">{currentPage.subtitle}</span>
+                    <span className="fg-muted mx-2 transition-colors duration-300">—</span>
+                    <span className="fg-subtle transition-colors duration-300">
+                      {currentPage.subtitle}
+                    </span>
                   </>
                 )}
               </span>
@@ -161,31 +163,31 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
                     href={item.href}
                     onMouseEnter={() => setHoveredItem(item.name)}
                     onMouseLeave={() => setHoveredItem(null)}
-                    className={`font-mono font-medium text-sm transition-colors whitespace-nowrap cursor-pointer flex items-center gap-2 ${
-                      isActive ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600'
+                    className={`font-mono font-medium text-sm transition-colors duration-300 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+                      isActive ? 'fg-base' : 'fg-muted hover:fg-subtle'
                     }`}
                   >
                     <span
-                      className={`text-gray-400 text-base transition-opacity ${showBrackets ? 'opacity-100' : 'opacity-0'}`}
+                      className={`fg-muted text-base transition-opacity duration-300 ${showBrackets ? 'opacity-100' : 'opacity-0'}`}
                     >
                       [{' '}
                     </span>
                     <span className="flex items-center gap-2">
                       {item.name}
                       <span
-                        className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono leading-none h-4 w-4 text-[10px] transition-all ${
+                        className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono leading-none h-4 w-4 text-[10px] transition-all duration-300 ${
                           pressedKey === item.key
-                            ? 'bg-gray-100 text-black border-gray-900'
+                            ? 'bg-interactive fg-base border-base'
                             : isActive
-                              ? 'border-gray-900 hover:bg-gray-100 hover:text-black'
-                              : 'border-gray-400 hover:bg-gray-100 hover:text-black'
+                              ? 'border-base hover:bg-interactive hover:fg-base'
+                              : 'border-base hover:bg-interactive hover:fg-base'
                         }`}
                       >
                         {item.key}
                       </span>
                     </span>
                     <span
-                      className={`text-gray-400 text-base transition-opacity ${showBrackets ? 'opacity-100' : 'opacity-0'}`}
+                      className={`fg-muted text-base transition-opacity duration-300 ${showBrackets ? 'opacity-100' : 'opacity-0'}`}
                     >
                       {' '}
                       ]

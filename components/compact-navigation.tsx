@@ -11,7 +11,7 @@ export function CompactNavigation() {
   // const [pressedKey, setPressedKey] = useState<string | null>(null);
 
   const navItems = [
-    { id: 'index', label: 'Index', href: '/' },
+    { id: 'info', label: 'Info', href: '/info' },
     { id: 'photos', label: 'Photos', href: '/photos' },
     // { id: 'craft', label: 'Craft', href: '/craft' }, // Temporarily removed
     { id: 'writing', label: 'Writing', href: '/writing' },
@@ -19,11 +19,11 @@ export function CompactNavigation() {
 
   // Determine active item based on pathname
   const getActiveId = () => {
-    if (pathname === '/') return 'index';
+    if (pathname.startsWith('/info')) return 'info';
     if (pathname.startsWith('/photos')) return 'photos';
     // if (pathname.startsWith('/craft')) return 'craft'; // Temporarily removed
     if (pathname.startsWith('/writing')) return 'writing';
-    return 'index';
+    return 'info';
   };
 
   // Add keyboard shortcuts logic (kept functionality, hidden UI)
@@ -36,7 +36,7 @@ export function CompactNavigation() {
       const key = event.key.toLowerCase();
       switch (key) {
         case 'i':
-          router.push('/');
+          router.push('/info');
           break;
         // case 'c': // Temporarily removed
         //   router.push('/craft');
@@ -73,7 +73,7 @@ export function CompactNavigation() {
         <AnimatedBackground
           defaultValue={getActiveId()}
           onValueChange={handleValueChange}
-          className="rounded-full bg-gray-200"
+          className="rounded-full bg-interactive transition-colors duration-300"
           transition={{
             type: 'spring',
             bounce: 0.2,
@@ -85,7 +85,7 @@ export function CompactNavigation() {
               key={item.id}
               data-id={item.id}
               type="button"
-              className="px-[10px] py-[6px] font-medium text-gray-500 transition-colors duration-300 hover:text-gray-900 data-[checked=true]:text-gray-900 cursor-pointer"
+              className="px-[10px] py-[6px] font-medium fg-muted transition-colors duration-300 hover:fg-base data-[checked=true]:fg-base cursor-pointer"
               style={{
                 fontSize: '12px',
                 lineHeight: '10px',

@@ -13,7 +13,11 @@ const generateId = (children: any): string => {
 const H1Component = memo(function H1Component({ _node, children, ...props }: any) {
   const id = generateId(children);
   return (
-    <h1 id={id} className="text-2xl font-medium mt-8 mb-4" {...props}>
+    <h1
+      id={id}
+      className="text-2xl font-medium mt-8 mb-4 fg-base transition-colors duration-300"
+      {...props}
+    >
       {children}
     </h1>
   );
@@ -22,7 +26,11 @@ const H1Component = memo(function H1Component({ _node, children, ...props }: any
 const H2Component = memo(function H2Component({ _node, children, ...props }: any) {
   const id = generateId(children);
   return (
-    <h2 id={id} className="text-xl font-medium mt-6 mb-3" {...props}>
+    <h2
+      id={id}
+      className="text-xl font-medium mt-6 mb-3 fg-base transition-colors duration-300"
+      {...props}
+    >
       {children}
     </h2>
   );
@@ -31,51 +39,77 @@ const H2Component = memo(function H2Component({ _node, children, ...props }: any
 const H3Component = memo(function H3Component({ _node, children, ...props }: any) {
   const id = generateId(children);
   return (
-    <h3 id={id} className="text-lg font-medium mt-4 mb-2" {...props}>
+    <h3
+      id={id}
+      className="text-lg font-medium mt-4 mb-2 fg-base transition-colors duration-300"
+      {...props}
+    >
       {children}
     </h3>
   );
 });
 
 const H4Component = memo(function H4Component({ _node, ...props }: any) {
-  return <h4 className="text-base font-medium mt-3 mb-2" {...props} />;
+  return (
+    <h4
+      className="text-base font-medium mt-3 mb-2 fg-base transition-colors duration-300"
+      {...props}
+    />
+  );
 });
 
 const PComponent = memo(function PComponent({ _node, ...props }: any) {
-  return <p className="my-4" {...props} />;
+  return <p className="my-4 fg-base transition-colors duration-300" {...props} />;
 });
 
 const UlComponent = memo(function UlComponent({ _node, ...props }: any) {
-  return <ul className="list-disc pl-6 my-4" {...props} />;
+  return <ul className="list-disc pl-6 my-4 fg-base transition-colors duration-300" {...props} />;
 });
 
 const OlComponent = memo(function OlComponent({ _node, ...props }: any) {
-  return <ol className="list-decimal pl-6 my-4" {...props} />;
+  return (
+    <ol className="list-decimal pl-6 my-4 fg-base transition-colors duration-300" {...props} />
+  );
 });
 
 const LiComponent = memo(function LiComponent({ _node, ...props }: any) {
-  return <li className="my-1" {...props} />;
+  return <li className="my-1 fg-base transition-colors duration-300" {...props} />;
 });
 
 const AComponent = memo(function AComponent({ _node, ...props }: any) {
-  return <a className="text-[#C03540] hover:underline" {...props} />;
+  return (
+    <a className="fg-base underline hover:opacity-70 transition-opacity duration-300" {...props} />
+  );
 });
 
 const BlockquoteComponent = memo(function BlockquoteComponent({ _node, ...props }: any) {
-  return <blockquote className="border-l-4 border-gray-300 pl-4 my-4 italic" {...props} />;
+  return (
+    <blockquote
+      className="border-l-4 border-base pl-4 my-4 italic transition-colors duration-300"
+      {...props}
+    />
+  );
 });
 
 const PreComponent = memo(function PreComponent({ _node, ...props }: any) {
-  return <pre className="bg-zinc-200 rounded p-4 my-4 overflow-x-auto text-zinc-900" {...props} />;
+  return (
+    <pre
+      className="bg-interactive rounded p-4 my-4 overflow-x-auto fg-base transition-colors duration-300"
+      {...props}
+    />
+  );
 });
 
 const CodeComponent = memo(function CodeComponent({ _node, className, children, ...props }: any) {
   return !className ? (
-    <code className="bg-zinc-200 rounded px-1 py-0.5 text-zinc-900" {...props}>
+    <code
+      className="bg-interactive rounded px-1 py-0.5 fg-base transition-colors duration-300"
+      {...props}
+    >
       {children}
     </code>
   ) : (
-    <code className="text-zinc-900" {...props}>
+    <code className="fg-base transition-colors duration-300" {...props}>
       {children}
     </code>
   );
@@ -96,7 +130,9 @@ const ImgComponent = memo(function ImgComponent({ _node, src, alt, ...props }: a
         {...props}
       />
       {shouldShowCaption && (
-        <span className="block text-sm text-zinc-500 text-center mt-1 italic">{alt}</span>
+        <span className="block text-sm fg-muted text-center mt-1 italic transition-colors duration-300">
+          {alt}
+        </span>
       )}
     </span>
   );

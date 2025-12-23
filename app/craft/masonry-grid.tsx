@@ -66,7 +66,7 @@ export default function MasonryGrid() {
 
   return (
     <div
-      className="min-h-screen bg-[#fafafa] pt-[78px] pb-2"
+      className="min-h-screen bg-base pt-[78px] pb-2 transition-colors duration-300"
       style={{
         width: '100vw',
         paddingLeft: '8px',
@@ -88,7 +88,7 @@ export default function MasonryGrid() {
                   variants={createItemVariants(colIndex, item.positionInColumn)}
                 >
                   <div
-                    className={`w-full ${aspectClass} overflow-hidden bg-[#e5e5e5] rounded-md relative`}
+                    className={`w-full ${aspectClass} overflow-hidden bg-interactive rounded-md relative transition-colors duration-300`}
                   >
                     <img
                       src={item.imageUrl}

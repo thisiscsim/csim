@@ -15,7 +15,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
   const pathname = usePathname();
 
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
-    index: pathname === '/',
+    info: pathname.startsWith('/info'),
     craft: pathname.startsWith('/craft'),
     photos: pathname.startsWith('/photos'),
     writing: pathname.startsWith('/writing'),
@@ -27,7 +27,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
   // Update expanded sections when pathname changes
   useEffect(() => {
     setExpandedSections({
-      index: pathname === '/',
+      info: pathname.startsWith('/info'),
       craft: pathname.startsWith('/craft'),
       photos: pathname.startsWith('/photos'),
       writing: pathname.startsWith('/writing'),
@@ -51,8 +51,8 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
     }
   }, [router, blogPosts]);
 
-  const handleIndexClick = useCallback(() => {
-    router.push('/');
+  const handleInfoClick = useCallback(() => {
+    router.push('/info');
   }, [router]);
 
   const toggleSection = (section: string) => {
@@ -67,7 +67,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
       // Otherwise, close all sections and open the clicked one
       return {
-        index: false,
+        info: false,
         craft: false,
         photos: false,
         writing: false,
@@ -88,7 +88,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
       switch (key) {
         case 'i':
           setPressedKey('i');
-          handleIndexClick();
+          handleInfoClick();
           break;
         case 'c':
           setPressedKey('c');
@@ -115,15 +115,15 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
       window.removeEventListener('keydown', handleKeyPress);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [handleIndexClick, handleCraftClick, handlePhotosClick, handleWritingClick]);
+  }, [handleInfoClick, handleCraftClick, handlePhotosClick, handleWritingClick]);
 
   return (
-    <div className="w-full bg-white rounded-lg p-6">
-      {/* INDEX Section */}
+    <div className="w-full bg-base rounded-lg p-6 transition-colors duration-300">
+      {/* INFO Section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors border-b-2 border-dotted border-gray-300">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm fg-base transition-colors duration-300 border-b-2 border-dotted border-base">
           <button
-            onClick={handleIndexClick}
+            onClick={handleInfoClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
           >
             <Image
@@ -131,21 +131,23 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               alt=""
               width={12}
               height={12}
-              className={pathname === '/' ? '' : 'grayscale opacity-40'}
+              className={pathname.startsWith('/info') ? '' : 'grayscale opacity-40'}
             />
-            <span className="text-gray-900 uppercase tracking-wider">INDEX</span>
+            <span className="fg-base uppercase tracking-wider transition-colors duration-300">
+              INFO
+            </span>
           </button>
           <button
-            onClick={() => toggleSection('index')}
-            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] text-gray-400 rounded-[5px] border border-gray-200 font-sans hover:bg-gray-100 hover:text-gray-600 hover:border-gray-300 transition-colors cursor-pointer ${
-              pressedKey === 'i' ? 'bg-gray-100 text-gray-600 border-gray-300' : ''
+            onClick={() => toggleSection('info')}
+            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] fg-muted rounded-[5px] border border-base font-sans hover:bg-interactive hover:fg-base transition-colors duration-300 cursor-pointer ${
+              pressedKey === 'i' ? 'bg-interactive fg-base' : ''
             }`}
           >
             I
           </button>
         </div>
         <AnimatePresence>
-          {expandedSections.index && (
+          {expandedSections.info && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
@@ -153,8 +155,8 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <p className="text-sm leading-snug text-gray-700">
+              <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
+                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
                   I&apos;m Christopher Sim, a software designer at Harvey. I work on the
                   intersection of design and engineering. Previously, I&apos;ve worked with teams at
                   Flexport, Uber, and Arc. I studied Human-Computer Interaction at the University of
@@ -168,7 +170,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
       {/* CRAFT section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors border-b-2 border-dotted border-gray-300">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm fg-base transition-colors duration-300 border-b-2 border-dotted border-base">
           <button
             onClick={handleCraftClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -190,12 +192,12 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                   : {}
               }
             />
-            <span className="text-gray-900">CRAFT</span>
+            <span className="fg-base transition-colors duration-300">CRAFT</span>
           </button>
           <button
             onClick={() => toggleSection('craft')}
-            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] text-gray-400 rounded-[5px] border border-gray-200 font-sans hover:bg-gray-100 hover:text-gray-600 hover:border-gray-300 transition-colors cursor-pointer ${
-              pressedKey === 'c' ? 'bg-gray-100 text-gray-600 border-gray-300' : ''
+            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] fg-muted rounded-[5px] border border-base font-sans hover:bg-interactive hover:fg-base transition-colors duration-300 cursor-pointer ${
+              pressedKey === 'c' ? 'bg-interactive fg-base' : ''
             }`}
           >
             C
@@ -210,8 +212,8 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <p className="text-sm leading-snug text-gray-700">
+              <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
+                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
                   A collection of creative experiments, side projects, and visual explorations. This
                   is where I play with new ideas and push creative boundaries outside of my
                   day-to-day work.
@@ -224,7 +226,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
       {/* PHOTOS section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors border-b-2 border-dotted border-gray-300">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm fg-base transition-colors duration-300 border-b-2 border-dotted border-base">
           <button
             onClick={handlePhotosClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -248,12 +250,12 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                   : {}
               }
             />
-            <span className="text-gray-900">PHOTOS</span>
+            <span className="fg-base transition-colors duration-300">PHOTOS</span>
           </button>
           <button
             onClick={() => toggleSection('photos')}
-            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] text-gray-400 rounded-[5px] border border-gray-200 font-sans hover:bg-gray-100 hover:text-gray-600 hover:border-gray-300 transition-colors cursor-pointer ${
-              pressedKey === 'p' ? 'bg-gray-100 text-gray-600 border-gray-300' : ''
+            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] fg-muted rounded-[5px] border border-base font-sans hover:bg-interactive hover:fg-base transition-colors duration-300 cursor-pointer ${
+              pressedKey === 'p' ? 'bg-interactive fg-base' : ''
             }`}
           >
             P
@@ -268,8 +270,8 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <p className="text-sm leading-snug text-gray-700">
+              <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
+                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
                   I&apos;m a amatuer photographer, most of my inspiration comes from nature, who I
                   believe is the best designer. Here are some of my favorite shots from my travels.
                 </p>
@@ -281,7 +283,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
 
       {/* WRITING section */}
       <div>
-        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm text-gray-900 transition-colors border-b-2 border-dotted border-gray-300">
+        <div className="w-full py-3 flex items-center justify-between text-left font-mono text-sm fg-base transition-colors duration-300 border-b-2 border-dotted border-base">
           <button
             onClick={handleWritingClick}
             className="flex-1 flex items-center gap-3 text-left cursor-pointer group"
@@ -305,12 +307,12 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                   : {}
               }
             />
-            <span className="text-gray-900">WRITING</span>
+            <span className="fg-base transition-colors duration-300">WRITING</span>
           </button>
           <button
             onClick={() => toggleSection('writing')}
-            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] text-gray-400 rounded-[5px] border border-gray-200 font-sans hover:bg-gray-100 hover:text-gray-600 hover:border-gray-300 transition-colors cursor-pointer ${
-              pressedKey === 'w' ? 'bg-gray-100 text-gray-600 border-gray-300' : ''
+            className={`w-[18px] h-[18px] px-1 flex items-center justify-center text-[11px] fg-muted rounded-[5px] border border-base font-sans hover:bg-interactive hover:fg-base transition-colors duration-300 cursor-pointer ${
+              pressedKey === 'w' ? 'bg-interactive fg-base' : ''
             }`}
           >
             W
@@ -325,15 +327,15 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
-                <p className="text-sm leading-snug text-gray-700">
+              <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
+                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
                   Infrequent thoughts on design, tech, relationships, geopolitics, society, and the
                   future. I use Notion as the CMS, and the list here updates automatically through
                   Notion&apos;s API.
                 </p>
               </div>
 
-              <div className="pt-4 pb-2 pl-6 font-mono text-sm text-gray-600">
+              <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
                 <div className="space-y-4 -ml-6">
                   {blogPosts.length > 0 ? (
                     <div className="relative">
@@ -358,14 +360,14 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                               }}
                             >
                               <div className="flex items-center">
-                                <span className="w-6 text-gray-900">
+                                <span className="w-6 fg-base transition-colors duration-300">
                                   {pathname === `/writing/${post.slug}` ? '•' : ''}
                                 </span>
                                 <div className="flex-1 flex items-center justify-between gap-4 min-w-0">
-                                  <div className="font-medium text-gray-900 truncate min-w-0">
+                                  <div className="font-medium fg-base truncate min-w-0 transition-colors duration-300">
                                     {post.title}
                                   </div>
-                                  <div className="text-sm font-medium text-gray-900 whitespace-nowrap flex-shrink-0">
+                                  <div className="text-sm font-medium fg-base whitespace-nowrap flex-shrink-0 transition-colors duration-300">
                                     {new Date(post.date)
                                       .toLocaleDateString('en-US', {
                                         month: '2-digit',
@@ -382,7 +384,9 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500 ml-6">No blog posts yet.</p>
+                    <p className="text-sm fg-muted ml-6 transition-colors duration-300">
+                      No blog posts yet.
+                    </p>
                   )}
                 </div>
               </div>

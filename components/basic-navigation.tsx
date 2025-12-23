@@ -10,14 +10,14 @@ export function BasicNavigation() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const navItems = [
-    { id: 'index', label: 'Index', href: '/' },
+    { id: 'info', label: 'Info', href: '/info' },
     { id: 'photos', label: 'Photos', href: '/photos' },
     { id: 'writing', label: 'Writing', href: '/writing' },
   ];
 
   // Determine active item based on pathname
   const isActive = (id: string) => {
-    if (id === 'index') return pathname === '/';
+    if (id === 'info') return pathname.startsWith('/info');
     if (id === 'photos') return pathname.startsWith('/photos');
     if (id === 'writing') return pathname.startsWith('/writing');
     return false;
@@ -33,7 +33,7 @@ export function BasicNavigation() {
       const key = event.key.toLowerCase();
       switch (key) {
         case 'i':
-          router.push('/');
+          router.push('/info');
           break;
         case 'p':
           router.push('/photos');
@@ -72,7 +72,7 @@ export function BasicNavigation() {
         <button
           onClick={() => router.push('/')}
           type="button"
-          className={`flex items-center justify-center rounded-[3px] bg-[#F0F0F0] hover:bg-[#E5E5E5] transition-all duration-200 cursor-pointer ${
+          className={`flex items-center justify-center rounded-[3px] bg-interactive hover:opacity-80 transition-all duration-300 cursor-pointer ${
             isScrolled ? 'backdrop-blur-lg' : ''
           }`}
           style={{ width: '22px', height: '22px' }}
@@ -86,9 +86,9 @@ export function BasicNavigation() {
             key={item.id}
             onClick={() => router.push(item.href)}
             type="button"
-            className={`px-[10px] py-[6px] font-medium bg-[#F0F0F0] hover:bg-[#E5E5E5] transition-all duration-200 rounded-[3px] cursor-pointer ${
+            className={`px-[10px] py-[6px] font-medium bg-interactive hover:opacity-80 transition-all duration-300 rounded-[3px] cursor-pointer ${
               isScrolled ? 'backdrop-blur-lg' : ''
-            } ${isActive(item.id) ? 'text-gray-900' : 'text-gray-500'}`}
+            } ${isActive(item.id) ? 'fg-base' : 'fg-muted'}`}
             style={{
               fontSize: '12px',
               lineHeight: '10px',

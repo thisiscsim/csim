@@ -102,7 +102,10 @@ export function WritingListClient({ posts }: WritingListClientProps) {
             <div key={year}>
               {/* Separator above each year section */}
               {yearIndex > 0 && (
-                <motion.div className="border-b border-zinc-200" variants={itemVariants} />
+                <motion.div
+                  className="border-b border-base transition-colors duration-300"
+                  variants={itemVariants}
+                />
               )}
 
               {postsByYear[year].map((post, index) => {
@@ -122,7 +125,7 @@ export function WritingListClient({ posts }: WritingListClientProps) {
                       <div className="w-20 flex-shrink-0">
                         {index === 0 && (
                           <span
-                            className="text-secondary"
+                            className="fg-muted transition-colors duration-300"
                             style={{ fontSize: '14px', lineHeight: '20px' }}
                           >
                             {year}
@@ -138,7 +141,7 @@ export function WritingListClient({ posts }: WritingListClientProps) {
                         }}
                       >
                         <h3
-                          className="text-primary"
+                          className="fg-base transition-colors duration-300"
                           style={{ fontSize: '14px', lineHeight: '20px' }}
                         >
                           {post.title}
@@ -153,7 +156,7 @@ export function WritingListClient({ posts }: WritingListClientProps) {
                         }}
                       >
                         <span
-                          className="text-secondary"
+                          className="fg-muted transition-colors duration-300"
                           style={{ fontSize: '14px', lineHeight: '20px' }}
                         >
                           {new Date(post.date).toLocaleDateString('en-US', {
@@ -166,7 +169,7 @@ export function WritingListClient({ posts }: WritingListClientProps) {
 
                     {/* Divider after each post except the last one in each year */}
                     {index < postsByYear[year].length - 1 && (
-                      <div className="ml-28 border-b border-zinc-200" />
+                      <div className="ml-28 border-b border-base transition-colors duration-300" />
                     )}
                   </motion.div>
                 );

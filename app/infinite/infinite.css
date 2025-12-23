@@ -2,7 +2,7 @@
 
 /* Body and container styles */
 body.featured-active {
-  background: #f8f8f8;
+  background: var(--bg-base);
   overflow: hidden;
 }
 
@@ -122,7 +122,7 @@ body.featured-active {
 /* Project link inner - has background until loaded */
 .project-link-inner {
   position: relative;
-  background: #eee;
+  background: var(--interactive-base);
   transition: background 500ms;
 }
 
@@ -175,7 +175,7 @@ figure.loaded:not(.stagger) .project-link-inner {
   margin: 0;
   font-size: 1.2vw;
   font-weight: 400;
-  color: #000;
+  color: var(--fg-base);
 }
 
 /* Navigation styles */
@@ -188,14 +188,14 @@ nav {
 }
 
 .title {
-  color: #000;
+  color: var(--fg-base);
   mix-blend-mode: difference;
 }
 
 .page-title {
   font-size: 1.5vw;
   font-weight: 400;
-  color: #000;
+  color: var(--fg-base);
 }
 
 .page-title a {

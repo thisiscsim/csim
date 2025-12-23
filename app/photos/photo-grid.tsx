@@ -2,13 +2,12 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import Image from 'next/image';
 import {
   MorphingDialog,
   MorphingDialogTrigger,
   MorphingDialogContent,
-  MorphingDialogClose,
   MorphingDialogContainer,
+  MorphingDialogImage,
 } from '@/components/motion-primitives/morphing-dialog';
 import type { PhotoImage } from '@/lib/photos';
 
@@ -64,7 +63,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
   if (loading) {
     return (
       <div
-        className="min-h-screen bg-primary"
+        className="min-h-screen bg-base transition-colors duration-300"
         style={{
           width: '100vw',
           marginLeft: 'calc(-50vw + 50%)',
@@ -80,7 +79,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
           {[...Array(12)].map((_, i) => (
             <div
               key={i}
-              className="w-full bg-gray-100 animate-pulse"
+              className="w-full bg-interactive animate-pulse transition-colors duration-300"
               style={{ aspectRatio: '1 / 1' }}
             />
           ))}
@@ -91,15 +90,15 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
 
   if (images.length === 0) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-primary">
-        <p className="text-black/60">No photos found</p>
+      <div className="fixed inset-0 flex items-center justify-center bg-base transition-colors duration-300">
+        <p className="fg-muted transition-colors duration-300">No photos found</p>
       </div>
     );
   }
 
   return (
     <div
-      className="min-h-screen bg-primary"
+      className="min-h-screen bg-base transition-colors duration-300"
       style={{
         width: '100vw',
         marginLeft: 'calc(-50vw + 50%)',
@@ -125,8 +124,9 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
           >
             <MorphingDialog
               transition={{
-                duration: 0.3,
-                ease: 'easeInOut',
+                type: 'spring',
+                stiffness: 200,
+                damping: 24,
               }}
             >
               <MorphingDialogTrigger className="w-full block cursor-pointer group overflow-hidden focus:outline-none focus-visible:outline-none">
@@ -134,47 +134,21 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
                   className="w-full relative transition-transform duration-200 group-hover:scale-[1.02]"
                   style={{ aspectRatio: '1 / 1' }}
                 >
-                  <Image
+                  <MorphingDialogImage
                     src={image.url}
                     alt={image.name}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                    className="object-cover"
-                    loading={i < 6 ? 'eager' : 'lazy'}
-                    priority={i < 2}
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg=="
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
               </MorphingDialogTrigger>
               <MorphingDialogContainer>
                 <MorphingDialogContent className="relative flex items-center justify-center">
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="relative max-h-[90vh] max-w-[90vw]"
-                  >
-                    <Image
-                      src={image.url}
-                      alt={image.name}
-                      width={1600}
-                      height={1600}
-                      className="w-auto h-auto max-h-[90vh] max-w-[90vw] object-contain rounded-[4px]"
-                      quality={90}
-                      priority
-                    />
-                  </div>
+                  <MorphingDialogImage
+                    src={image.url}
+                    alt={image.name}
+                    className="max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain rounded-[4px]"
+                  />
                 </MorphingDialogContent>
-                <MorphingDialogClose
-                  className="fixed inset-0 cursor-pointer focus:outline-none focus-visible:outline-none"
-                  variants={{
-                    initial: { opacity: 0 },
-                    animate: {
-                      opacity: 1,
-                      transition: { delay: 0.3, duration: 0.1 },
-                    },
-                    exit: { opacity: 0, transition: { duration: 0 } },
-                  }}
-                />
               </MorphingDialogContainer>
             </MorphingDialog>
           </div>
