@@ -143,7 +143,7 @@ export default function HomePage() {
 
   return (
     <div
-      className="fixed inset-0 z-40 bg-base flex flex-col items-center justify-center"
+      className="fixed inset-0 z-40 bg-base flex flex-col items-center justify-center transition-colors duration-300"
       style={{ paddingTop: 'clamp(50px, 5vh, 80px)' }}
     >
       <div className="w-full h-full flex items-center justify-center px-[3vw]">
