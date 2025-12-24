@@ -64,10 +64,22 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    const switchTheme = () => {
+      const newTheme = theme === 'light' ? 'dark' : 'light';
+      setTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+      document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    };
+
+    // Use View Transitions API if available for smooth animation
+    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+      (
+        document as Document & { startViewTransition: (cb: () => void) => void }
+      ).startViewTransition(switchTheme);
+    } else {
+      // Fallback for browsers that don't support View Transitions
+      switchTheme();
+    }
   }, [theme]);
 
   // Handle 'T' key press for theme toggle

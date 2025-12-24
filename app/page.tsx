@@ -1,201 +1,254 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { PROJECTS } from './data';
-import { motion } from 'motion/react';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'motion/react';
 
-// Map project IDs to their static image fallbacks
 function getProjectImageFallback(projectId: string, projectName: string): string {
   const imageMap: { [key: string]: string } = {
-    // Exa projects
     'exa-search': '/temp-cover/placeholder_1.png',
-
-    // Harvey projects
     'harvey-design-system': '/temp-cover/placeholder_1.png',
     'harvey-review-table': '/temp-cover/harvey-review-tables.png',
     'harvey-vault': '/temp-cover/placeholder_1.png',
+    'harvey-artifacts': '/temp-cover/amend.png',
     'harvey-2': '/temp-cover/harvey-file-event-log.png',
-    'harvey-3': '/temp-cover/placeholder_1.png',
-    'harvey-4': '/temp-cover/placeholder_1.png',
-    'harvey-5': '/temp-cover/placeholder_1.png',
-    'harvey-6': '/temp-cover/placeholder_1.png',
-    'harvey-7': '/temp-cover/placeholder_1.png',
-
-    // Arc projects
+    'harvey-upload-logging': '/temp-cover/harvey-file-event-log.png',
     'arc-1': '/temp-cover/arc-deposit.png',
     'arc-2': '/temp-cover/arc-billpay.png',
     'arc-3': '/temp-cover/arc-settings.png',
-    'arc-4': '/temp-cover/placeholder_1.png',
     'arc-design-system': '/temp-cover/placeholder_1.png',
     'arc-onboarding': '/temp-cover/placeholder_1.png',
-
-    // Flexport projects
     'flexport-1': '/temp-cover/flexport-teamview.png',
-
-    // Uber projects
     'uber-1': '/temp-cover/uber-driver-onboarding.png',
   };
-
-  // Special handling for projects
-  if (projectName.includes('Moab')) {
-    return '/temp-cover/moab.png';
-  }
-  if (projectName.includes('Amend')) {
-    return '/temp-cover/amend.png';
-  }
-
+  if (projectName.includes('Moab')) return '/temp-cover/moab.png';
+  if (projectName.includes('Amend')) return '/temp-cover/amend.png';
   return imageMap[projectId] || '/temp-cover/placeholder_1.png';
 }
 
-// Map aspect ratio to Tailwind classes
-function getAspectRatioClass(aspectRatio?: string): string {
-  switch (aspectRatio) {
-    case 'portrait':
-      return 'aspect-[4/5]';
-    case 'wide':
-      return 'aspect-[3/2]';
-    case 'landscape':
-    default:
-      return 'aspect-[5/4]';
-  }
-}
-
-// Animation variants for staggered effect - optimized for faster initial render
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      delayChildren: 0.1, // Reduced from 0.4s to 0.1s
-      staggerChildren: 0.03, // Reduced from 0.05s to 0.03s
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 10, // Reduced from 20px to 10px for subtler, faster animation
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3, // Reduced from 0.5s to 0.3s
-      ease: 'easeOut',
-    },
-  },
-};
-
 export default function HomePage() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0); // 1 = forward, -1 = backward
+  const isAnimating = useRef(false);
 
-  // Handle scroll detection for gradient
+  const totalSlides = PROJECTS.length;
+
+  const goToIndex = useCallback(
+    (index: number) => {
+      if (isAnimating.current) return;
+
+      const clampedIndex = Math.max(0, Math.min(index, totalSlides - 1));
+      if (clampedIndex === currentIndex) return;
+
+      isAnimating.current = true;
+      setDirection(clampedIndex > currentIndex ? 1 : -1);
+      setCurrentIndex(clampedIndex);
+
+      // Reset animation lock after transition
+      setTimeout(() => {
+        isAnimating.current = false;
+      }, 600);
+    },
+    [currentIndex, totalSlides]
+  );
+
+  // Disable Lenis on this page
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-      // Show top gradient when scrolled down from top
-      setIsScrolled(scrollTop > 0);
-    };
-
-    // Initial check
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    if (window.lenis) {
+      window.lenis.destroy();
+      window.lenis = undefined;
+    }
   }, []);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        goToIndex(currentIndex + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        goToIndex(currentIndex - 1);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, goToIndex]);
+
+  // Wheel navigation
+  useEffect(() => {
+    let wheelTimeout: NodeJS.Timeout | null = null;
+    let accumulatedDelta = 0;
+    const threshold = 50;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+
+      if (isAnimating.current) return;
+
+      accumulatedDelta += e.deltaY;
+
+      if (wheelTimeout) {
+        clearTimeout(wheelTimeout);
+      }
+
+      wheelTimeout = setTimeout(() => {
+        if (Math.abs(accumulatedDelta) > threshold) {
+          if (accumulatedDelta > 0) {
+            goToIndex(currentIndex + 1);
+          } else {
+            goToIndex(currentIndex - 1);
+          }
+        }
+        accumulatedDelta = 0;
+      }, 50);
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      if (wheelTimeout) clearTimeout(wheelTimeout);
+    };
+  }, [currentIndex, goToIndex]);
+
+  const currentProject = PROJECTS[currentIndex];
+
+  const isPlaceholderVideo =
+    currentProject.media.includes('XSfIvT7BUWbPRXhrbLed') ||
+    currentProject.media.includes('ee6871c9-8400-49d2-8be9-e32675eabf7e');
+  const isVideo =
+    !isPlaceholderVideo &&
+    (currentProject.media.includes('.mp4') ||
+      currentProject.media.includes('.webm') ||
+      currentProject.media.includes('.mov'));
+  const mediaSrc = isPlaceholderVideo
+    ? getProjectImageFallback(currentProject.id, currentProject.title)
+    : currentProject.media;
+
+  // Slide animation variants
+  const slideVariants = {
+    enter: (dir: number) => ({
+      y: dir > 0 ? 40 : -40,
+      opacity: 0,
+    }),
+    center: {
+      y: 0,
+      opacity: 1,
+    },
+    exit: (dir: number) => ({
+      y: dir > 0 ? -40 : 40,
+      opacity: 0,
+    }),
+  };
+
   return (
-    <div className="min-h-screen relative mt-[70px]">
-      {/* Top Blur Gradient Overlay */}
+    <div
+      className="fixed inset-0 z-40 bg-base flex flex-col items-center justify-center transition-colors duration-300"
+      style={{ paddingTop: 'clamp(50px, 5vh, 80px)' }}
+    >
+      <div className="w-full h-full flex items-center justify-center px-[3vw]">
+        <div className="flex items-center gap-10 lg:gap-20">
+          <p
+            className="hidden lg:block fg-base font-medium tracking-tight whitespace-nowrap"
+            style={{ fontSize: '20px', lineHeight: 1.4 }}
+          >
+            Christopher Sim
+          </p>
+
+          <div className="flex flex-col items-center">
+            <div
+              className="relative overflow-hidden"
+              style={{
+                width: 'clamp(320px, 60vw, 1600px)',
+                aspectRatio: '16 / 9',
+                borderRadius: 'clamp(4px, 0.5vw, 12px)',
+              }}
+            >
+              <AnimatePresence initial={false} custom={direction} mode="popLayout">
+                <motion.div
+                  key={currentProject.id}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    duration: 0.5,
+                    ease: [0.32, 0.72, 0, 1],
+                  }}
+                  className="absolute inset-0 overflow-hidden"
+                  style={{ borderRadius: 'clamp(4px, 0.5vw, 12px)' }}
+                >
+                  {isVideo ? (
+                    <video
+                      src={mediaSrc}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <Image
+                      src={mediaSrc}
+                      alt={currentProject.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 90vw, 55vw"
+                      priority
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <motion.p
+              key={`caption-${currentIndex}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="text-center font-mono fg-subtle px-4"
+              style={{
+                marginTop: '16px',
+                fontSize: 'clamp(10px, 0.7vw, 12px)',
+                lineHeight: 1.6,
+                maxWidth: 'clamp(300px, 45vw, 900px)',
+              }}
+            >
+              <span className="fg-base font-medium">{currentProject.title}:</span>{' '}
+              {currentProject.description || `A project from ${currentProject.year}.`}
+            </motion.p>
+          </div>
+
+          <p
+            className="hidden lg:block fg-base font-medium tracking-tight whitespace-nowrap"
+            style={{ fontSize: '20px', lineHeight: 1.4 }}
+          >
+            Recent Work
+          </p>
+        </div>
+      </div>
+
+      {/* Left click zone */}
       <div
-        className={`fixed top-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
-          isScrolled ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          height: '96px',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)',
-          opacity: 0.95,
-          maskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-        }}
+        onClick={() => goToIndex(currentIndex - 1)}
+        className="fixed left-0 top-0 w-1/2 h-full z-30"
+        style={{ cursor: currentIndex > 0 ? 'w-resize' : 'default' }}
       />
 
-      {/* Projects */}
-      <div className="w-full pb-32 px-4 md:px-6 lg:px-8">
-        <motion.div
-          className="space-y-16 max-w-[1400px] mx-auto"
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          {PROJECTS.map((project, projectIdx) => {
-            // Check if it's a real video URL (not the placeholder Cloudinary URL)
-            const isPlaceholderVideo =
-              project.media.includes('XSfIvT7BUWbPRXhrbLed') ||
-              project.media.includes('ee6871c9-8400-49d2-8be9-e32675eabf7e');
+      {/* Right click zone */}
+      <div
+        onClick={() => goToIndex(currentIndex + 1)}
+        className="fixed right-0 top-0 w-1/2 h-full z-30"
+        style={{ cursor: currentIndex < totalSlides - 1 ? 'e-resize' : 'default' }}
+      />
 
-            const isVideo =
-              project.media &&
-              !isPlaceholderVideo &&
-              (project.media.includes('.mp4') ||
-                project.media.includes('.webm') ||
-                project.media.includes('.mov'));
-
-            const mediaSrc = isPlaceholderVideo
-              ? getProjectImageFallback(project.id, project.title)
-              : project.media;
-
-            const aspectRatioClass = getAspectRatioClass(project.aspectRatio);
-
-            return (
-              <motion.div key={projectIdx} className="relative" variants={itemVariants}>
-                <div className="w-full h-full">
-                  {/* Caption at top */}
-                  <div className="mb-3 flex items-baseline gap-2">
-                    <span className="text-[14px] leading-[20px] fg-subtle transition-colors duration-300">
-                      {project.title}
-                    </span>
-                    <span className="ml-auto text-[12px] leading-[18px] fg-muted font-mono transition-colors duration-300">
-                      {project.year}
-                    </span>
-                  </div>
-
-                  {/* Image/Video */}
-                  <div
-                    className={`relative ${aspectRatioClass} w-full overflow-hidden bg-interactive rounded-md transition-colors duration-300`}
-                  >
-                    {isVideo ? (
-                      <video
-                        src={mediaSrc}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload={projectIdx < 2 ? 'auto' : 'metadata'} // Only preload first 2 videos
-                      />
-                    ) : (
-                      <Image
-                        src={mediaSrc}
-                        alt={project.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1400px) 80vw, 1200px"
-                        priority={projectIdx < 2}
-                        loading={projectIdx < 2 ? 'eager' : 'lazy'}
-                        placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjwvc3ZnPg=="
-                      />
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between font-mono text-xs fg-muted bg-base pointer-events-auto px-8 py-4">
+        <span>
+          [{String(currentIndex + 1).padStart(2, '0')}/{String(totalSlides).padStart(2, '0')}]
+        </span>
+        <span className="hidden sm:inline">Scroll or use arrow keys</span>
+        <span className="fg-base">[S] SLIDE</span>
       </div>
     </div>
   );
