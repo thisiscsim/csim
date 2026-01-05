@@ -7,13 +7,16 @@ import Image from 'next/image';
 export function BasicNavigation() {
   const pathname = usePathname();
   const router = useRouter();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const navItems = [
     { id: 'info', label: 'Info', href: '/info' },
-    { id: 'photos', label: 'Photos', href: '/photos' },
     { id: 'writing', label: 'Writing', href: '/writing' },
+    { id: 'photos', label: 'Photos', href: '/photos' },
   ];
+
+  // Check if we're on the homepage
+  const isHomePage = pathname === '/';
 
   // Determine active item based on pathname
   const isActive = (id: string) => {
@@ -50,54 +53,85 @@ export function BasicNavigation() {
     };
   }, [router]);
 
-  // Detect scroll for backdrop blur
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
+  // Get text color classes based on state
+  const getNavItemClasses = (id: string) => {
+    const active = isActive(id);
+    const isHovered = hoveredItem === id;
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+    if (isHomePage) {
+      // On homepage: all items white, with hover state
+      if (isHovered) {
+        return 'fg-subtle';
+      }
+      return 'fg-base';
+    } else {
+      // On sub-pages: active item white, others dimmed
+      if (active) {
+        return 'fg-base';
+      }
+      if (isHovered) {
+        return 'fg-subtle';
+      }
+      return 'fg-muted';
+    }
+  };
+
+  // Role text is always full brightness
+  const getRoleTextClasses = () => {
+    return 'fg-base';
+  };
 
   return (
-    <div
-      className="fixed left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
-      style={{ top: '32px' }}
+    <nav
+      className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between pointer-events-auto"
+      style={{
+        paddingLeft: '32px',
+        paddingRight: '32px',
+        paddingTop: '24px',
+        paddingBottom: '24px',
+      }}
     >
-      <div className="flex flex-row items-center pointer-events-auto gap-[4px]">
-        {/* Avatar */}
-        <button
-          onClick={() => router.push('/')}
-          type="button"
-          className={`flex items-center justify-center rounded-[3px] bg-interactive hover:opacity-80 transition-all duration-300 cursor-pointer ${
-            isScrolled ? 'backdrop-blur-lg' : ''
-          }`}
-          style={{ width: '22px', height: '22px' }}
-        >
-          <Image src="/avatar.svg" alt="Avatar" width={22} height={22} className="rounded-[3px]" />
-        </button>
+      {/* Left: Avatar */}
+      <button
+        onClick={() => router.push('/')}
+        type="button"
+        className="flex items-center justify-center rounded-[4px] hover:opacity-80 transition-opacity duration-200 cursor-pointer overflow-hidden flex-shrink-0"
+        style={{ width: '32px', height: '32px' }}
+        aria-label="Go to homepage"
+      >
+        <Image src="/avatar.svg" alt="Avatar" width={32} height={32} className="rounded-[4px]" />
+      </button>
 
-        {/* Navigation Items */}
+      {/* Navigation Items - centered on desktop, right-aligned on mobile */}
+      <div className="md:absolute md:left-1/2 md:-translate-x-1/2 flex items-center gap-5 ml-auto md:ml-0">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => router.push(item.href)}
+            onMouseEnter={() => setHoveredItem(item.id)}
+            onMouseLeave={() => setHoveredItem(null)}
             type="button"
-            className={`px-[10px] py-[6px] font-medium bg-interactive hover:opacity-80 transition-all duration-300 rounded-[3px] cursor-pointer ${
-              isScrolled ? 'backdrop-blur-lg' : ''
-            } ${isActive(item.id) ? 'fg-base' : 'fg-muted'}`}
+            className={`font-normal transition-colors duration-200 cursor-pointer ${getNavItemClasses(item.id)}`}
             style={{
-              fontSize: '12px',
-              lineHeight: '10px',
+              fontSize: '13px',
+              lineHeight: '1.4',
             }}
           >
             {item.label}
           </button>
         ))}
       </div>
-    </div>
+
+      {/* Right: Role - hidden on mobile */}
+      <span
+        className={`hidden md:block font-normal transition-colors duration-200 flex-shrink-0 ${getRoleTextClasses()}`}
+        style={{
+          fontSize: '13px',
+          lineHeight: '1.4',
+        }}
+      >
+        Software Designer
+      </span>
+    </nav>
   );
 }
