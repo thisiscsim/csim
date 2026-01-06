@@ -24,80 +24,20 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>('light');
+  // TEMPORARILY DISABLED: Force dark mode only
+  const [theme] = useState<Theme>('dark');
   const [mounted, setMounted] = useState(false);
 
-  // Initialize theme from localStorage or system preference
+  // Force dark mode on mount
   useEffect(() => {
     setMounted(true);
-
-    const storedTheme = localStorage.getItem('theme') as Theme | null;
-
-    if (storedTheme) {
-      setTheme(storedTheme);
-      document.documentElement.classList.toggle('dark', storedTheme === 'dark');
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const systemTheme = prefersDark ? 'dark' : 'light';
-      setTheme(systemTheme);
-      document.documentElement.classList.toggle('dark', prefersDark);
-    }
+    document.documentElement.classList.add('dark');
   }, []);
 
-  // Listen for system theme changes
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      // Only update if user hasn't set a preference
-      const storedTheme = localStorage.getItem('theme');
-      if (!storedTheme) {
-        const newTheme = e.matches ? 'dark' : 'light';
-        setTheme(newTheme);
-        document.documentElement.classList.toggle('dark', e.matches);
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
+  // Toggle is disabled - always dark mode
   const toggleTheme = useCallback(() => {
-    const switchTheme = () => {
-      const newTheme = theme === 'light' ? 'dark' : 'light';
-      setTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
-      document.documentElement.classList.toggle('dark', newTheme === 'dark');
-    };
-
-    // Use View Transitions API if available for smooth animation
-    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
-      (
-        document as Document & { startViewTransition: (cb: () => void) => void }
-      ).startViewTransition(switchTheme);
-    } else {
-      // Fallback for browsers that don't support View Transitions
-      switchTheme();
-    }
-  }, [theme]);
-
-  // Handle 'T' key press for theme toggle
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      // Only trigger if not typing in an input or textarea
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
-        return;
-      }
-
-      if (event.key.toLowerCase() === 't') {
-        toggleTheme();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [toggleTheme]);
+    // Temporarily disabled
+  }, []);
 
   // Prevent flash of wrong theme
   if (!mounted) {

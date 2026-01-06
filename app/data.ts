@@ -1,118 +1,87 @@
 export type Project = {
   title: string;
-  year: string;
-  media: string;
   id: string;
-  aspectRatio?: '3:2' | '3:4'; // defaults to 3:2 in the roll
+  aspectRatio?: '16:9' | '3:4'; // defaults to 16:9 in the roll
   description?: string;
 };
 
 export const PROJECTS: Project[] = [
   {
     title: 'Harvey Artifacts',
-    year: '2025',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
     id: 'harvey-artifacts',
     description:
       'Artifacts reimagines how users work with Harvey, moving beyond simple chat into a versatile interface for drafting, review, and analysis.',
   },
   {
     title: 'Harvey Word Add-In',
-    year: '2024',
-    media: '/word-add-in.mp4',
     id: 'harvey-word',
     description:
       'Draft and review documents and contracts faster with analysis, playbooks, and integrated knowledge with our word plugin.',
   },
   {
-    title: 'Harvey Vault',
-    year: '2024',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-    id: 'harvey-vault',
-    description:
-      "Vault is Harvey's document management system, designed to help legal teams upload and store thousands of documents.",
+    title: 'Harvey S-1 Shell Workflow',
+    id: 'harvey-s1-shell',
+    description: "Agentic workflow where Harvey could one-shot a company's S-1 filing",
   },
   {
-    title: 'Harvey Review',
-    year: '2024',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/newProfileItem/d898be8a-7037-4c71-af0c-8997239b050d.mp4?_a=DATAdtAAZAA0',
-    id: 'harvey-review-table',
+    title: 'Harvey Mobile',
+    id: 'harvey-mobile',
     description:
-      'Our large-scale document extraction tool, upload thousands of documents, ask up to 100 questions simultaneously, and generate structured insights.',
-  },
-  {
-    title: 'Harvey S-1 Workflow',
-    year: '2024',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-    id: 'harvey-s1',
-    description:
-      "Agentic workflow where Harvey could one-shot a company's S-1 filing, as well as produce a tailored risk factor profile.",
+      "I helped incubate the mobile app at our first hackathon, extending Harvey's capabilities beyond the desktop, giving users the ability to review, draft, and collaborate seamlessly from anywhere.",
   },
   {
     title: 'Harvey Design System',
-    year: '2025',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
     id: 'harvey-design-system',
     description:
       'Design system built from the ground up for clarity, consistency, and scale, making our design language more semantic and accessible.',
   },
   {
-    title: 'Harvey Upload Event Logging',
-    year: '2024',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-    id: 'harvey-upload-logging',
+    title: 'Harvey Event File Logging',
+    id: 'harvey-event-file-logging',
     description:
       "Clear, transparent insight into document uploads—why files fail, what's processing, and which documents needs attention.",
   },
   {
+    title: 'Harvey Thinking States',
+    id: 'harvey-thinking-state',
+    description:
+      "Rebuilding our thinking states from the ground up that better demonstrates Harvey's reasoning capabilities through different tasks.",
+  },
+  {
+    title: 'Harvey File Grouping & Monitoring',
+    id: 'harvey-file-grouping',
+    description:
+      "Rebuilding our thinking states from the ground up that better demonstrates Harvey's reasoning capabilities through different tasks.",
+  },
+  {
+    title: 'Harvey Review Grid Animations',
+    id: 'harvey-review-grid-animations',
+    description:
+      "Rebuilding our thinking states from the ground up that better demonstrates Harvey's reasoning capabilities through different tasks.",
+  },
+  {
+    title: 'Harvey S-1 Risk Factors Workflow',
+    id: 'harvey-s1-risk-factors',
+    description:
+      'Agentic workflow where Harvey can automatically generate risk factors by automatically extracting data from files or the SEC itself',
+  },
+  {
     title: 'Exa Search',
-    year: '2025',
-    media: 'https://csim.b-cdn.net/Projects/exa_search.webp',
     id: 'exa-search',
     description:
       "I freelanced with Exa for one month to help them conceptualize their new search product that's not only tailored for humans but agents as well.",
   },
   {
-    title: 'Arc Bill Pay',
-    year: '2023',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-    id: 'arc-billpay',
+    title: 'Uber Motion',
+    id: 'uber-motion',
     description:
-      "Arc's platform for automating invoice payments, designed to simplify and consolidate a process that had been manual and time-intensive for customers.",
+      'When I was at Uber, I also had my first taste of motion design, I conceptualized and developed an interactive sequence for the rider journey from start to finish.',
   },
   {
-    title: 'Flexport Freight Forwarding App',
-    year: '2022',
-    media:
-      'https://armadillo-labs.s3.us-west-1.amazonaws.com/csim/flexport-real-time-visibility.mp4',
-    id: 'flexport-freight',
+    title: 'Icons for Arc',
+    id: 'arc-icons',
     description:
-      'End-to-end shipment observability that gave operations teams a unified view of freight movement from factory to retail stores.',
-  },
-  {
-    title: 'Uber Delay Notification',
-    year: '2022',
-    media:
-      'https://res.cloudinary.com/read-cv/video/upload/t_v_b/v1/1/profileItems/W2azTw5BVbMXfj7F53G92hMVIn32/XSfIvT7BUWbPRXhrbLed/ee6871c9-8400-49d2-8be9-e32675eabf7e.mp4?_a=DATAdtAAZAA0',
-    id: 'uber-delay',
-    description:
-      'A lightweight system for handling unexpected driver delays, keeping riders informed and enabling fast, low-stress rebooking.',
-  },
-  {
-    title: 'Uber Pick-Up Visibility',
-    year: '2022',
-    media:
-      'https://armadillo-labs.s3.us-west-1.amazonaws.com/csim/uber-pick-up-visibility-rider-app.mp4',
-    id: 'uber-pickup',
-    description:
-      'Enhanced pickup guidance using street-level context and clear visual cues to help riders and drivers meet in the right place.',
+      'As part of the design system work at Arc, I hand drew these icons to ensure we have full coverage for our ever expanding product surface area.',
   },
 ];
 
