@@ -5,10 +5,17 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PROJECTS, Project } from './data';
 
-const MAX_FRAME_HEIGHT = 600; // Maximum height for images
+const MAX_FRAME_HEIGHT = 680; // Maximum height for images
 const MIN_FRAME_HEIGHT = 200; // Minimum height for images (mobile)
 const MIN_FRAME_HEIGHT_DESKTOP = 400; // Minimum height for desktop
 const FRAME_GAP = 24; // Gap between images
+
+// Media fetched from Bunny CDN
+interface BunnyMedia {
+  url: string;
+  name: string;
+  isVideo: boolean;
+}
 
 // Mini Navigation Component
 const TICK_WIDTH = 1; // Width of each tick line
@@ -82,69 +89,98 @@ function MiniNav({ total, currentIndex, onNavigate }: MiniNavProps) {
 }
 
 // Calculate width from aspect ratio and height
-function getFrameWidth(height: number, aspectRatio?: '3:2' | '3:4'): number {
+function getFrameWidth(height: number, aspectRatio?: '16:9' | '3:4'): number {
   if (aspectRatio === '3:4') {
     return height * (3 / 4);
   }
-  // Default to 3:2
-  return height * (3 / 2);
+  // Default to 16:9
+  return height * (16 / 9);
 }
 
-function getProjectImageFallback(projectId: string, projectName: string): string {
-  const imageMap: { [key: string]: string } = {
-    'exa-search': '/temp-cover/placeholder_1.png',
-    'harvey-design-system': '/temp-cover/placeholder_1.png',
-    'harvey-review-table': '/temp-cover/harvey-review-tables.png',
-    'harvey-vault': '/temp-cover/placeholder_1.png',
-    'harvey-artifacts': '/temp-cover/amend.png',
-    'harvey-2': '/temp-cover/harvey-file-event-log.png',
-    'harvey-upload-logging': '/temp-cover/harvey-file-event-log.png',
-    'arc-1': '/temp-cover/arc-deposit.png',
-    'arc-2': '/temp-cover/arc-billpay.png',
-    'arc-3': '/temp-cover/arc-settings.png',
-    'arc-design-system': '/temp-cover/placeholder_1.png',
-    'arc-onboarding': '/temp-cover/placeholder_1.png',
-    'flexport-1': '/temp-cover/flexport-teamview.png',
-    'uber-1': '/temp-cover/uber-driver-onboarding.png',
-  };
-  if (projectName.includes('Moab')) return '/temp-cover/moab.png';
-  if (projectName.includes('Amend')) return '/temp-cover/amend.png';
-  return imageMap[projectId] || '/temp-cover/placeholder_1.png';
+// Normalize filename to match project IDs
+function normalizeFilename(filename: string): string {
+  // Remove extension and normalize to lowercase with hyphens
+  return filename
+    .replace(/\.[^/.]+$/, '') // Remove extension
+    .toLowerCase()
+    .replace(/[_\s]+/g, '-'); // Replace underscores/spaces with hyphens
 }
 
-function isPlaceholderVideo(media: string): boolean {
-  return (
-    media.includes('XSfIvT7BUWbPRXhrbLed') || media.includes('ee6871c9-8400-49d2-8be9-e32675eabf7e')
-  );
-}
-
-function isVideoMedia(media: string): boolean {
-  return media.includes('.mp4') || media.includes('.webm') || media.includes('.mov');
-}
-
-function getMediaSrc(project: Project): { src: string; isVideo: boolean } {
-  if (isPlaceholderVideo(project.media)) {
-    return {
-      src: getProjectImageFallback(project.id, project.title),
-      isVideo: false,
-    };
+// Find matching media from Bunny for a project
+function findProjectMedia(
+  projectId: string,
+  bunnyMedia: BunnyMedia[]
+): { src: string; isVideo: boolean } | null {
+  // Try to find exact match first
+  const exactMatch = bunnyMedia.find((m) => normalizeFilename(m.name) === projectId);
+  if (exactMatch) {
+    return { src: exactMatch.url, isVideo: exactMatch.isVideo };
   }
-  return {
-    src: project.media,
-    isVideo: isVideoMedia(project.media),
-  };
+
+  // Try partial match (filename contains project id)
+  const partialMatch = bunnyMedia.find(
+    (m) =>
+      normalizeFilename(m.name).includes(projectId) || projectId.includes(normalizeFilename(m.name))
+  );
+  if (partialMatch) {
+    return { src: partialMatch.url, isVideo: partialMatch.isVideo };
+  }
+
+  return null;
 }
+
+// Fallback placeholder
+const PLACEHOLDER_IMAGE = '/temp-cover/placeholder_1.png';
 
 export default function HomePhotoRoll() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [frameHeight, setFrameHeight] = useState(MAX_FRAME_HEIGHT);
   const [captionMaxWidth, setCaptionMaxWidth] = useState(800);
+  const [bunnyMedia, setBunnyMedia] = useState<BunnyMedia[]>([]);
   const isDragging = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const isScrollingRef = useRef(false);
 
   const projects = PROJECTS;
+
+  // Fetch project media from Bunny CDN
+  useEffect(() => {
+    async function fetchMedia() {
+      try {
+        const response = await fetch('/api/projects');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Bunny media fetched:', data.media);
+          setBunnyMedia(data.media || []);
+        } else {
+          console.error('Failed to fetch project media:', response.status, await response.text());
+        }
+      } catch (error) {
+        console.error('Failed to fetch project media:', error);
+      }
+    }
+    fetchMedia();
+  }, []);
+
+  // Get media source for a project
+  const getMediaSrc = useCallback(
+    (project: Project): { src: string; isVideo: boolean } => {
+      // First try to find matching Bunny media
+      const bunnyMatch = findProjectMedia(project.id, bunnyMedia);
+      if (bunnyMatch) {
+        console.log(`Match found for ${project.id}:`, bunnyMatch.src);
+        return bunnyMatch;
+      }
+      // Fall back to placeholder
+      console.log(
+        `No match for ${project.id}, available:`,
+        bunnyMedia.map((m) => normalizeFilename(m.name))
+      );
+      return { src: PLACEHOLDER_IMAGE, isVideo: false };
+    },
+    [bunnyMedia]
+  );
 
   // Calculate frame height and caption width based on viewport
   useEffect(() => {
@@ -441,14 +477,14 @@ export default function HomePhotoRoll() {
               className="fixed left-1/2 -translate-x-1/2 z-10 text-center font-mono fg-subtle px-8 pointer-events-none"
               style={{
                 top: `calc(50% + ${frameHeight / 2 + 24}px)`,
-                fontSize: 'clamp(11px, 1.5vw, 12px)',
+                fontSize: '11px',
                 lineHeight: 1.6,
                 width: 'calc(100vw - 64px)',
                 maxWidth: captionMaxWidth,
               }}
             >
               <span className="fg-base font-medium">{currentProject.title}:</span>{' '}
-              {currentProject.description || `A project from ${currentProject.year}.`}
+              {currentProject.description}
             </motion.p>
           )}
         </AnimatePresence>
