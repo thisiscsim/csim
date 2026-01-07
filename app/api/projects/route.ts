@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { fetchProjectMedia } from '@/lib/photos';
 
-// Disable caching to always fetch fresh data
-export const dynamic = 'force-dynamic';
+// Cache for 5 minutes, revalidate in background
+export const revalidate = 300;
 
 export async function GET() {
   try {
@@ -17,7 +17,15 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({ media });
+    // Return with cache headers for browser caching
+    return NextResponse.json(
+      { media },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error in projects API route:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

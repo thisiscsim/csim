@@ -151,10 +151,21 @@ export default function HomePhotoRoll() {
         const response = await fetch('/api/projects');
         if (response.ok) {
           const data = await response.json();
-          console.log('Bunny media fetched:', data.media);
-          setBunnyMedia(data.media || []);
+          const media = data.media || [];
+          setBunnyMedia(media);
+
+          // Preload first 3 images for faster initial render
+          media.slice(0, 3).forEach((item: BunnyMedia) => {
+            if (!item.isVideo) {
+              const link = document.createElement('link');
+              link.rel = 'preload';
+              link.as = 'image';
+              link.href = item.url;
+              document.head.appendChild(link);
+            }
+          });
         } else {
-          console.error('Failed to fetch project media:', response.status, await response.text());
+          console.error('Failed to fetch project media:', response.status);
         }
       } catch (error) {
         console.error('Failed to fetch project media:', error);
@@ -169,14 +180,9 @@ export default function HomePhotoRoll() {
       // First try to find matching Bunny media
       const bunnyMatch = findProjectMedia(project.id, bunnyMedia);
       if (bunnyMatch) {
-        console.log(`Match found for ${project.id}:`, bunnyMatch.src);
         return bunnyMatch;
       }
       // Fall back to placeholder
-      console.log(
-        `No match for ${project.id}, available:`,
-        bunnyMedia.map((m) => normalizeFilename(m.name))
-      );
       return { src: PLACEHOLDER_IMAGE, isVideo: false };
     },
     [bunnyMedia]
@@ -423,6 +429,7 @@ export default function HomePhotoRoll() {
             {projects.map((project, i) => {
               const { src, isVideo } = getMediaSrc(project);
               const frameWidth = getFrameWidth(frameHeight, project.aspectRatio);
+              const isFirstThree = i < 3;
               return (
                 <div
                   key={project.id}
@@ -437,6 +444,7 @@ export default function HomePhotoRoll() {
                       loop
                       muted
                       playsInline
+                      preload={isFirstThree ? 'auto' : 'metadata'}
                       draggable={false}
                       style={{
                         height: frameHeight,
@@ -449,8 +457,8 @@ export default function HomePhotoRoll() {
                       alt={project.title}
                       src={src}
                       className="object-cover select-none"
-                      loading="eager"
-                      fetchPriority={i < 3 ? 'high' : 'auto'}
+                      loading={isFirstThree ? 'eager' : 'lazy'}
+                      fetchPriority={isFirstThree ? 'high' : 'auto'}
                       decoding="async"
                       draggable={false}
                       style={{

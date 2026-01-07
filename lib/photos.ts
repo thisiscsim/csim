@@ -40,7 +40,7 @@ export async function fetchProjectMedia(): Promise<ProjectMedia[]> {
       headers: {
         AccessKey: apiKey,
       },
-      cache: 'no-store',
+      next: { revalidate: 300 }, // Cache for 5 minutes
     });
 
     if (!response.ok) {
@@ -63,8 +63,11 @@ export async function fetchProjectMedia(): Promise<ProjectMedia[]> {
         const ext = file.ObjectName.toLowerCase();
         const isVideo = videoExtensions.some((videoExt) => ext.endsWith(videoExt));
         const baseUrl = `https://${pullZoneUrl}/Projects/${encodeURIComponent(file.ObjectName)}`;
-        // Only add optimization params for images
-        const url = isVideo ? baseUrl : `${baseUrl}?width=1200&quality=85`;
+
+        // Optimize images: use WebP format for smaller files, quality 80 for balance
+        // Width 1200 is enough for the carousel max size
+        const url = isVideo ? baseUrl : `${baseUrl}?width=1200&quality=80&format=webp`;
+
         return {
           url,
           name: file.ObjectName,
