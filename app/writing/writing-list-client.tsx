@@ -122,7 +122,7 @@ export function WritingListClient({ posts }: WritingListClientProps) {
                       prefetch={true}
                     >
                       {/* Year - only show for first post of each year, always full opacity */}
-                      <div className="w-20 flex-shrink-0">
+                      <div className="w-20 shrink-0">
                         {index === 0 && (
                           <span
                             className="fg-muted transition-colors duration-300"
@@ -150,7 +150,7 @@ export function WritingListClient({ posts }: WritingListClientProps) {
 
                       {/* Date - opacity changes on hover */}
                       <div
-                        className="w-16 flex-shrink-0 text-right transition-opacity duration-300"
+                        className="w-16 shrink-0 text-right transition-opacity duration-300"
                         style={{
                           opacity: isMuted ? 0.32 : 1,
                         }}

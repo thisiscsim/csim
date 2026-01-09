@@ -8,7 +8,7 @@ export default function InfoPage() {
       {/* Introduction Section */}
       <div className="max-w-3xl">
         <motion.h1
-          className="text-[17px] leading-[26px] font-medium fg-base transition-colors duration-300"
+          className="text-[17px]/[26px] font-medium fg-base transition-colors duration-300"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut', delay: 0 }}
@@ -16,7 +16,7 @@ export default function InfoPage() {
           Christopher Sim
         </motion.h1>
         <motion.h2
-          className="text-[17px] leading-[26px] fg-subtle mb-4 transition-colors duration-300"
+          className="text-[17px]/[26px] fg-subtle mb-4 transition-colors duration-300"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
@@ -25,7 +25,7 @@ export default function InfoPage() {
         </motion.h2>
 
         <motion.div
-          className="space-y-4 text-md fg-base leading-relaxed max-w-3xl transition-colors duration-300"
+          className="space-y-4 text-md/7 fg-base max-w-3xl transition-colors duration-300"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}

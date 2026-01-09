@@ -44,7 +44,7 @@ function MiniNav({ total, currentIndex, onNavigate }: MiniNavProps) {
             <motion.button
               key={index}
               type="button"
-              className="relative flex-shrink-0 cursor-pointer"
+              className="relative shrink-0 cursor-pointer"
               style={{
                 height: NAV_HEIGHT,
                 padding: 0,
@@ -433,7 +433,7 @@ export default function HomePhotoRoll() {
               return (
                 <div
                   key={project.id}
-                  className="flex-shrink-0 flex items-center justify-center"
+                  className="shrink-0 flex items-center justify-center"
                   style={{ width: frameWidth }}
                 >
                   {isVideo ? (

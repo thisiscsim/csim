@@ -156,7 +156,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
-                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
+                <p className="text-sm/5 fg-subtle transition-colors duration-300">
                   I&apos;m Christopher Sim, a software designer at Harvey. I work on the
                   intersection of design and engineering. Previously, I&apos;ve worked with teams at
                   Flexport, Uber, and Arc. I studied Human-Computer Interaction at the University of
@@ -213,7 +213,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
-                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
+                <p className="text-sm/5 fg-subtle transition-colors duration-300">
                   A collection of creative experiments, side projects, and visual explorations. This
                   is where I play with new ideas and push creative boundaries outside of my
                   day-to-day work.
@@ -271,7 +271,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
-                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
+                <p className="text-sm/5 fg-subtle transition-colors duration-300">
                   I&apos;m a amatuer photographer, most of my inspiration comes from nature, who I
                   believe is the best designer. Here are some of my favorite shots from my travels.
                 </p>
@@ -328,7 +328,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
               className="overflow-hidden"
             >
               <div className="pt-4 pb-2 pl-6 font-mono text-sm fg-muted transition-colors duration-300">
-                <p className="text-sm leading-snug fg-subtle transition-colors duration-300">
+                <p className="text-sm/5 fg-subtle transition-colors duration-300">
                   Infrequent thoughts on design, tech, relationships, geopolitics, society, and the
                   future. I use Notion as the CMS, and the list here updates automatically through
                   Notion&apos;s API.
@@ -367,7 +367,7 @@ export function PersistentNavigation({ blogPosts = [] }: PersistentNavigationPro
                                   <div className="font-medium fg-base truncate min-w-0 transition-colors duration-300">
                                     {post.title}
                                   </div>
-                                  <div className="text-sm font-medium fg-base whitespace-nowrap flex-shrink-0 transition-colors duration-300">
+                                  <div className="text-sm font-medium fg-base whitespace-nowrap shrink-0 transition-colors duration-300">
                                     {new Date(post.date)
                                       .toLocaleDateString('en-US', {
                                         month: '2-digit',

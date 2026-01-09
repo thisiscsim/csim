@@ -107,7 +107,7 @@ export default async function RootLayout({
             {/* Basic Navigation */}
             <BasicNavigation />
             <div className="mx-auto max-w-[1440px]">
-              <div className="flex min-h-screen w-full relative">
+              <div className="flex min-h-dvh w-full relative">
                 {/* Left side - Main content */}
                 <div className="flex-1">
                   <div className="mx-auto max-w-[700px] px-4 pt-[100px]">
@@ -116,7 +116,7 @@ export default async function RootLayout({
                 </div>
 
                 {/* Right side - Space for navigation */}
-                {/* <div className="w-[440px] flex-shrink-0"></div> */}
+                {/* <div className="w-[440px] shrink-0"></div> */}
               </div>
             </div>
 

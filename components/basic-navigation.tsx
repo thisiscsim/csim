@@ -95,7 +95,7 @@ export function BasicNavigation() {
       <button
         onClick={() => router.push('/')}
         type="button"
-        className="flex items-center justify-center rounded-[4px] hover:opacity-80 transition-opacity duration-200 cursor-pointer overflow-hidden flex-shrink-0"
+        className="flex items-center justify-center rounded-[4px] hover:opacity-80 transition-opacity duration-200 cursor-pointer overflow-hidden shrink-0"
         style={{ width: '32px', height: '32px' }}
         aria-label="Go to homepage"
       >
@@ -124,7 +124,7 @@ export function BasicNavigation() {
 
       {/* Right: Role - hidden on mobile */}
       <span
-        className={`hidden md:block font-normal transition-colors duration-200 flex-shrink-0 ${getRoleTextClasses()}`}
+        className={`hidden md:block font-normal transition-colors duration-200 shrink-0 ${getRoleTextClasses()}`}
         style={{
           fontSize: '13px',
           lineHeight: '1.4',

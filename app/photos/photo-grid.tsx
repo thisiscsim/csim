@@ -63,7 +63,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
   if (loading) {
     return (
       <div
-        className="min-h-screen bg-base transition-colors duration-300"
+        className="min-h-dvh bg-base transition-colors duration-300"
         style={{
           width: '100vw',
           marginLeft: 'calc(-50vw + 50%)',
@@ -98,7 +98,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
 
   return (
     <div
-      className="min-h-screen bg-base transition-colors duration-300"
+      className="min-h-dvh bg-base transition-colors duration-300"
       style={{
         width: '100vw',
         marginLeft: 'calc(-50vw + 50%)',
@@ -129,7 +129,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
                 damping: 24,
               }}
             >
-              <MorphingDialogTrigger className="w-full block cursor-pointer group overflow-hidden focus:outline-none focus-visible:outline-none">
+              <MorphingDialogTrigger className="w-full block cursor-pointer group overflow-hidden focus:outline-hidden focus-visible:outline-hidden">
                 <div
                   className="w-full relative transition-transform duration-200 group-hover:scale-[1.02]"
                   style={{ aspectRatio: '1 / 1' }}

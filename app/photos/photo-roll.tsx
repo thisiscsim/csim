@@ -227,7 +227,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
             {images.map((image, i) => (
               <div
                 key={`${image.name}-${i}`}
-                className="flex-shrink-0 flex items-center justify-center"
+                className="shrink-0 flex items-center justify-center"
                 style={{ width: 'auto' }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}

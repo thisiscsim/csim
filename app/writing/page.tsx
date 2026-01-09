@@ -9,7 +9,7 @@ export default async function Writing() {
 
   if (posts.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-dvh flex items-center justify-center">
         <p className="fg-subtle transition-colors duration-300">No blog posts available yet.</p>
       </div>
     );

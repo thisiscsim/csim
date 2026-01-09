@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       {/* Category Header */}
       <div className="skeleton_wrapper w-20 h-6 mb-2"></div>
 

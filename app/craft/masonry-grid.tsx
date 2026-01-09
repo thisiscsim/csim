@@ -66,7 +66,7 @@ export default function MasonryGrid() {
 
   return (
     <div
-      className="min-h-screen bg-base pt-[78px] pb-2 transition-colors duration-300"
+      className="min-h-dvh bg-base pt-[78px] pb-2 transition-colors duration-300"
       style={{
         width: '100vw',
         paddingLeft: '8px',

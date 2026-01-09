@@ -117,7 +117,7 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
                 <span className="flex items-center gap-2">
                   <span className="fg-base transition-colors duration-300">{currentPage.name}</span>
                   <span
-                    className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono leading-none h-4 w-4 text-[10px] transition-all duration-300 ${
+                    className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono h-4 w-4 text-[10px]/none transition-all duration-300 ${
                       pressedKey === navItems.find((item) => item.name === currentPage.name)?.key
                         ? 'bg-interactive fg-base border-base'
                         : 'border-base hover:bg-interactive hover:fg-base'
@@ -175,7 +175,7 @@ export function HeaderNavigation({ blogPosts = [] }: HeaderNavigationProps) {
                     <span className="flex items-center gap-2">
                       {item.name}
                       <span
-                        className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono leading-none h-4 w-4 text-[10px] transition-all duration-300 ${
+                        className={`flex cursor-default flex-col items-center justify-center border-[0.5px] border-b-2 font-mono h-4 w-4 text-[10px]/none transition-all duration-300 ${
                           pressedKey === item.key
                             ? 'bg-interactive fg-base border-base'
                             : isActive

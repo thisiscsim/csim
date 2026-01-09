@@ -116,7 +116,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
               ))}
             </Breadcrumbs>
           </div>
-          <div className="flex flex-col space-y-0">
+          <div className="flex flex-col gap-0">
             <div className="relative">
               <AnimatedBackground
                 enableHover
