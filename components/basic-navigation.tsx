@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 
 export function BasicNavigation() {
@@ -9,14 +10,14 @@ export function BasicNavigation() {
   const router = useRouter();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
+  // Check if we're on the homepage
+  const isHomePage = pathname === '/';
+
   const navItems = [
     { id: 'info', label: 'Info', href: '/info' },
     { id: 'writing', label: 'Writing', href: '/writing' },
     { id: 'photos', label: 'Photos', href: '/photos' },
   ];
-
-  // Check if we're on the homepage
-  const isHomePage = pathname === '/';
 
   // Determine active item based on pathname
   const isActive = (id: string) => {
@@ -82,13 +83,20 @@ export function BasicNavigation() {
   };
 
   return (
-    <nav
+    <motion.nav
       className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between pointer-events-auto"
       style={{
         paddingLeft: '32px',
         paddingRight: '32px',
         paddingTop: '24px',
         paddingBottom: '24px',
+      }}
+      initial={isHomePage ? { opacity: 0, y: -20 } : { opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.6,
+        ease: [0.25, 0.1, 0.25, 1],
+        delay: isHomePage ? 0.45 : 0,
       }}
     >
       {/* Left: Avatar */}
@@ -132,6 +140,6 @@ export function BasicNavigation() {
       >
         Software Designer
       </span>
-    </nav>
+    </motion.nav>
   );
 }

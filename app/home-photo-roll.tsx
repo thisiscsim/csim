@@ -132,17 +132,38 @@ function findProjectMedia(
 // Fallback placeholder
 const PLACEHOLDER_IMAGE = '/temp-cover/placeholder_1.png';
 
+// Animation configuration - matching rauno.me spring values exactly
+const INTRO_SPRING = {
+  type: 'spring' as const,
+  stiffness: 320,
+  damping: 60,
+  mass: 0.2,
+  restSpeed: 0.0001,
+  restDelta: 0.0001,
+};
+const INTRO_CONTENT_DELAY = 0.15; // Start fading in content earlier (during scale)
+const INTRO_ADJACENT_DELAY = 0.7; // Adjacent frames appear after first frame content is visible
+
 export default function HomePhotoRoll() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [frameHeight, setFrameHeight] = useState(MAX_FRAME_HEIGHT);
   const [captionMaxWidth, setCaptionMaxWidth] = useState(800);
   const [bunnyMedia, setBunnyMedia] = useState<BunnyMedia[]>([]);
+  const [introComplete, setIntroComplete] = useState(false);
   const isDragging = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const isScrollingRef = useRef(false);
 
   const projects = PROJECTS;
+
+  // Mark intro as complete after spring animation settles
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIntroComplete(true);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Fetch project media from Bunny CDN
   useEffect(() => {
@@ -430,58 +451,149 @@ export default function HomePhotoRoll() {
               const { src, isVideo } = getMediaSrc(project);
               const frameWidth = getFrameWidth(frameHeight, project.aspectRatio);
               const isFirstThree = i < 3;
+              const isFirstItem = i === 0;
+
+              // First item: wrapped in scaling container like rauno.me's mainContainer
+              // Adjacent items: fade in after first frame content is visible
+              if (isFirstItem) {
+                return (
+                  // This is the mainContainer equivalent - scales from 0 to 1 immediately
+                  <motion.div
+                    key={project.id}
+                    className="shrink-0 flex items-center justify-center"
+                    style={{ width: frameWidth }}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={INTRO_SPRING}
+                  >
+                    {/* Frame with dark background (white at 8% alpha) */}
+                    <div
+                      className="relative overflow-hidden"
+                      style={{
+                        height: frameHeight,
+                        width: frameWidth,
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      }}
+                    >
+                      {/* Content fades in gradually during the scale animation */}
+                      <motion.div
+                        className="absolute inset-0"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{
+                          duration: 0.8,
+                          ease: [0.25, 0.1, 0.25, 1],
+                          delay: INTRO_CONTENT_DELAY,
+                        }}
+                      >
+                        {isVideo ? (
+                          <video
+                            src={src}
+                            className="object-cover select-none"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="auto"
+                            draggable={false}
+                            style={{
+                              height: frameHeight,
+                              width: frameWidth,
+                            }}
+                          />
+                        ) : (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            alt={project.title}
+                            src={src}
+                            className="object-cover select-none"
+                            loading="eager"
+                            fetchPriority="high"
+                            decoding="async"
+                            draggable={false}
+                            style={{
+                              height: frameHeight,
+                              width: frameWidth,
+                            }}
+                          />
+                        )}
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                );
+              }
+
+              // Adjacent frames - fade in after first frame content is visible
+              const adjacentIndex = i - 1; // 0-based index for adjacent frames
+              const adjacentDelay = INTRO_ADJACENT_DELAY + adjacentIndex * 0.08;
+
               return (
-                <div
+                <motion.div
                   key={project.id}
                   className="shrink-0 flex items-center justify-center"
                   style={{ width: frameWidth }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    duration: 0.9,
+                    ease: [0.25, 0.1, 0.25, 1],
+                    delay: adjacentDelay,
+                  }}
                 >
-                  {isVideo ? (
-                    <video
-                      src={src}
-                      className="object-cover select-none"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload={isFirstThree ? 'auto' : 'metadata'}
-                      draggable={false}
-                      style={{
-                        height: frameHeight,
-                        width: frameWidth,
-                      }}
-                    />
-                  ) : (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      alt={project.title}
-                      src={src}
-                      className="object-cover select-none"
-                      loading={isFirstThree ? 'eager' : 'lazy'}
-                      fetchPriority={isFirstThree ? 'high' : 'auto'}
-                      decoding="async"
-                      draggable={false}
-                      style={{
-                        height: frameHeight,
-                        width: frameWidth,
-                      }}
-                    />
-                  )}
-                </div>
+                  <div
+                    className="relative overflow-hidden"
+                    style={{
+                      height: frameHeight,
+                      width: frameWidth,
+                    }}
+                  >
+                    {isVideo ? (
+                      <video
+                        src={src}
+                        className="object-cover select-none"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload={isFirstThree ? 'auto' : 'metadata'}
+                        draggable={false}
+                        style={{
+                          height: frameHeight,
+                          width: frameWidth,
+                        }}
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        alt={project.title}
+                        src={src}
+                        className="object-cover select-none"
+                        loading={isFirstThree ? 'eager' : 'lazy'}
+                        fetchPriority={isFirstThree ? 'high' : 'auto'}
+                        decoding="async"
+                        draggable={false}
+                        style={{
+                          height: frameHeight,
+                          width: frameWidth,
+                        }}
+                      />
+                    )}
+                  </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
 
-        {/* Caption - fades out when scrolling, fades in when stopped */}
+        {/* Caption - fades out when scrolling, fades in when stopped (only after intro) */}
         <AnimatePresence mode="wait">
-          {!isScrolling && currentProject && (
+          {!isScrolling && currentProject && introComplete && (
             <motion.p
               key={`caption-${currentIndex}`}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              transition={{ duration: 0.3, delay: 0.05 }}
               className="fixed left-1/2 -translate-x-1/2 z-10 text-center font-mono fg-subtle px-8 pointer-events-none"
               style={{
                 top: `calc(50% + ${frameHeight / 2 + 24}px)`,
@@ -498,13 +610,20 @@ export default function HomePhotoRoll() {
         </AnimatePresence>
 
         {/* Footer with Mini Navigation */}
-        <div
+        <motion.div
           className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center bg-base pointer-events-auto"
           style={{
             paddingLeft: '32px',
             paddingRight: '32px',
             paddingTop: '24px',
             paddingBottom: '24px',
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.6,
+            ease: [0.25, 0.1, 0.25, 1],
+            delay: INTRO_CONTENT_DELAY + 0.3,
           }}
         >
           <MiniNav
@@ -517,7 +636,7 @@ export default function HomePhotoRoll() {
               window.scrollTo({ top: targetScroll, behavior: 'smooth' });
             }}
           />
-        </div>
+        </motion.div>
       </div>
     </>
   );
