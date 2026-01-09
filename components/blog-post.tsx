@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, memo, useMemo } from 'react';
+import { useState, useEffect, memo, useMemo, useRef } from 'react';
 import { motion } from 'motion/react';
 import type { NotionBlogPost } from '@/lib/notion/blog';
 import MarkdownContent from './markdown-content';
@@ -52,6 +52,8 @@ export default function BlogPost({ post, content }: BlogPostProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [activeId, setActiveId] = useState<string>('');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isTitleVisible, setIsTitleVisible] = useState(true);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   // Extract headings from markdown content
   const headings = useMemo(() => {
@@ -101,6 +103,25 @@ export default function BlogPost({ post, content }: BlogPostProps) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Track when the title scrolls out of view
+  useEffect(() => {
+    if (!titleRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsTitleVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0,
+        rootMargin: '-100px 0px 0px 0px', // Account for any fixed header
+      }
+    );
+
+    observer.observe(titleRef.current);
+
+    return () => observer.disconnect();
+  }, [isLoading]);
 
   // Track active heading on scroll
   useEffect(() => {
@@ -163,16 +184,32 @@ export default function BlogPost({ post, content }: BlogPostProps) {
 
       {/* Table of Contents - Fixed Left Side */}
       {headings.length > 0 && (
-        <aside
-          className="hidden xl:block fixed left-0 top-[120px] w-[200px]"
-          style={{
-            left: 'max(1rem, calc((100vw - 1440px) / 2 - 240px))',
-          }}
+        <motion.aside
+          className="hidden xl:block fixed top-[170px] w-[200px] left-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6, ease: 'easeOut' }}
         >
-          <nav>
-            <ul className="space-y-2 text-sm">
+          <nav style={{ fontSize: '11px' }}>
+            {/* Title that fades in when scrolled out of view - always in DOM to prevent layout shift */}
+            <div
+              className={`mb-4 transition-opacity duration-200 ${
+                isTitleVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'
+              }`}
+            >
+              <button
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="block font-mono fg-muted hover:fg-subtle transition-colors duration-300 text-left cursor-pointer"
+              >
+                {post.title}
+              </button>
+            </div>
+
+            <ul className="space-y-2 list-none p-0 m-0">
               {headings.map((heading) => (
-                <li key={heading.id} style={{ paddingLeft: `${(heading.level - 1) * 12}px` }}>
+                <li key={heading.id}>
                   <a
                     href={`#${heading.id}`}
                     onClick={(e) => {
@@ -195,7 +232,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
               ))}
             </ul>
           </nav>
-        </aside>
+        </motion.aside>
       )}
 
       {/* Main Content */}
@@ -210,7 +247,10 @@ export default function BlogPost({ post, content }: BlogPostProps) {
           <motion.header variants={VARIANTS_SECTION}>
             <div className="space-y-6">
               <div className="space-y-2">
-                <h1 className="text-2xl font-medium fg-base transition-colors duration-300">
+                <h1
+                  ref={titleRef}
+                  className="text-2xl font-medium fg-base transition-colors duration-300"
+                >
                   {post.title}
                 </h1>
                 <div className="flex flex-col gap-1 text-sm fg-muted transition-colors duration-300">

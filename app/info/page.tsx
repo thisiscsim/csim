@@ -36,10 +36,9 @@ export default function InfoPage() {
               href="https://harvey.ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="fg-subtle hover:fg-base border-b border-dotted border-transparent hover:border-base transition-colors duration-300"
+              className="link-styled"
             >
-              Harvey
-              <sup>1</sup>
+              Harvey<sup>1</sup>
             </a>
             , building the frontier agentic AI platform for legal and professional services.
             Previously, worked with teams at{' '}
@@ -47,30 +46,27 @@ export default function InfoPage() {
               href="https://flexport.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="fg-subtle hover:fg-base border-b border-dotted border-transparent hover:border-base transition-colors duration-300"
+              className="link-styled"
             >
-              Flexport
-              <sup>2</sup>
+              Flexport<sup>2</sup>
             </a>
             ,{' '}
             <a
               href="https://uber.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="fg-subtle hover:fg-base border-b border-dotted border-transparent hover:border-base transition-colors duration-300"
+              className="link-styled"
             >
-              Uber
-              <sup>3</sup>
+              Uber<sup>3</sup>
             </a>
             , and{' '}
             <a
               href="https://www.joinarc.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="fg-subtle hover:fg-base border-b border-dotted border-transparent hover:border-base transition-colors duration-300"
+              className="link-styled"
             >
-              Arc
-              <sup>4</sup>
+              Arc<sup>4</sup>
             </a>
             . In my free time, I&apos;m a design consultant for emerging software companies backed
             by top VCs.
@@ -78,7 +74,20 @@ export default function InfoPage() {
           <p>
             I love working on niche problems and simplifying complexities so people can focus on
             more valuable work. I received my master&apos;s in Human-Computer Interaction from the
-            University of Washington.
+            University of Washington. You can reach me at{' '}
+            <a
+              href="https://twitter.com/thisiscsim"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-styled"
+            >
+              @thisiscsim
+            </a>{' '}
+            or{' '}
+            <a href="mailto:hello@csim.me" className="link-styled">
+              hello(at)csim.me
+            </a>
+            .
           </p>
         </motion.div>
 
@@ -93,7 +102,7 @@ export default function InfoPage() {
 
         {/* Last updated */}
         <motion.p
-          className="text-[12px] fg-muted mt-8 font-mono transition-colors duration-300"
+          className="text-[11px] fg-muted mt-8 font-mono transition-colors duration-300"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, ease: 'easeOut', delay: 0.2 }}

@@ -66,12 +66,36 @@
     color: var(--fg-muted);
   }
 
+  /* Hover variants for foreground colors */
+  .hover\:fg-base:hover {
+    color: var(--fg-base);
+  }
+
+  .hover\:fg-subtle:hover {
+    color: var(--fg-subtle);
+  }
+
+  .hover\:fg-muted:hover {
+    color: var(--fg-muted);
+  }
+
   .border-base {
     border-color: var(--border-base);
   }
 
   .bg-interactive {
     background-color: var(--interactive-base);
+  }
+
+  /* Styled link with hover state */
+  .link-styled {
+    color: var(--fg-subtle);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .link-styled:hover {
+    color: var(--fg-base);
   }
 
   /* Theme transition */
