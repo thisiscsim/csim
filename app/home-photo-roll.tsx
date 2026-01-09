@@ -18,10 +18,12 @@ interface BunnyMedia {
 }
 
 // Mini Navigation Component
-const TICK_WIDTH = 1; // Width of each tick line
-const TICK_GAP = 10; // Gap between ticks
+const TICK_WIDTH = 1; // Visual width of each tick line
+const TICK_GAP = 0; // No gap needed since buttons have padding
 const NAV_HEIGHT = 18; // Total height of navigation
 const INDICATOR_WIDTH = 28; // Width of the square indicator (when active)
+const TOUCH_PADDING_X = 5; // Horizontal padding (5+5=10 matches original gap)
+const TOUCH_PADDING_Y = 4; // Vertical padding for touch target
 
 interface MiniNavProps {
   total: number;
@@ -33,7 +35,10 @@ function MiniNav({ total, currentIndex, onNavigate }: MiniNavProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className="relative flex items-center justify-center" style={{ height: NAV_HEIGHT }}>
+    <div
+      className="relative flex items-center justify-center"
+      style={{ height: NAV_HEIGHT + TOUCH_PADDING_Y * 2 }}
+    >
       {/* Ticks container - uses flexbox with gap */}
       <div className="flex items-center" style={{ gap: TICK_GAP }}>
         {Array.from({ length: total }).map((_, index) => {
@@ -41,13 +46,13 @@ function MiniNav({ total, currentIndex, onNavigate }: MiniNavProps) {
           const isHovered = index === hoveredIndex && !isActive;
 
           return (
-            <motion.button
+            <button
               key={index}
               type="button"
-              className="relative shrink-0 cursor-pointer"
+              className="relative shrink-0 cursor-pointer flex items-center justify-center"
               style={{
-                height: NAV_HEIGHT,
-                padding: 0,
+                height: NAV_HEIGHT + TOUCH_PADDING_Y * 2,
+                padding: `${TOUCH_PADDING_Y}px ${TOUCH_PADDING_X}px`,
                 background: 'transparent',
                 border: 'none',
               }}
@@ -55,32 +60,37 @@ function MiniNav({ total, currentIndex, onNavigate }: MiniNavProps) {
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
               aria-label={`Go to slide ${index + 1}`}
-              layout
-              initial={false}
-              animate={{
-                width: isActive ? INDICATOR_WIDTH : TICK_WIDTH,
-                opacity: isActive ? 1 : isHovered ? 0.7 : 0.4,
-              }}
-              transition={{
-                width: {
-                  type: 'spring',
-                  stiffness: 300,
-                  damping: 25,
-                  mass: 0.8,
-                },
-                opacity: {
-                  duration: 0.15,
-                },
-              }}
             >
-              {/* Outline - always visible, creates both the square and the line look */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  border: `${isActive ? 1.25 : 0.75}px solid var(--fg-subtle)`,
+              {/* Visual tick element - animates width */}
+              <motion.div
+                className="relative"
+                style={{ height: NAV_HEIGHT }}
+                initial={false}
+                animate={{
+                  width: isActive ? INDICATOR_WIDTH : TICK_WIDTH,
+                  opacity: isActive ? 1 : isHovered ? 0.7 : 0.4,
                 }}
-              />
-            </motion.button>
+                transition={{
+                  width: {
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 25,
+                    mass: 0.8,
+                  },
+                  opacity: {
+                    duration: 0.15,
+                  },
+                }}
+              >
+                {/* Outline - always visible, creates both the square and the line look */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    border: `${isActive ? 1.25 : 0.75}px solid var(--fg-subtle)`,
+                  }}
+                />
+              </motion.div>
+            </button>
           );
         })}
       </div>
