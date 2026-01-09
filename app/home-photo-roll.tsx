@@ -131,18 +131,25 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
   const [frameHeight, setFrameHeight] = useState(MAX_FRAME_HEIGHT);
   const [captionMaxWidth, setCaptionMaxWidth] = useState(800);
   const [introComplete, setIntroComplete] = useState(false);
+  const [firstMediaReady, setFirstMediaReady] = useState(false);
   const isDragging = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const isScrollingRef = useRef(false);
 
   const projects = PROJECTS;
 
-  // Mark intro as complete after spring animation settles
+  // Mark intro as complete after spring animation settles (only after first media is ready)
   useEffect(() => {
+    if (!firstMediaReady) return;
     const timer = setTimeout(() => {
       setIntroComplete(true);
     }, 1200);
     return () => clearTimeout(timer);
+  }, [firstMediaReady]);
+
+  // Callback when first media loads
+  const handleFirstMediaLoad = useCallback(() => {
+    setFirstMediaReady(true);
   }, []);
 
   // Get media source for a project - uses server-provided media map
@@ -403,16 +410,16 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
               const isFirstItem = i === 0;
 
               // First item: wrapped in scaling container like rauno.me's mainContainer
-              // Adjacent items: fade in after first frame content is visible
+              // Animation waits for first media to be ready before playing
               if (isFirstItem) {
                 return (
-                  // This is the mainContainer equivalent - scales from 0 to 1 immediately
+                  // This is the mainContainer equivalent - scales from 0 to 1 when media is ready
                   <motion.div
                     key={project.id}
                     className="shrink-0 flex items-center justify-center"
                     style={{ width: frameWidth }}
                     initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
+                    animate={{ scale: firstMediaReady ? 1 : 0 }}
                     transition={INTRO_SPRING}
                   >
                     {/* Frame with dark background (white at 8% alpha) */}
@@ -428,11 +435,11 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
                       <motion.div
                         className="absolute inset-0"
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        animate={{ opacity: firstMediaReady ? 1 : 0 }}
                         transition={{
                           duration: 0.8,
                           ease: [0.25, 0.1, 0.25, 1],
-                          delay: INTRO_CONTENT_DELAY,
+                          delay: firstMediaReady ? INTRO_CONTENT_DELAY : 0,
                         }}
                       >
                         {isVideo ? (
@@ -445,6 +452,7 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
                             playsInline
                             preload="auto"
                             draggable={false}
+                            onCanPlay={handleFirstMediaLoad}
                             style={{
                               height: frameHeight,
                               width: frameWidth,
@@ -460,6 +468,7 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
                             fetchPriority="high"
                             decoding="async"
                             draggable={false}
+                            onLoad={handleFirstMediaLoad}
                             style={{
                               height: frameHeight,
                               width: frameWidth,
@@ -482,11 +491,11 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
                   className="shrink-0 flex items-center justify-center"
                   style={{ width: frameWidth }}
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  animate={{ opacity: firstMediaReady ? 1 : 0 }}
                   transition={{
                     duration: 0.9,
                     ease: [0.25, 0.1, 0.25, 1],
-                    delay: adjacentDelay,
+                    delay: firstMediaReady ? adjacentDelay : 0,
                   }}
                 >
                   <div
@@ -568,11 +577,11 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
             paddingBottom: '24px',
           }}
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={{ opacity: firstMediaReady ? 1 : 0, y: firstMediaReady ? 0 : 20 }}
           transition={{
             duration: 0.6,
             ease: [0.25, 0.1, 0.25, 1],
-            delay: INTRO_CONTENT_DELAY + 0.3,
+            delay: firstMediaReady ? INTRO_CONTENT_DELAY + 0.3 : 0,
           }}
         >
           <MiniNav

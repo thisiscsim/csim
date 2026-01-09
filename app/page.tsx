@@ -37,17 +37,17 @@ export default async function HomePage() {
     }
   }
 
-  // Get the first item for priority preloading - this one animates in with the page
+  // Get the first item for priority preloading (only images - videos handle their own loading)
   const firstProject = PROJECTS[0];
   const firstMedia = mediaMap[firstProject?.id];
 
   return (
     <>
-      {/* Preload the first media item with highest priority - it animates in with the page */}
-      {firstMedia && (
+      {/* Preload the first item if it's an image. Videos are handled by the video element. */}
+      {firstMedia && !firstMedia.isVideo && (
         <link
           rel="preload"
-          as={firstMedia.isVideo ? 'fetch' : 'image'}
+          as="image"
           href={firstMedia.url}
           crossOrigin="anonymous"
           fetchPriority="high"
