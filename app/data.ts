@@ -69,7 +69,7 @@ export const PROJECTS: Project[] = [
     title: 'Exa Search',
     id: 'exa-search',
     description:
-      "I freelanced with Exa for one month to help them conceptualize their new search product that's not only tailored for humans but agents as well.",
+      "I freelanced with Exa for a week to help them conceptualize their new search product that's not only tailored for humans but agents as well.",
   },
   {
     title: 'Uber Motion',
