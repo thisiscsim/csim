@@ -10,10 +10,9 @@ const MIN_FRAME_HEIGHT = 200; // Minimum height for images (mobile)
 const MIN_FRAME_HEIGHT_DESKTOP = 400; // Minimum height for desktop
 const FRAME_GAP = 24; // Gap between images
 
-// Media fetched from Bunny CDN
-interface BunnyMedia {
+// Media map passed from server
+interface MediaItem {
   url: string;
-  name: string;
   isVideo: boolean;
 }
 
@@ -107,40 +106,12 @@ function getFrameWidth(height: number, aspectRatio?: '16:9' | '3:4'): number {
   return height * (16 / 9);
 }
 
-// Normalize filename to match project IDs
-function normalizeFilename(filename: string): string {
-  // Remove extension and normalize to lowercase with hyphens
-  return filename
-    .replace(/\.[^/.]+$/, '') // Remove extension
-    .toLowerCase()
-    .replace(/[_\s]+/g, '-'); // Replace underscores/spaces with hyphens
-}
-
-// Find matching media from Bunny for a project
-function findProjectMedia(
-  projectId: string,
-  bunnyMedia: BunnyMedia[]
-): { src: string; isVideo: boolean } | null {
-  // Try to find exact match first
-  const exactMatch = bunnyMedia.find((m) => normalizeFilename(m.name) === projectId);
-  if (exactMatch) {
-    return { src: exactMatch.url, isVideo: exactMatch.isVideo };
-  }
-
-  // Try partial match (filename contains project id)
-  const partialMatch = bunnyMedia.find(
-    (m) =>
-      normalizeFilename(m.name).includes(projectId) || projectId.includes(normalizeFilename(m.name))
-  );
-  if (partialMatch) {
-    return { src: partialMatch.url, isVideo: partialMatch.isVideo };
-  }
-
-  return null;
-}
-
 // Fallback placeholder
 const PLACEHOLDER_IMAGE = '/temp-cover/placeholder_1.png';
+
+interface HomePhotoRollProps {
+  initialMedia: Record<string, MediaItem>;
+}
 
 // Animation configuration - matching rauno.me spring values exactly
 const INTRO_SPRING = {
@@ -154,12 +125,11 @@ const INTRO_SPRING = {
 const INTRO_CONTENT_DELAY = 0.15; // Start fading in content earlier (during scale)
 const INTRO_ADJACENT_DELAY = 0.7; // Adjacent frames appear after first frame content is visible
 
-export default function HomePhotoRoll() {
+export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [frameHeight, setFrameHeight] = useState(MAX_FRAME_HEIGHT);
   const [captionMaxWidth, setCaptionMaxWidth] = useState(800);
-  const [bunnyMedia, setBunnyMedia] = useState<BunnyMedia[]>([]);
   const [introComplete, setIntroComplete] = useState(false);
   const isDragging = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -175,48 +145,17 @@ export default function HomePhotoRoll() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch project media from Bunny CDN
-  useEffect(() => {
-    async function fetchMedia() {
-      try {
-        const response = await fetch('/api/projects');
-        if (response.ok) {
-          const data = await response.json();
-          const media = data.media || [];
-          setBunnyMedia(media);
-
-          // Preload first 3 images for faster initial render
-          media.slice(0, 3).forEach((item: BunnyMedia) => {
-            if (!item.isVideo) {
-              const link = document.createElement('link');
-              link.rel = 'preload';
-              link.as = 'image';
-              link.href = item.url;
-              document.head.appendChild(link);
-            }
-          });
-        } else {
-          console.error('Failed to fetch project media:', response.status);
-        }
-      } catch (error) {
-        console.error('Failed to fetch project media:', error);
-      }
-    }
-    fetchMedia();
-  }, []);
-
-  // Get media source for a project
+  // Get media source for a project - uses server-provided media map
   const getMediaSrc = useCallback(
     (project: Project): { src: string; isVideo: boolean } => {
-      // First try to find matching Bunny media
-      const bunnyMatch = findProjectMedia(project.id, bunnyMedia);
-      if (bunnyMatch) {
-        return bunnyMatch;
+      const match = initialMedia[project.id];
+      if (match) {
+        return { src: match.url, isVideo: match.isVideo };
       }
       // Fall back to placeholder
       return { src: PLACEHOLDER_IMAGE, isVideo: false };
     },
-    [bunnyMedia]
+    [initialMedia]
   );
 
   // Calculate frame height and caption width based on viewport
