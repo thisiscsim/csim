@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, animate } from 'motion/react';
 import { PROJECTS, Project } from './data';
 
 const MAX_FRAME_HEIGHT = 680; // Maximum height for images
@@ -16,83 +16,329 @@ interface MediaItem {
   isVideo: boolean;
 }
 
-// Mini Navigation Component
-const TICK_WIDTH = 1; // Visual width of each tick line
-const TICK_GAP = 0; // No gap needed since buttons have padding
-const NAV_HEIGHT = 18; // Total height of navigation
-const INDICATOR_WIDTH = 28; // Width of the square indicator (when active)
-const TOUCH_PADDING_X = 5; // Horizontal padding (5+5=10 matches original gap)
-const TOUCH_PADDING_Y = 4; // Vertical padding for touch target
+// Timeline Navigation Component
+const DOT_SIZE = 8; // Size of dots (8x8px)
+const TIMELINE_HEIGHT = 40; // Total height of timeline area
+const TIMELINE_MARGIN_X = 24; // Margin on each side
 
-interface MiniNavProps {
-  total: number;
+// Format date for display
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+// Generate month markers between date range
+function generateMonthMarkers(
+  minDate: Date,
+  maxDate: Date
+): Array<{ year: number; month: number; isJanuary: boolean }> {
+  const markers: Array<{ year: number; month: number; isJanuary: boolean }> = [];
+
+  // Start from the first month of maxDate's year, go to last month of minDate's year
+  const startYear = maxDate.getFullYear();
+  const startMonth = maxDate.getMonth();
+  const endYear = minDate.getFullYear();
+  const endMonth = minDate.getMonth();
+
+  let year = startYear;
+  let month = startMonth;
+
+  while (year > endYear || (year === endYear && month >= endMonth)) {
+    markers.push({
+      year,
+      month,
+      isJanuary: month === 0,
+    });
+
+    month--;
+    if (month < 0) {
+      month = 11;
+      year--;
+    }
+  }
+
+  return markers;
+}
+
+interface TimelineNavProps {
+  projects: Project[];
   currentIndex: number;
   onNavigate: (index: number) => void;
 }
 
-function MiniNav({ total, currentIndex, onNavigate }: MiniNavProps) {
+function TimelineNav({ projects, currentIndex, onNavigate }: TimelineNavProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Handle horizontal scroll
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (scrollContainerRef.current && e.deltaX !== 0) {
+      e.stopPropagation();
+    }
+  }, []);
+
+  // Track scroll position for tooltip positioning
+  const handleScroll = useCallback(() => {
+    if (scrollContainerRef.current) {
+      setScrollLeft(scrollContainerRef.current.scrollLeft);
+    }
+  }, []);
+
+  // Get date range for month markers
+  const dates = projects.map((p) => new Date(p.date));
+  const minDate = dates.reduce((a, b) => (a < b ? a : b));
+  const maxDate = dates.reduce((a, b) => (a > b ? a : b));
+
+  // Generate month markers
+  const monthMarkers = generateMonthMarkers(minDate, maxDate);
+
+  // Fixed width per month for scrollable content
+  const MONTH_WIDTH = 42;
+  const contentWidth = monthMarkers.length * MONTH_WIDTH;
+
+  // Get pixel position for a month marker
+  const getMonthPixelPosition = (markerIndex: number): number => {
+    return markerIndex * MONTH_WIDTH;
+  };
+
+  // Get pixel position for a project dot based on its date
+  const getDotPixelPosition = useCallback(
+    (dateString: string): number => {
+      const date = new Date(dateString);
+      const projectYear = date.getFullYear();
+      const projectMonth = date.getMonth();
+
+      // Find the matching month marker index
+      const markerIndex = monthMarkers.findIndex(
+        (m) => m.year === projectYear && m.month === projectMonth
+      );
+
+      if (markerIndex === -1) return 0;
+
+      // Position within the month based on day
+      const dayOfMonth = date.getDate();
+      const daysInMonth = new Date(projectYear, projectMonth + 1, 0).getDate();
+      const monthProgress = dayOfMonth / daysInMonth;
+
+      return markerIndex * MONTH_WIDTH + monthProgress * MONTH_WIDTH;
+    },
+    [monthMarkers, MONTH_WIDTH]
+  );
+
+  // Auto-scroll timeline to keep current dot visible
+  useEffect(() => {
+    if (!scrollContainerRef.current || projects.length === 0) return;
+
+    const container = scrollContainerRef.current;
+    const currentProject = projects[currentIndex];
+    if (!currentProject) return;
+
+    const dotPosition = getDotPixelPosition(currentProject.date);
+    const containerWidth = container.clientWidth;
+    const currentScroll = container.scrollLeft;
+
+    // Add padding so the dot isn't right at the edge
+    const padding = 80;
+
+    // Check if dot is outside visible area
+    const dotLeft = dotPosition + TIMELINE_MARGIN_X - currentScroll;
+
+    let targetScroll: number | null = null;
+
+    if (dotLeft < padding) {
+      // Dot is off the left side - scroll left
+      targetScroll = dotPosition + TIMELINE_MARGIN_X - padding;
+    } else if (dotLeft > containerWidth - padding) {
+      // Dot is off the right side - scroll right
+      targetScroll = dotPosition + TIMELINE_MARGIN_X - containerWidth + padding;
+    }
+
+    if (targetScroll !== null) {
+      // Use Framer Motion for smooth, controlled animation
+      animate(currentScroll, targetScroll, {
+        duration: 0.6,
+        ease: [0.32, 0.72, 0, 1], // Custom easing - smooth deceleration
+        onUpdate: (value) => {
+          container.scrollLeft = value;
+        },
+      });
+    }
+  }, [currentIndex, projects, getDotPixelPosition]);
+
+  // Get hovered project for tooltip
+  const hoveredProject = hoveredIndex !== null ? projects[hoveredIndex] : null;
+  const hoveredDotPosition = hoveredProject ? getDotPixelPosition(hoveredProject.date) : 0;
 
   return (
-    <div
-      className="relative flex items-center justify-center"
-      style={{ height: NAV_HEIGHT + TOUCH_PADDING_Y * 2 }}
-    >
-      {/* Ticks container - uses flexbox with gap */}
-      <div className="flex items-center" style={{ gap: TICK_GAP }}>
-        {Array.from({ length: total }).map((_, index) => {
-          const isActive = index === currentIndex;
-          const isHovered = index === hoveredIndex && !isActive;
+    <div id="timeline-content" className="relative w-full" style={{ height: TIMELINE_HEIGHT }}>
+      {/* Scrollable container */}
+      <div
+        ref={scrollContainerRef}
+        className="absolute inset-0 overflow-x-auto overflow-y-hidden"
+        onWheel={handleWheel}
+        onScroll={handleScroll}
+        style={{
+          scrollbarWidth: 'none' /* Firefox */,
+          msOverflowStyle: 'none' /* IE/Edge */,
+        }}
+      >
+        {/* Hide webkit scrollbar */}
+        <style>{`
+          #timeline-content > div::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
 
-          return (
-            <button
-              key={index}
-              type="button"
-              className="relative shrink-0 cursor-pointer flex items-center justify-center"
-              style={{
-                height: NAV_HEIGHT + TOUCH_PADDING_Y * 2,
-                padding: `${TOUCH_PADDING_Y}px ${TOUCH_PADDING_X}px`,
-                background: 'transparent',
-                border: 'none',
-              }}
-              onClick={() => onNavigate(index)}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              aria-label={`Go to slide ${index + 1}`}
-            >
-              {/* Visual tick element - animates width */}
-              <motion.div
-                className="relative"
-                style={{ height: NAV_HEIGHT }}
-                initial={false}
-                animate={{
-                  width: isActive ? INDICATOR_WIDTH : TICK_WIDTH,
-                  opacity: isActive ? 1 : isHovered ? 0.7 : 0.4,
-                }}
-                transition={{
-                  width: {
-                    type: 'spring',
-                    stiffness: 300,
-                    damping: 25,
-                    mass: 0.8,
-                  },
-                  opacity: {
-                    duration: 0.15,
-                  },
-                }}
-              >
-                {/* Outline - always visible, creates both the square and the line look */}
+        {/* Inner content with fixed width */}
+        <div
+          id="timeline-inner"
+          className="relative h-full"
+          style={{
+            width: contentWidth,
+            marginLeft: TIMELINE_MARGIN_X,
+            marginRight: TIMELINE_MARGIN_X,
+          }}
+        >
+          {/* simple-timeline: contains the dots */}
+          <div id="simple-timeline" className="absolute inset-0 flex items-center">
+            {/* Project dots */}
+            {projects.map((project, index) => {
+              const pixelPosition = getDotPixelPosition(project.date);
+              const isActive = index === currentIndex;
+              const isHovered = index === hoveredIndex;
+
+              return (
                 <div
-                  className="absolute inset-0"
+                  key={project.id}
+                  className="absolute"
                   style={{
-                    border: `${isActive ? 1.25 : 0.75}px solid var(--fg-subtle)`,
+                    left: pixelPosition,
+                    top: 'calc(50% - 4px)',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: isHovered ? 20 : 10,
                   }}
-                />
-              </motion.div>
-            </button>
-          );
-        })}
+                >
+                  {/* Dot button */}
+                  <button
+                    type="button"
+                    className="relative flex items-center justify-center cursor-pointer"
+                    style={{
+                      width: 28,
+                      height: 28,
+                      background: 'transparent',
+                      border: 'none',
+                    }}
+                    onClick={() => onNavigate(index)}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    aria-label={`Go to ${project.title}`}
+                  >
+                    <motion.div
+                      className="rounded-full"
+                      style={{ width: DOT_SIZE, height: DOT_SIZE }}
+                      initial={false}
+                      animate={{
+                        backgroundColor:
+                          isActive || isHovered ? 'var(--fg-base)' : 'var(--fg-muted)',
+                        opacity: isActive || isHovered ? 1 : 0.5,
+                      }}
+                      transition={{ duration: 0.15 }}
+                    />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* timeline-lines: month-based vertical lines */}
+          <div id="timeline-lines" className="absolute inset-0 pointer-events-none">
+            {/* Month markers - January markers include year label */}
+            {monthMarkers.map((marker, index) => {
+              const pixelPosition = getMonthPixelPosition(index);
+              const isYear = marker.isJanuary;
+
+              return (
+                <div
+                  key={`${marker.year}-${marker.month}`}
+                  className={`timeline-marker ${isYear ? 'year' : 'month'} absolute top-0 bottom-0`}
+                  style={{ left: pixelPosition }}
+                >
+                  {/* Vertical line */}
+                  <div
+                    className="absolute top-0 h-full"
+                    style={{
+                      width: 1,
+                      left: -0.5,
+                      backgroundColor: 'var(--border-base)',
+                    }}
+                  />
+                  {/* Year label - only for January */}
+                  {isYear && (
+                    <div
+                      className="timeline-label absolute fg-muted font-mono select-none"
+                      style={{
+                        left: 4,
+                        bottom: 2,
+                        fontSize: '10px',
+                        lineHeight: 1,
+                        letterSpacing: '0.02em',
+                      }}
+                    >
+                      {marker.year}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
+
+      {/* Left fade gradient */}
+      <div
+        className="absolute top-0 bottom-0 left-0 pointer-events-none z-30"
+        style={{
+          width: 60,
+          background: 'linear-gradient(to right, var(--bg-base) 0%, transparent 100%)',
+        }}
+      />
+
+      {/* Right fade gradient */}
+      <div
+        className="absolute top-0 bottom-0 right-0 pointer-events-none z-30"
+        style={{
+          width: 60,
+          background: 'linear-gradient(to left, var(--bg-base) 0%, transparent 100%)',
+        }}
+      />
+
+      {/* Date tooltip - rendered outside scroll container to avoid clipping */}
+      <AnimatePresence>
+        {hoveredProject && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.12, ease: 'easeOut' }}
+            className="absolute font-mono pointer-events-none z-40"
+            style={{
+              left: hoveredDotPosition + TIMELINE_MARGIN_X - scrollLeft,
+              bottom: TIMELINE_HEIGHT + 8,
+              fontSize: '11px',
+              color: 'var(--fg-base)',
+            }}
+          >
+            <span className="block whitespace-nowrap" style={{ transform: 'translateX(-50%)' }}>
+              {formatDate(hoveredProject.date)}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -136,7 +382,10 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const isScrollingRef = useRef(false);
 
-  const projects = PROJECTS;
+  // Sort projects by date (newest first)
+  const projects = [...PROJECTS].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
   // Mark intro as complete after spring animation settles (only after first media is ready)
   useEffect(() => {
@@ -312,9 +561,15 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
     };
   }, [projects.length]);
 
-  // Convert horizontal wheel to vertical scroll
+  // Convert horizontal wheel to vertical scroll (except in timeline)
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
+      // Skip if event originated from timeline
+      const target = e.target as HTMLElement;
+      if (target.closest('#timeline-content')) {
+        return;
+      }
+
       // If horizontal scroll is dominant, convert to vertical
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         e.preventDefault();
@@ -352,8 +607,7 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
   useEffect(() => {
     if (projects.length === 0) return;
 
-    // Prevent overscroll bounce
-    document.body.style.overscrollBehavior = 'none';
+    // Reset scroll position
     document.documentElement.scrollTo(0, 0);
 
     // Hide scrollbar completely
@@ -382,7 +636,6 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
     }
 
     return () => {
-      document.body.style.overscrollBehavior = '';
       const styleEl = document.getElementById(styleId);
       if (styleEl) {
         styleEl.remove();
@@ -567,15 +820,9 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
           )}
         </AnimatePresence>
 
-        {/* Footer with Mini Navigation */}
+        {/* Footer with Timeline Navigation */}
         <motion.div
-          className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center bg-base pointer-events-auto"
-          style={{
-            paddingLeft: '32px',
-            paddingRight: '32px',
-            paddingTop: '24px',
-            paddingBottom: '24px',
-          }}
+          className="fixed bottom-0 left-0 right-0 z-50 bg-base pointer-events-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: firstMediaReady ? 1 : 0, y: firstMediaReady ? 0 : 20 }}
           transition={{
@@ -584,8 +831,8 @@ export default function HomePhotoRoll({ initialMedia }: HomePhotoRollProps) {
             delay: firstMediaReady ? INTRO_CONTENT_DELAY + 0.3 : 0,
           }}
         >
-          <MiniNav
-            total={projects.length}
+          <TimelineNav
+            projects={projects}
             currentIndex={currentIndex}
             onNavigate={(index) => {
               if (!emblaApi) return;

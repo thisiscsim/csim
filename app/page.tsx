@@ -43,6 +43,13 @@ export default async function HomePage() {
 
   return (
     <>
+      <style>{`
+        html, body {
+          overscroll-behavior: none;
+          overscroll-behavior-x: none;
+          touch-action: pan-y pinch-zoom;
+        }
+      `}</style>
       {/* Preload the first item if it's an image. Videos are handled by the video element. */}
       {firstMedia && !firstMedia.isVideo && (
         <link
