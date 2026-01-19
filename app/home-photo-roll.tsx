@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, animate } from 'motion/react';
 import { PROJECTS, Project } from './data';
 
 const MAX_FRAME_HEIGHT = 680; // Maximum height for images
@@ -107,25 +107,68 @@ function TimelineNav({ projects, currentIndex, onNavigate }: TimelineNavProps) {
   };
 
   // Get pixel position for a project dot based on its date
-  const getDotPixelPosition = (dateString: string): number => {
-    const date = new Date(dateString);
-    const projectYear = date.getFullYear();
-    const projectMonth = date.getMonth();
+  const getDotPixelPosition = useCallback(
+    (dateString: string): number => {
+      const date = new Date(dateString);
+      const projectYear = date.getFullYear();
+      const projectMonth = date.getMonth();
 
-    // Find the matching month marker index
-    const markerIndex = monthMarkers.findIndex(
-      (m) => m.year === projectYear && m.month === projectMonth
-    );
+      // Find the matching month marker index
+      const markerIndex = monthMarkers.findIndex(
+        (m) => m.year === projectYear && m.month === projectMonth
+      );
 
-    if (markerIndex === -1) return 0;
+      if (markerIndex === -1) return 0;
 
-    // Position within the month based on day
-    const dayOfMonth = date.getDate();
-    const daysInMonth = new Date(projectYear, projectMonth + 1, 0).getDate();
-    const monthProgress = dayOfMonth / daysInMonth;
+      // Position within the month based on day
+      const dayOfMonth = date.getDate();
+      const daysInMonth = new Date(projectYear, projectMonth + 1, 0).getDate();
+      const monthProgress = dayOfMonth / daysInMonth;
 
-    return markerIndex * MONTH_WIDTH + monthProgress * MONTH_WIDTH;
-  };
+      return markerIndex * MONTH_WIDTH + monthProgress * MONTH_WIDTH;
+    },
+    [monthMarkers, MONTH_WIDTH]
+  );
+
+  // Auto-scroll timeline to keep current dot visible
+  useEffect(() => {
+    if (!scrollContainerRef.current || projects.length === 0) return;
+
+    const container = scrollContainerRef.current;
+    const currentProject = projects[currentIndex];
+    if (!currentProject) return;
+
+    const dotPosition = getDotPixelPosition(currentProject.date);
+    const containerWidth = container.clientWidth;
+    const currentScroll = container.scrollLeft;
+
+    // Add padding so the dot isn't right at the edge
+    const padding = 80;
+
+    // Check if dot is outside visible area
+    const dotLeft = dotPosition + TIMELINE_MARGIN_X - currentScroll;
+
+    let targetScroll: number | null = null;
+
+    if (dotLeft < padding) {
+      // Dot is off the left side - scroll left
+      targetScroll = dotPosition + TIMELINE_MARGIN_X - padding;
+    } else if (dotLeft > containerWidth - padding) {
+      // Dot is off the right side - scroll right
+      targetScroll = dotPosition + TIMELINE_MARGIN_X - containerWidth + padding;
+    }
+
+    if (targetScroll !== null) {
+      // Use Framer Motion for smooth, controlled animation
+      animate(currentScroll, targetScroll, {
+        duration: 0.6,
+        ease: [0.32, 0.72, 0, 1], // Custom easing - smooth deceleration
+        onUpdate: (value) => {
+          container.scrollLeft = value;
+        },
+      });
+    }
+  }, [currentIndex, projects, getDotPixelPosition]);
 
   // Get hovered project for tooltip
   const hoveredProject = hoveredIndex !== null ? projects[hoveredIndex] : null;
@@ -200,7 +243,8 @@ function TimelineNav({ projects, currentIndex, onNavigate }: TimelineNavProps) {
                       style={{ width: DOT_SIZE, height: DOT_SIZE }}
                       initial={false}
                       animate={{
-                        backgroundColor: isActive || isHovered ? '#e54d2e' : 'var(--fg-muted)',
+                        backgroundColor:
+                          isActive || isHovered ? 'var(--fg-base)' : 'var(--fg-muted)',
                         opacity: isActive || isHovered ? 1 : 0.5,
                       }}
                       transition={{ duration: 0.15 }}
