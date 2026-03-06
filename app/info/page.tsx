@@ -1,8 +1,9 @@
-'use client';
-
+import { notFound } from 'next/navigation';
 import { motion } from 'motion/react';
 
 export default function InfoPage() {
+  // Temporarily hidden - redirect to 404
+  notFound();
   return (
     <div className="h-[calc(100vh-100px)] relative flex items-center justify-center px-4 md:px-6 lg:px-8">
       {/* Introduction Section */}

@@ -1,11 +1,24 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { motion } from 'motion/react';
 import useEmblaCarousel from 'embla-carousel-react';
 import type { PhotoImage } from '@/lib/photos';
 
 const FRAME_HEIGHT = 600; // Fixed height for all images
 const FRAME_GAP = 24; // Gap between images
+
+// Animation constants (same as homepage)
+const INTRO_SPRING = {
+  type: 'spring' as const,
+  stiffness: 320,
+  damping: 60,
+  mass: 0.2,
+  restSpeed: 0.0001,
+  restDelta: 0.0001,
+};
+const INTRO_CONTENT_DELAY = 0.15;
+const INTRO_ADJACENT_DELAY = 0.7;
 
 interface PhotoRollProps {
   initialImages: PhotoImage[];
@@ -15,7 +28,16 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
   const [images, setImages] = useState<PhotoImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [ready, setReady] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
   const isDragging = useRef(false);
+
+  // Mark intro as complete after animation finishes
+  useEffect(() => {
+    if (!ready) return;
+    const t = setTimeout(() => setIntroComplete(true), 1000);
+    return () => clearTimeout(t);
+  }, [ready]);
 
   // Embla Carousel - controls the visual carousel
   // Duration 45 matches Attio's 0.45s animation timing
@@ -224,46 +246,81 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
         {/* Embla Carousel */}
         <div className="overflow-hidden w-full pointer-events-auto" ref={emblaRef}>
           <div className="flex items-center" style={{ gap: FRAME_GAP }}>
-            {images.map((image, i) => (
-              <div
-                key={`${image.name}-${i}`}
-                className="shrink-0 flex items-center justify-center"
-                style={{ width: 'auto' }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  alt={image.name}
-                  src={image.url}
-                  className="object-cover select-none"
-                  loading="eager"
-                  fetchPriority={i < 3 ? 'high' : 'auto'}
-                  decoding="async"
-                  draggable={false}
-                  style={{
-                    height: FRAME_HEIGHT,
-                    width: 'auto',
+            {images.map((image, i) => {
+              const isFirst = i === 0;
+              return (
+                <motion.div
+                  key={`${image.name}-${i}`}
+                  className="shrink-0 flex items-center justify-center overflow-hidden"
+                  style={{ width: 'auto' }}
+                  initial={{ scale: isFirst ? 0 : 1, opacity: isFirst ? 1 : 0 }}
+                  animate={{
+                    scale: ready ? 1 : isFirst ? 0 : 1,
+                    opacity: ready ? 1 : isFirst ? 1 : 0,
                   }}
-                />
-              </div>
-            ))}
+                  transition={
+                    isFirst
+                      ? INTRO_SPRING
+                      : {
+                          duration: 0.9,
+                          ease: [0.25, 0.1, 0.25, 1],
+                          delay: ready ? INTRO_ADJACENT_DELAY + (i - 1) * 0.08 : 0,
+                        }
+                  }
+                >
+                  {/* Content fades in during scale animation */}
+                  <motion.div
+                    initial={{ opacity: isFirst ? 0 : 1 }}
+                    animate={{ opacity: ready ? 1 : isFirst ? 0 : 1 }}
+                    transition={{
+                      duration: 0.8,
+                      ease: [0.25, 0.1, 0.25, 1],
+                      delay: isFirst && ready ? INTRO_CONTENT_DELAY : 0,
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      alt={image.name}
+                      src={image.url}
+                      className="object-cover select-none"
+                      loading="eager"
+                      fetchPriority={i < 3 ? 'high' : 'auto'}
+                      decoding="async"
+                      draggable={false}
+                      onLoad={isFirst ? () => setReady(true) : undefined}
+                      style={{
+                        height: FRAME_HEIGHT,
+                        width: 'auto',
+                      }}
+                    />
+                  </motion.div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
 
         {/* Counter - bottom left */}
-        <div
+        <motion.div
           className="fixed bottom-4 left-8 z-10 fg-muted pointer-events-none text-xs transition-colors duration-300"
           style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: ready && introComplete ? 1 : 0 }}
+          transition={{ duration: 0.3, delay: ready ? 0.2 : 0 }}
         >
           [{String(currentIndex + 1).padStart(3, '0')}/{String(images.length).padStart(3, '0')}]
-        </div>
+        </motion.div>
 
         {/* Navigation hint - bottom center */}
-        <div
+        <motion.div
           className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 fg-muted pointer-events-none text-xs transition-colors duration-300"
           style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: ready && introComplete ? 1 : 0 }}
+          transition={{ duration: 0.3, delay: ready ? 0.2 : 0 }}
         >
           SCROLL OR USE ARROW KEYS
-        </div>
+        </motion.div>
       </div>
     </>
   );

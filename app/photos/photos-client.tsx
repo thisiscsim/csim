@@ -36,6 +36,18 @@ export default function PhotosClient({ initialImages }: PhotosClientProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Keyboard shortcuts for view mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const key = e.key.toLowerCase();
+      if (key === 's') setViewMode('strip');
+      if (key === 'g') setViewMode('grid');
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Handle scroll detection for gradient
   useEffect(() => {
     const handleScroll = () => {

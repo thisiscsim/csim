@@ -1,8 +1,7 @@
-import HomePhotoRoll from './home-photo-roll';
 import { fetchProjectMedia, ProjectMedia } from '@/lib/photos';
-import { PROJECTS } from './data';
+import { ALL_PROJECTS } from './data';
+import HomePage from './home';
 
-// Normalize filename to match project IDs
 function normalizeFilename(filename: string): string {
   return filename
     .replace(/\.[^/.]+$/, '')
@@ -10,7 +9,6 @@ function normalizeFilename(filename: string): string {
     .replace(/[_\s]+/g, '-');
 }
 
-// Find matching media from Bunny for a project
 function findProjectMedia(projectId: string, bunnyMedia: ProjectMedia[]): ProjectMedia | null {
   const exactMatch = bunnyMedia.find((m) => normalizeFilename(m.name) === projectId);
   if (exactMatch) return exactMatch;
@@ -19,48 +17,19 @@ function findProjectMedia(projectId: string, bunnyMedia: ProjectMedia[]): Projec
     (m) =>
       normalizeFilename(m.name).includes(projectId) || projectId.includes(normalizeFilename(m.name))
   );
-  if (partialMatch) return partialMatch;
-
-  return null;
+  return partialMatch ?? null;
 }
 
-export default async function HomePage() {
-  // Fetch media server-side - URLs available immediately on first render
+export default async function Page() {
   const bunnyMedia = await fetchProjectMedia();
 
-  // Pre-match media to projects for faster client rendering
   const mediaMap: Record<string, { url: string; isVideo: boolean }> = {};
-  for (const project of PROJECTS) {
+  for (const project of ALL_PROJECTS) {
     const match = findProjectMedia(project.id, bunnyMedia);
     if (match) {
       mediaMap[project.id] = { url: match.url, isVideo: match.isVideo };
     }
   }
 
-  // Get the first item for priority preloading (only images - videos handle their own loading)
-  const firstProject = PROJECTS[0];
-  const firstMedia = mediaMap[firstProject?.id];
-
-  return (
-    <>
-      <style>{`
-        html, body {
-          overscroll-behavior: none;
-          overscroll-behavior-x: none;
-          touch-action: pan-y pinch-zoom;
-        }
-      `}</style>
-      {/* Preload the first item if it's an image. Videos are handled by the video element. */}
-      {firstMedia && !firstMedia.isVideo && (
-        <link
-          rel="preload"
-          as="image"
-          href={firstMedia.url}
-          crossOrigin="anonymous"
-          fetchPriority="high"
-        />
-      )}
-      <HomePhotoRoll initialMedia={mediaMap} />
-    </>
-  );
+  return <HomePage initialMedia={mediaMap} />;
 }
