@@ -1,25 +1,7 @@
 import { notFound } from 'next/navigation';
-import { fetchProjectMedia, ProjectMedia } from '@/lib/photos';
+import { fetchProjectFolderMedia } from '@/lib/photos';
 import { getProjectById, getCompanyForProject } from '../data';
 import ProjectPhotoRoll from './project-photo-roll';
-
-function normalizeFilename(filename: string): string {
-  return filename
-    .replace(/\.[^/.]+$/, '')
-    .toLowerCase()
-    .replace(/[_\s]+/g, '-');
-}
-
-function findProjectMedia(projectId: string, bunnyMedia: ProjectMedia[]): ProjectMedia | null {
-  const exactMatch = bunnyMedia.find((m) => normalizeFilename(m.name) === projectId);
-  if (exactMatch) return exactMatch;
-
-  const partialMatch = bunnyMedia.find(
-    (m) =>
-      normalizeFilename(m.name).includes(projectId) || projectId.includes(normalizeFilename(m.name))
-  );
-  return partialMatch ?? null;
-}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -38,10 +20,7 @@ export default async function ProjectPage({ params }: Props) {
     notFound();
   }
 
-  const bunnyMedia = await fetchProjectMedia();
-
-  const match = findProjectMedia(project.id, bunnyMedia);
-  const media = match ? { url: match.url, isVideo: match.isVideo } : null;
+  const mediaItems = project.folder ? await fetchProjectFolderMedia(project.folder) : [];
 
   return (
     <>
@@ -54,11 +33,7 @@ export default async function ProjectPage({ params }: Props) {
       `}</style>
       <ProjectPhotoRoll
         project={project}
-        companyName={company.name}
-        companyCategory={company.category}
-        companyDescription={company.description}
-        companyLink={company.link}
-        media={media}
+        mediaItems={mediaItems.map((m) => ({ url: m.url, isVideo: m.isVideo }))}
       />
     </>
   );

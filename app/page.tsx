@@ -1,33 +1,20 @@
-import { fetchProjectMedia, ProjectMedia } from '@/lib/photos';
+import { fetchProjectFolderMedia } from '@/lib/photos';
 import { ALL_PROJECTS } from './data';
 import HomePage from './home';
 
-function normalizeFilename(filename: string): string {
-  return filename
-    .replace(/\.[^/.]+$/, '')
-    .toLowerCase()
-    .replace(/[_\s]+/g, '-');
-}
-
-function findProjectMedia(projectId: string, bunnyMedia: ProjectMedia[]): ProjectMedia | null {
-  const exactMatch = bunnyMedia.find((m) => normalizeFilename(m.name) === projectId);
-  if (exactMatch) return exactMatch;
-
-  const partialMatch = bunnyMedia.find(
-    (m) =>
-      normalizeFilename(m.name).includes(projectId) || projectId.includes(normalizeFilename(m.name))
-  );
-  return partialMatch ?? null;
-}
-
 export default async function Page() {
-  const bunnyMedia = await fetchProjectMedia();
-
   const mediaMap: Record<string, { url: string; isVideo: boolean }> = {};
-  for (const project of ALL_PROJECTS) {
-    const match = findProjectMedia(project.id, bunnyMedia);
-    if (match) {
-      mediaMap[project.id] = { url: match.url, isVideo: match.isVideo };
+
+  const results = await Promise.all(
+    ALL_PROJECTS.filter((p) => p.folder).map(async (project) => {
+      const items = await fetchProjectFolderMedia(project.folder!);
+      return { id: project.id, items };
+    })
+  );
+
+  for (const { id, items } of results) {
+    if (items.length > 0) {
+      mediaMap[id] = { url: items[0].url, isVideo: items[0].isVideo };
     }
   }
 

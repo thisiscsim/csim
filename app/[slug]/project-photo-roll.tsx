@@ -4,24 +4,23 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Project } from '../data';
 
-const INFO_PANEL_WIDTH = 400;
-const SECTION_HEIGHT_VH = 65;
-const PLACEHOLDER = '/temp-cover/placeholder_1.png';
+const MEDIA_GAP = 24;
+const INFO_PANEL_WIDTH = 431;
+const CONTENT_GAP = 40;
+const MEDIA_HEIGHT = 468;
+const SECTION_HEIGHT = 500;
+const PADDING_X = 80;
 
-function getAspectRatio(aspectRatio?: string): string {
-  switch (aspectRatio) {
-    case '3:4':
-      return '3/4';
-    case '1:1':
-      return '1/1';
-    case '4:5':
-      return '4/5';
-    case '5:3':
-      return '5/3';
-    default:
-      return '16/9';
-  }
-}
+const INTRO_SPRING = {
+  type: 'spring' as const,
+  stiffness: 320,
+  damping: 60,
+  mass: 0.2,
+  restSpeed: 0.0001,
+  restDelta: 0.0001,
+};
+const INTRO_CONTENT_DELAY = 0.15;
+const INTRO_ADJACENT_DELAY = 0.7;
 
 interface MediaItem {
   url: string;
@@ -30,34 +29,28 @@ interface MediaItem {
 
 interface Props {
   project: Project;
-  companyName: string;
-  companyCategory?: string;
-  companyDescription?: string;
-  companyLink?: string;
-  media: MediaItem | null;
+  mediaItems: MediaItem[];
+  captions?: Record<number, string>;
 }
 
-export default function ProjectPhotoRoll({
-  project,
-  companyName,
-  companyCategory,
-  companyDescription,
-  companyLink,
-  media,
-}: Props) {
+export default function ProjectPhotoRoll({ project, mediaItems, captions = {} }: Props) {
   const [ready, setReady] = useState(false);
-  const [captionsVisible, setCaptionsVisible] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const firstLoadRef = useRef(false);
 
-  const resolvedMedia = media || { url: PLACEHOLDER, isVideo: false };
+  useEffect(() => {
+    if (mediaItems.length === 0) {
+      setReady(true);
+    }
+  }, [mediaItems.length]);
 
   useEffect(() => {
     if (!ready) return;
-    const t = setTimeout(() => setCaptionsVisible(true), 600);
+    const t = setTimeout(() => setIntroComplete(true), 1000);
     return () => clearTimeout(t);
   }, [ready]);
 
-  // Convert vertical wheel to horizontal scroll
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -73,137 +66,187 @@ export default function ProjectPhotoRoll({
     return () => container.removeEventListener('wheel', handleWheel);
   }, []);
 
-  const sectionHeight = `${SECTION_HEIGHT_VH}vh`;
-  const minHeight = 300;
-  const maxHeight = 680;
+  const handleFirstMediaReady = () => {
+    if (!firstLoadRef.current) {
+      firstLoadRef.current = true;
+      setReady(true);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-base flex flex-col">
       <div
         ref={containerRef}
         className="flex-1 overflow-x-auto overflow-y-hidden flex items-center"
-        style={{ scrollbarWidth: 'none' }}
+        style={{ scrollbarWidth: 'none', padding: `32px ${PADDING_X}px` }}
       >
         <style>{`[data-scroll]::-webkit-scrollbar { display: none; }`}</style>
 
-        <div className="shrink-0" style={{ width: 32 }} />
-
         <div
           className="relative flex flex-row items-center shrink-0"
-          style={{
-            height: sectionHeight,
-            minHeight,
-            maxHeight,
-            gap: 16,
-          }}
+          style={{ height: SECTION_HEIGHT, gap: CONTENT_GAP }}
         >
           {/* Project info panel */}
           <motion.div
-            className="h-full flex flex-col items-start justify-start shrink-0"
-            style={{ width: INFO_PANEL_WIDTH, paddingRight: 32 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: ready ? 1 : 0 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1], delay: 0.2 }}
+            className="flex flex-col items-start justify-start shrink-0"
+            style={{ width: INFO_PANEL_WIDTH, height: SECTION_HEIGHT }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 20 }}
+            transition={{
+              duration: 0.5,
+              ease: 'easeOut',
+              delay: ready ? INTRO_CONTENT_DELAY + 0.3 : 0,
+            }}
           >
-            <div className="flex flex-col gap-0.5">
-              <h3 className="text-lg font-medium fg-base">{project.title}</h3>
-              {companyLink ? (
-                <a href={companyLink} target="_blank" rel="noopener noreferrer" className="group">
-                  <p className="text-[11px] fg-muted font-mono group-hover:fg-subtle transition-colors flex items-center gap-1">
-                    {companyName}
-                    {companyCategory && <span>· {companyCategory}</span>}
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      className="opacity-50"
-                    >
-                      <path
-                        d="M17.5 7.5V2.5M17.5 2.5H12.5M17.5 2.5L10.833 9.167M8.333 4.167H6.5c-1.4 0-2.1 0-2.635.272a2.5 2.5 0 00-1.093 1.093C2.5 6.066 2.5 6.767 2.5 8.167V13.5c0 1.4 0 2.1.272 2.635a2.5 2.5 0 001.093 1.092c.535.273 1.235.273 2.635.273h5.333c1.4 0 2.1 0 2.635-.273a2.5 2.5 0 001.092-1.092c.273-.535.273-1.235.273-2.635v-1.833"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-[7px]">
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-[17px]/[22px] fg-base">{project.title}</h3>
+                  <p className="text-[10px] fg-muted font-mono leading-[1.3]">
+                    {project.dateRange}
                   </p>
-                </a>
-              ) : (
-                <p className="text-[11px] fg-muted font-mono">
-                  {companyName}
-                  {companyCategory && <span> · {companyCategory}</span>}
-                </p>
-              )}
+                </div>
+              </div>
+
               {project.description && (
-                <p className="text-[13px]/[20px] fg-subtle mt-3" style={{ maxWidth: 340 }}>
+                <p className="text-[15px]/[22px] fg-base whitespace-pre-wrap">
                   {project.description}
                 </p>
               )}
-              {companyDescription && (
-                <p className="text-[12px]/[18px] fg-muted mt-4" style={{ maxWidth: 340 }}>
-                  {companyDescription}
-                </p>
+
+              {project.collaborators && (
+                <p className="text-[11px]/[16px] fg-muted font-mono">{project.collaborators}</p>
               )}
             </div>
           </motion.div>
 
-          {/* Single project media */}
-          <div className="relative shrink-0 flex flex-col" style={{ height: '100%' }}>
-            <motion.div
-              className="relative shrink-0 overflow-hidden"
-              style={{
-                height: 'calc(100% - 48px)',
-                aspectRatio: getAspectRatio(project.aspectRatio),
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: ready ? 1 : 0 }}
-              transition={{
-                duration: 0.6,
-                ease: [0.25, 0.1, 0.25, 1],
-                delay: 0.1,
-              }}
-            >
-              {resolvedMedia.isVideo ? (
-                <video
-                  src={resolvedMedia.url}
-                  className="object-cover w-full h-full select-none"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  onCanPlay={() => setReady(true)}
-                />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  alt={project.title}
-                  src={resolvedMedia.url}
-                  className="object-cover w-full h-full select-none"
-                  loading="eager"
-                  fetchPriority="high"
-                  onLoad={() => setReady(true)}
-                />
-              )}
-            </motion.div>
+          {/* Media items */}
+          <div className="flex items-center shrink-0" style={{ gap: MEDIA_GAP }}>
+            {mediaItems.map((media, idx) => {
+              const isFirst = idx === 0;
 
-            <motion.div
-              className="pt-3 font-mono fg-subtle"
-              style={{ fontSize: '11px', lineHeight: 1.5, maxWidth: 650 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: ready && captionsVisible ? 1 : 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
-              <span className="fg-base font-medium">
-                {companyName} {project.title}:
-              </span>{' '}
-              <span className="fg-muted">{project.description}</span>
-            </motion.div>
+              return (
+                <div
+                  key={`${media.url}-${idx}`}
+                  className="relative shrink-0"
+                  style={{ height: SECTION_HEIGHT }}
+                >
+                  {isFirst ? (
+                    // First item: scale from 0 with spring
+                    <motion.div
+                      className="relative shrink-0 overflow-hidden rounded-[4px]"
+                      style={{ height: MEDIA_HEIGHT }}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: ready ? 1 : 0 }}
+                      transition={INTRO_SPRING}
+                    >
+                      <motion.div
+                        className="h-full"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: ready ? 1 : 0 }}
+                        transition={{
+                          duration: 0.8,
+                          ease: [0.25, 0.1, 0.25, 1],
+                          delay: ready ? INTRO_CONTENT_DELAY : 0,
+                        }}
+                      >
+                        {media.isVideo ? (
+                          <video
+                            src={media.url}
+                            className="h-full w-auto select-none"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="auto"
+                            onCanPlay={handleFirstMediaReady}
+                          />
+                        ) : (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            alt={`${project.title} 1`}
+                            src={media.url}
+                            className="h-full w-auto select-none"
+                            loading="eager"
+                            fetchPriority="high"
+                            onLoad={handleFirstMediaReady}
+                          />
+                        )}
+                      </motion.div>
+                    </motion.div>
+                  ) : (
+                    // Subsequent items: fade in with staggered delay
+                    <motion.div
+                      className="relative shrink-0 overflow-hidden rounded-[4px]"
+                      style={{ height: MEDIA_HEIGHT }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: ready ? 1 : 0 }}
+                      transition={{
+                        duration: 0.9,
+                        ease: [0.25, 0.1, 0.25, 1],
+                        delay: ready ? INTRO_ADJACENT_DELAY + (idx - 1) * 0.08 : 0,
+                      }}
+                    >
+                      {media.isVideo ? (
+                        <video
+                          src={media.url}
+                          className="h-full w-auto select-none"
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload={idx < 3 ? 'auto' : 'metadata'}
+                        />
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          alt={`${project.title} ${idx + 1}`}
+                          src={media.url}
+                          className="h-full w-auto select-none"
+                          loading={idx < 3 ? 'eager' : 'lazy'}
+                          fetchPriority={idx < 3 ? 'high' : 'auto'}
+                        />
+                      )}
+                    </motion.div>
+                  )}
+
+                  {captions[idx] && (
+                    <motion.div
+                      className="font-mono fg-muted absolute left-0"
+                      style={{
+                        fontSize: '11px',
+                        lineHeight: '16px',
+                        top: MEDIA_HEIGHT + 16,
+                        maxWidth: '100%',
+                      }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: ready && introComplete ? 1 : 0 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: ready ? 0.2 + idx * 0.02 : 0,
+                      }}
+                    >
+                      {captions[idx]}
+                    </motion.div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-        </div>
 
-        <div className="shrink-0" style={{ width: 32 }} />
+          {mediaItems.length === 0 && (
+            <div
+              className="relative shrink-0 flex flex-col items-center justify-center fg-muted rounded-[4px]"
+              style={{
+                height: MEDIA_HEIGHT,
+                width: 800,
+                backgroundColor: 'rgba(255, 255, 255, 0.04)',
+              }}
+            >
+              <p className="text-[11px] font-mono">No media available</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

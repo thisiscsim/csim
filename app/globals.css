@@ -17,6 +17,9 @@
   /* Scrollbar colors */
   --scrollbar-thumb: rgba(15, 14, 13, 0.2);
   --scrollbar-thumb-hover: rgba(15, 14, 13, 0.35);
+
+  /* Interactive */
+  --hover-bg: rgba(0, 0, 0, 0.04);
 }
 
 .dark {
@@ -31,6 +34,13 @@
   /* Scrollbar colors */
   --scrollbar-thumb: rgba(250, 250, 249, 0.2);
   --scrollbar-thumb-hover: rgba(250, 250, 249, 0.35);
+
+  /* Interactive */
+  --hover-bg: rgba(236, 236, 236, 0.08);
+}
+
+.bg-hover {
+  background-color: var(--hover-bg);
 }
 
 /* Base styles */

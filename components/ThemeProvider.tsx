@@ -24,22 +24,73 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  // TEMPORARILY DISABLED: Force dark mode only
-  const [theme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
 
-  // Force dark mode on mount
   useEffect(() => {
     setMounted(true);
-    document.documentElement.classList.add('dark');
+
+    const storedTheme = localStorage.getItem('theme') as Theme | null;
+
+    if (storedTheme) {
+      setTheme(storedTheme);
+      document.documentElement.classList.toggle('dark', storedTheme === 'dark');
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const systemTheme = prefersDark ? 'dark' : 'light';
+      setTheme(systemTheme);
+      document.documentElement.classList.toggle('dark', prefersDark);
+    }
   }, []);
 
-  // Toggle is disabled - always dark mode
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      const storedTheme = localStorage.getItem('theme');
+      if (!storedTheme) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        setTheme(newTheme);
+        document.documentElement.classList.toggle('dark', e.matches);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   const toggleTheme = useCallback(() => {
-    // Temporarily disabled
-  }, []);
+    const switchTheme = () => {
+      const newTheme = theme === 'light' ? 'dark' : 'light';
+      setTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+      document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    };
 
-  // Prevent flash of wrong theme
+    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+      (
+        document as Document & { startViewTransition: (cb: () => void) => void }
+      ).startViewTransition(switchTheme);
+    } else {
+      switchTheme();
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      if (event.key.toLowerCase() === 't') {
+        toggleTheme();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [toggleTheme]);
+
   if (!mounted) {
     return null;
   }
