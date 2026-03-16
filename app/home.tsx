@@ -13,7 +13,7 @@ function stagger(index: number) {
   return { ...FADE_UP, transition: { ...FADE_UP.transition, delay: 0.1 + index * 0.05 } };
 }
 
-function LazyVideo({ src, width, height }: { src: string; width: number; height: number }) {
+function LazyVideo({ src }: { src: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: false, margin: '200px' });
@@ -38,8 +38,7 @@ function LazyVideo({ src, width, height }: { src: string; width: number; height:
     <div ref={containerRef}>
       <video
         ref={ref}
-        className="select-none object-cover"
-        style={{ width, height }}
+        className="select-none object-cover w-full aspect-video"
         loop
         muted
         playsInline
@@ -48,9 +47,6 @@ function LazyVideo({ src, width, height }: { src: string; width: number; height:
     </div>
   );
 }
-
-const MEDIA_HEIGHT = 550;
-const MEDIA_WIDTH = Math.round(550 * (16 / 9));
 
 interface MediaItem {
   url: string;
@@ -64,11 +60,11 @@ interface HomePageProps {
 
 export default function HomePage({ media }: HomePageProps) {
   return (
-    <div className="flex flex-col items-center gap-12 pb-24 pt-[82px] px-8 min-h-screen">
+    <div className="flex flex-col items-center gap-8 md:gap-12 pb-16 md:pb-24 pt-[72px] md:pt-[82px] px-5 md:px-8 min-h-screen">
       <div className="top-blur" />
 
       {/* Bio Section */}
-      <div className="flex flex-col gap-3 items-center justify-center w-[574px] max-w-full px-3 pb-2.5">
+      <div className="flex flex-col gap-3 items-center justify-center w-full md:w-[574px] max-w-full md:px-3 pb-2.5">
         <motion.div className="w-full" {...stagger(0)}>
           <p className="text-[17px]/[24px] font-medium fg-base">Christopher Sim</p>
           <p className="text-[17px]/[24px] fg-subtle">Software designer based in San Francisco</p>
@@ -138,23 +134,24 @@ export default function HomePage({ media }: HomePageProps) {
       </div>
 
       {/* Divider */}
-      <motion.div className="w-[550px] max-w-full" {...stagger(2)}>
+      <motion.div className="w-full md:w-[550px] max-w-full" {...stagger(2)}>
         <div className="w-8 h-px bg-[var(--fg-base)] opacity-15 mx-auto" />
       </motion.div>
 
       {/* Media */}
-      <div className="flex flex-col items-center gap-3 w-screen -mx-8">
+      <div className="flex flex-col items-center gap-3 w-full md:w-screen md:-mx-8">
         {media.map((item, i) => (
-          <motion.div key={item.name} className="shrink-0" {...stagger(3 + i)}>
+          <motion.div key={item.name} className="w-full md:w-auto" {...stagger(3 + i)}>
             {item.isVideo ? (
-              <LazyVideo src={item.url} width={MEDIA_WIDTH} height={MEDIA_HEIGHT} />
+              <div className="w-full md:w-[978px] md:mx-auto">
+                <LazyVideo src={item.url} />
+              </div>
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 alt={item.name}
                 src={item.url}
-                className="select-none object-cover"
-                style={{ width: MEDIA_WIDTH, height: MEDIA_HEIGHT }}
+                className="select-none object-cover w-full aspect-video md:w-[978px] md:h-[550px] md:mx-auto md:block"
                 loading={i === 0 ? 'eager' : 'lazy'}
                 fetchPriority={i === 0 ? 'high' : 'auto'}
               />
@@ -164,16 +161,16 @@ export default function HomePage({ media }: HomePageProps) {
       </div>
 
       {/* Divider */}
-      <motion.div className="w-[550px] max-w-full" {...stagger(3 + media.length)}>
+      <motion.div className="w-full md:w-[550px] max-w-full" {...stagger(3 + media.length)}>
         <div className="w-8 h-px bg-[var(--fg-base)] opacity-15 mx-auto" />
       </motion.div>
 
       {/* Footer */}
       <motion.div
-        className="flex flex-col items-center justify-center w-[574px] max-w-full px-3"
+        className="flex flex-col items-center justify-center w-full md:w-[574px] max-w-full px-3"
         {...stagger(4 + media.length)}
       >
-        <div className="text-[11px]/[14px] fg-muted font-mono w-[550px] max-w-full text-center">
+        <div className="text-[11px]/[14px] fg-muted font-mono w-full md:w-[550px] max-w-full text-center">
           <p>No trackers used on this site, enjoy your privacy.</p>
           <p>Site design and content &copy; 2026 Christopher Sim.</p>
           <p>Made with care in California.</p>
