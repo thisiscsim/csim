@@ -15,8 +15,6 @@ interface PhotosClientProps {
 export default function PhotosClient({ initialImages }: PhotosClientProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('strip');
-  const [isScrolled, setIsScrolled] = useState(false);
-
   // Detect mobile viewport
   useEffect(() => {
     const checkMobile = () => {
@@ -36,38 +34,21 @@ export default function PhotosClient({ initialImages }: PhotosClientProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Handle scroll detection for gradient
+  // Keyboard shortcuts for view mode
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-      // Show top gradient when scrolled down from top
-      setIsScrolled(scrollTop > 0);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const key = e.key.toLowerCase();
+      if (key === 's') setViewMode('strip');
+      if (key === 'g') setViewMode('grid');
     };
-
-    // Initial check
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
     <>
-      {/* Top Blur Gradient Overlay */}
-      <div
-        className={`fixed top-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
-          isScrolled ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          height: '96px',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)',
-          opacity: 0.95,
-          maskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-        }}
-      />
+      <div className="top-blur" />
 
       {viewMode === 'strip' ? (
         <PhotoRoll initialImages={initialImages} />

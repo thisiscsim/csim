@@ -70,7 +70,7 @@ export function WritingClient({ posts }: { posts: NotionBlogPost[] }) {
 
   return (
     <>
-      <div className="pointer-events-none fixed left-0 top-0 z-10 h-12 w-full bg-base to-transparent backdrop-blur-xl [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] transition-colors duration-300" />
+      <div className="top-blur" />
 
       <motion.main
         className="space-y-12"

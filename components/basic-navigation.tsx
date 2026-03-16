@@ -14,14 +14,12 @@ export function BasicNavigation() {
   const isHomePage = pathname === '/';
 
   const navItems = [
-    { id: 'info', label: 'Info', href: '/info' },
     { id: 'writing', label: 'Writing', href: '/writing' },
     { id: 'photos', label: 'Photos', href: '/photos' },
   ];
 
   // Determine active item based on pathname
   const isActive = (id: string) => {
-    if (id === 'info') return pathname.startsWith('/info');
     if (id === 'photos') return pathname.startsWith('/photos');
     if (id === 'writing') return pathname.startsWith('/writing');
     return false;
@@ -36,9 +34,6 @@ export function BasicNavigation() {
 
       const key = event.key.toLowerCase();
       switch (key) {
-        case 'i':
-          router.push('/info');
-          break;
         case 'p':
           router.push('/photos');
           break;
@@ -77,11 +72,6 @@ export function BasicNavigation() {
     }
   };
 
-  // Role text is always full brightness
-  const getRoleTextClasses = () => {
-    return 'fg-base';
-  };
-
   return (
     <motion.nav
       className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between pointer-events-auto"
@@ -99,19 +89,21 @@ export function BasicNavigation() {
         delay: isHomePage ? 0.45 : 0,
       }}
     >
-      {/* Left: Avatar */}
-      <button
-        onClick={() => router.push('/')}
-        type="button"
-        className="flex items-center justify-center rounded-[4px] hover:opacity-80 transition-opacity duration-200 cursor-pointer overflow-hidden shrink-0"
-        style={{ width: '32px', height: '32px' }}
-        aria-label="Go to homepage"
-      >
-        <Image src="/avatar.svg" alt="Avatar" width={32} height={32} className="rounded-[4px]" />
-      </button>
+      {/* Left: Avatar (150px container) */}
+      <div className="flex items-start shrink-0" style={{ width: 150 }}>
+        <button
+          onClick={() => router.push('/')}
+          type="button"
+          className="flex items-center justify-center rounded-[6px] hover:opacity-80 transition-opacity duration-200 cursor-pointer overflow-hidden shrink-0"
+          style={{ width: '32px', height: '32px' }}
+          aria-label="Go to homepage"
+        >
+          <Image src="/avatar.svg" alt="Avatar" width={32} height={32} className="rounded-[6px]" />
+        </button>
+      </div>
 
-      {/* Navigation Items - centered on desktop, right-aligned on mobile */}
-      <div className="md:absolute md:left-1/2 md:-translate-x-1/2 flex items-center gap-5 ml-auto md:ml-0">
+      {/* Center: Navigation Items */}
+      <div className="flex items-center shrink-0">
         {navItems.map((item) => (
           <button
             key={item.id}
@@ -122,7 +114,8 @@ export function BasicNavigation() {
             className={`font-normal transition-colors duration-200 cursor-pointer ${getNavItemClasses(item.id)}`}
             style={{
               fontSize: '13px',
-              lineHeight: '1.4',
+              lineHeight: 'normal',
+              padding: '6px 10px',
             }}
           >
             {item.label}
@@ -130,16 +123,12 @@ export function BasicNavigation() {
         ))}
       </div>
 
-      {/* Right: Role - hidden on mobile */}
-      <span
-        className={`hidden md:block font-normal transition-colors duration-200 shrink-0 ${getRoleTextClasses()}`}
-        style={{
-          fontSize: '13px',
-          lineHeight: '1.4',
-        }}
-      >
-        Software Designer
-      </span>
+      {/* Right: Location (150px container, justify-end) */}
+      <div className="flex items-center justify-end shrink-0" style={{ width: 150 }}>
+        <span className="fg-base" style={{ fontSize: '13px', lineHeight: 'normal' }}>
+          San Francisco, CA
+        </span>
+      </div>
     </motion.nav>
   );
 }

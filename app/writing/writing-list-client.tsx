@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import type { NotionBlogPost } from '@/lib/notion/blog';
 
@@ -38,24 +38,6 @@ const itemVariants = {
 
 export function WritingListClient({ posts }: WritingListClientProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  // Handle scroll detection for gradient
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-      // Show top gradient when scrolled down from top
-      setIsScrolled(scrollTop > 0);
-    };
-
-    // Initial check
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // Group posts by year
   const postsByYear = posts.reduce(
     (acc, post) => {
@@ -76,20 +58,7 @@ export function WritingListClient({ posts }: WritingListClientProps) {
 
   return (
     <>
-      {/* Top Blur Gradient Overlay */}
-      <div
-        className={`fixed top-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
-          isScrolled ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          height: '96px',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)',
-          opacity: 0.95,
-          maskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-        }}
-      />
+      <div className="top-blur" />
 
       <div className="max-w-5xl mx-auto py-16 px-4">
         <motion.div
