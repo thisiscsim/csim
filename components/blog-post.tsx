@@ -51,7 +51,6 @@ interface BlogPostProps {
 export default function BlogPost({ post, content }: BlogPostProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [activeId, setActiveId] = useState<string>('');
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isTitleVisible, setIsTitleVisible] = useState(true);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
@@ -87,22 +86,6 @@ export default function BlogPost({ post, content }: BlogPostProps) {
 
     return () => clearTimeout(timer);
   }, [post.slug]);
-
-  // Handle scroll detection for gradient
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-      // Show top gradient when scrolled down from top
-      setIsScrolled(scrollTop > 0);
-    };
-
-    // Initial check
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Track when the title scrolls out of view
   useEffect(() => {
@@ -167,20 +150,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
 
   return (
     <>
-      {/* Top Blur Gradient Overlay */}
-      <div
-        className={`fixed top-0 left-0 right-0 pointer-events-none z-[45] transition-opacity duration-300 ${
-          isScrolled ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          height: '96px',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)',
-          opacity: 0.95,
-          maskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 25%, transparent)',
-        }}
-      />
+      <div className="top-blur" />
 
       {/* Table of Contents - Fixed Left Side */}
       {headings.length > 0 && (

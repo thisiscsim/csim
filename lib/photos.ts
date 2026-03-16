@@ -82,6 +82,54 @@ export async function fetchProjectMedia(): Promise<ProjectMedia[]> {
   }
 }
 
+export async function fetchProjectFolderMedia(folder: string): Promise<ProjectMedia[]> {
+  const storageZone = process.env.BUNNY_STORAGE_ZONE;
+  const apiKey = process.env.BUNNY_STORAGE_API_KEY;
+  const region = process.env.BUNNY_STORAGE_REGION || 'de';
+  const pullZoneUrl = process.env.BUNNY_PULL_ZONE_URL;
+
+  if (!storageZone || !apiKey || !pullZoneUrl) {
+    return [];
+  }
+
+  try {
+    const storageHost = region === 'de' ? 'storage.bunnycdn.com' : `${region}.storage.bunnycdn.com`;
+    const apiUrl = `https://${storageHost}/${storageZone}/Projects/${folder}/`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { AccessKey: apiKey },
+      next: { revalidate: 300 },
+    });
+
+    if (!response.ok) return [];
+
+    const files: BunnyFile[] = await response.json();
+
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    const videoExtensions = ['.mp4', '.webm', '.mov'];
+    const allMediaExtensions = [...imageExtensions, ...videoExtensions];
+
+    return files
+      .filter((file) => {
+        if (file.IsDirectory) return false;
+        const ext = file.ObjectName.toLowerCase();
+        return allMediaExtensions.some((mediaExt) => ext.endsWith(mediaExt));
+      })
+      .sort((a, b) => a.ObjectName.localeCompare(b.ObjectName))
+      .map((file) => {
+        const ext = file.ObjectName.toLowerCase();
+        const isVideo = videoExtensions.some((videoExt) => ext.endsWith(videoExt));
+        const baseUrl = `https://${pullZoneUrl}/Projects/${folder}/${encodeURIComponent(file.ObjectName)}`;
+        const url = isVideo ? baseUrl : `${baseUrl}?width=1200&quality=80&format=webp`;
+
+        return { url, name: file.ObjectName, isVideo };
+      });
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchPhotos(): Promise<PhotoImage[]> {
   const storageZone = process.env.BUNNY_STORAGE_ZONE;
   const apiKey = process.env.BUNNY_STORAGE_API_KEY;

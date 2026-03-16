@@ -1,66 +1,27 @@
-import HomePhotoRoll from './home-photo-roll';
-import { fetchProjectMedia, ProjectMedia } from '@/lib/photos';
-import { PROJECTS } from './data';
+import { fetchProjectMedia } from '@/lib/photos';
+import HomePage from './home';
 
-// Normalize filename to match project IDs
-function normalizeFilename(filename: string): string {
-  return filename
-    .replace(/\.[^/.]+$/, '')
-    .toLowerCase()
-    .replace(/[_\s]+/g, '-');
-}
-
-// Find matching media from Bunny for a project
-function findProjectMedia(projectId: string, bunnyMedia: ProjectMedia[]): ProjectMedia | null {
-  const exactMatch = bunnyMedia.find((m) => normalizeFilename(m.name) === projectId);
-  if (exactMatch) return exactMatch;
-
-  const partialMatch = bunnyMedia.find(
-    (m) =>
-      normalizeFilename(m.name).includes(projectId) || projectId.includes(normalizeFilename(m.name))
-  );
-  if (partialMatch) return partialMatch;
-
-  return null;
-}
-
-export default async function HomePage() {
-  // Fetch media server-side - URLs available immediately on first render
-  const bunnyMedia = await fetchProjectMedia();
-
-  // Pre-match media to projects for faster client rendering
-  const mediaMap: Record<string, { url: string; isVideo: boolean }> = {};
-  for (const project of PROJECTS) {
-    const match = findProjectMedia(project.id, bunnyMedia);
-    if (match) {
-      mediaMap[project.id] = { url: match.url, isVideo: match.isVideo };
-    }
+function seededShuffle<T>(arr: T[], seed: number): T[] {
+  const shuffled = [...arr];
+  let s = seed;
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = (s >>> 0) % (i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
+  return shuffled;
+}
 
-  // Get the first item for priority preloading (only images - videos handle their own loading)
-  const firstProject = PROJECTS[0];
-  const firstMedia = mediaMap[firstProject?.id];
+export default async function Page() {
+  const media = await fetchProjectMedia();
 
-  return (
-    <>
-      <style>{`
-        html, body {
-          overscroll-behavior: none;
-          overscroll-behavior-x: none;
-          touch-action: pan-y pinch-zoom;
-        }
-      `}</style>
-      {/* Preload the first item if it's an image. Videos are handled by the video element. */}
-      {firstMedia && !firstMedia.isVideo && (
-        <link
-          rel="preload"
-          as="image"
-          href={firstMedia.url}
-          crossOrigin="anonymous"
-          fetchPriority="high"
-        />
-      )}
-      <HomePhotoRoll initialMedia={mediaMap} />
-    </>
-  );
+  const items = media.map((m) => ({ url: m.url, isVideo: m.isVideo, name: m.name }));
+
+  const harvey = items.filter((m) => m.name.toLowerCase().startsWith('harvey'));
+  const rest = items.filter((m) => !m.name.toLowerCase().startsWith('harvey'));
+
+  const shuffledHarvey = seededShuffle(harvey, 42);
+  const sorted = [...shuffledHarvey, ...rest];
+
+  return <HomePage media={sorted} />;
 }

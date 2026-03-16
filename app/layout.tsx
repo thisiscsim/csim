@@ -85,12 +85,15 @@ export default async function RootLayout({
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="https://csim.b-cdn.net" />
         <link rel="preconnect" href="https://csim.b-cdn.net" crossOrigin="anonymous" />
-        {/* Force dark mode - light mode temporarily disabled */}
+        {/* Prevent theme flash - apply stored theme before paint */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                document.documentElement.classList.add('dark');
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
               })();
             `,
           }}
