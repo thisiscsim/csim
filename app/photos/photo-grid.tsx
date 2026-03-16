@@ -63,11 +63,9 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
   if (loading) {
     return (
       <div
-        className="min-h-dvh bg-base transition-colors duration-300"
+        className="bg-base transition-colors duration-300 fixed inset-0 overflow-y-auto"
         style={{
-          width: '100vw',
-          marginLeft: 'calc(-50vw + 50%)',
-          padding: '40px 32px',
+          padding: '80px 20px 40px',
         }}
       >
         <div
@@ -98,11 +96,9 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
 
   return (
     <div
-      className="min-h-dvh bg-base transition-colors duration-300"
+      className="min-h-dvh bg-base transition-colors duration-300 fixed inset-0 overflow-y-auto"
       style={{
-        width: '100vw',
-        marginLeft: 'calc(-50vw + 50%)',
-        padding: '40px 32px',
+        padding: '80px 20px 40px',
       }}
     >
       <motion.div
