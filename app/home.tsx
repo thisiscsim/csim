@@ -60,7 +60,7 @@ interface HomePageProps {
 
 export default function HomePage({ media }: HomePageProps) {
   return (
-    <div className="flex flex-col items-center gap-8 md:gap-12 pb-16 md:pb-24 pt-[72px] md:pt-[82px] px-5 md:px-8 min-h-screen">
+    <div className="flex flex-col items-center gap-8 md:gap-12 pb-16 md:pb-24 pt-[72px] md:pt-[82px] -mx-4 px-5 md:px-8 min-h-screen">
       <div className="top-blur" />
 
       {/* Bio Section */}
