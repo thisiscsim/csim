@@ -21,6 +21,11 @@ export default async function Page() {
   const rest = items.filter((m) => !m.name.toLowerCase().startsWith('harvey'));
 
   const shuffledHarvey = seededShuffle(harvey, 42);
+  const pinnedIdx = shuffledHarvey.findIndex((m) => m.name.includes('harvey_s1_shell'));
+  if (pinnedIdx > 0) {
+    const [pinned] = shuffledHarvey.splice(pinnedIdx, 1);
+    shuffledHarvey.unshift(pinned);
+  }
   const sorted = [...shuffledHarvey, ...rest];
 
   return <HomePage media={sorted} />;

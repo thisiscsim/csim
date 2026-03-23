@@ -54,11 +54,6 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
   React.useEffect(() => {
     if (initialImages && initialImages.length > 0) {
       const randomizedImages = shuffleArray(initialImages);
-      const pinnedIndex = randomizedImages.findIndex((img) => img.name.includes('harvey_s1_shell'));
-      if (pinnedIndex > 0) {
-        const [pinned] = randomizedImages.splice(pinnedIndex, 1);
-        randomizedImages.unshift(pinned);
-      }
       setImages(randomizedImages);
     }
     setLoading(false);
