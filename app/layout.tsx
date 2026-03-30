@@ -6,6 +6,7 @@ import { BasicNavigation } from '@/components/basic-navigation';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 // import { getPublishedBlogPosts } from '@/lib/notion/blog';
 
 export const viewport: Viewport = {
@@ -135,6 +136,7 @@ export default async function RootLayout({
           </LenisProvider>
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
