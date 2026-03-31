@@ -95,6 +95,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
 
   return (
     <div
+      data-lenis-prevent
       className="min-h-dvh bg-base transition-colors duration-300 fixed inset-0 overflow-y-auto"
       style={{
         padding: '80px 20px 40px',
