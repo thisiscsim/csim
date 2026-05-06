@@ -7,6 +7,8 @@ import type { PhotoImage } from '@/lib/photos';
 
 const FRAME_HEIGHT = 600; // Fixed height for all images
 const FRAME_GAP = 24; // Gap between images
+const EAGER_IMAGE_COUNT = 3;
+const INTRO_READY_FALLBACK_MS = 1800;
 
 // Animation constants (same as homepage)
 const INTRO_SPRING = {
@@ -25,12 +27,12 @@ interface PhotoRollProps {
 }
 
 export default function PhotoRoll({ initialImages }: PhotoRollProps) {
-  const [images, setImages] = useState<PhotoImage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const images = initialImages;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [ready, setReady] = useState(false);
   const [introComplete, setIntroComplete] = useState(false);
   const isDragging = useRef(false);
+  const hasMarkedReady = useRef(false);
 
   // Mark intro as complete after animation finishes
   useEffect(() => {
@@ -50,26 +52,72 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
     duration: 45,
   });
 
-  // Shuffle array using Fisher-Yates algorithm
-  const shuffleArray = useCallback((array: PhotoImage[]): PhotoImage[] => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
+  const markReady = useCallback(() => {
+    if (hasMarkedReady.current) return;
+    hasMarkedReady.current = true;
+    setReady(true);
   }, []);
 
-  // Load images
+  const handleFirstImageLoad = useCallback(
+    (event: React.SyntheticEvent<HTMLImageElement>) => {
+      const img = event.currentTarget;
+
+      if (typeof img.decode === 'function') {
+        img.decode().then(markReady).catch(markReady);
+        return;
+      }
+
+      markReady();
+    },
+    [markReady]
+  );
+
   useEffect(() => {
-    if (initialImages && initialImages.length > 0) {
-      const randomizedImages = shuffleArray(initialImages);
-      setImages(randomizedImages);
-      setLoading(false);
-    } else {
-      setLoading(false);
+    hasMarkedReady.current = false;
+    setReady(false);
+    setIntroComplete(false);
+    setCurrentIndex(0);
+
+    if (images.length === 0) return;
+
+    const fallback = window.setTimeout(markReady, INTRO_READY_FALLBACK_MS);
+
+    return () => {
+      window.clearTimeout(fallback);
+    };
+  }, [images, markReady]);
+
+  useEffect(() => {
+    if (!emblaApi || !ready) return;
+    emblaApi.reInit();
+    emblaApi.scrollTo(0, true);
+  }, [emblaApi, ready]);
+
+  useEffect(() => {
+    if (!emblaApi || images.length === 0) return;
+
+    const onResize = () => {
+      emblaApi.reInit();
+    };
+
+    const eagerImages = Array.from(
+      document.querySelectorAll<HTMLImageElement>('[data-photo-roll-priority="true"]')
+    );
+
+    for (const img of eagerImages) {
+      if (img.complete) {
+        onResize();
+      } else {
+        img.addEventListener('load', onResize, { once: true });
+      }
     }
-  }, [initialImages, shuffleArray]);
+
+    return () => {
+      for (const img of eagerImages) {
+        img.removeEventListener('load', onResize);
+      }
+    };
+  }, [emblaApi, images.length]);
 
   // Update current index when Embla selection changes
   const onSelect = useCallback(() => {
@@ -220,14 +268,6 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
     };
   }, [images.length]);
 
-  if (loading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-base transition-colors duration-300">
-        <p className="fg-muted transition-colors duration-300">Loading photos...</p>
-      </div>
-    );
-  }
-
   if (images.length === 0) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-base transition-colors duration-300">
@@ -248,6 +288,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
           <div className="flex items-center" style={{ gap: FRAME_GAP }}>
             {images.map((image, i) => {
               const isFirst = i === 0;
+              const isPriorityImage = i < EAGER_IMAGE_COUNT;
               return (
                 <motion.div
                   key={`${image.name}-${i}`}
@@ -283,11 +324,12 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
                       alt={image.name}
                       src={image.url}
                       className="object-cover select-none"
-                      loading="eager"
-                      fetchPriority={i < 3 ? 'high' : 'auto'}
+                      loading={isPriorityImage ? 'eager' : 'lazy'}
+                      fetchPriority={isPriorityImage ? 'high' : 'auto'}
                       decoding="async"
                       draggable={false}
-                      onLoad={isFirst ? () => setReady(true) : undefined}
+                      data-photo-roll-priority={isPriorityImage ? 'true' : undefined}
+                      onLoad={isFirst ? handleFirstImageLoad : undefined}
                       style={{
                         height: FRAME_HEIGHT,
                         width: 'auto',

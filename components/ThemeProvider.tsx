@@ -25,12 +25,12 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>('light');
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-
-    const storedTheme = localStorage.getItem('theme') as Theme | null;
+    const storedTheme =
+      typeof window !== 'undefined' && typeof window.localStorage?.getItem === 'function'
+        ? (window.localStorage.getItem('theme') as Theme | null)
+        : null;
 
     if (storedTheme) {
       setTheme(storedTheme);
@@ -47,7 +47,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const handleChange = (e: MediaQueryListEvent) => {
-      const storedTheme = localStorage.getItem('theme');
+      const storedTheme =
+        typeof window.localStorage?.getItem === 'function'
+          ? window.localStorage.getItem('theme')
+          : null;
       if (!storedTheme) {
         const newTheme = e.matches ? 'dark' : 'light';
         setTheme(newTheme);
@@ -63,7 +66,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const switchTheme = () => {
       const newTheme = theme === 'light' ? 'dark' : 'light';
       setTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
+      if (typeof window.localStorage?.setItem === 'function') {
+        window.localStorage.setItem('theme', newTheme);
+      }
       document.documentElement.classList.toggle('dark', newTheme === 'dark');
     };
 
@@ -90,10 +95,6 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [toggleTheme]);
-
-  if (!mounted) {
-    return null;
-  }
 
   return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }

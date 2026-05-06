@@ -20,6 +20,28 @@ export interface ProjectMedia {
   isVideo: boolean;
 }
 
+function stablePhotoWeight(image: PhotoImage, index: number) {
+  const value = `${image.name}-${image.url}-${index}`;
+  let hash = 0;
+
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+
+  return hash;
+}
+
+export function orderPhotosForRoll(images: PhotoImage[]): PhotoImage[] {
+  return [...images]
+    .map((image, index) => ({
+      image,
+      index,
+      weight: stablePhotoWeight(image, index),
+    }))
+    .sort((a, b) => a.weight - b.weight || a.index - b.index)
+    .map(({ image }) => image);
+}
+
 export async function fetchProjectMedia(): Promise<ProjectMedia[]> {
   const storageZone = process.env.BUNNY_STORAGE_ZONE;
   const apiKey = process.env.BUNNY_STORAGE_API_KEY;

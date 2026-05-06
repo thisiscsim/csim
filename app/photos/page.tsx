@@ -1,10 +1,17 @@
 import PhotosClient from './photos-client';
-import { fetchPhotos } from '@/lib/photos';
+import { fetchPhotos, orderPhotosForRoll } from '@/lib/photos';
 
 // Server component - fetches data at build/request time
 export default async function PhotosPage() {
   // Fetch photos server-side - directly from Bunny CDN, no HTTP roundtrip
-  const images = await fetchPhotos();
+  const images = orderPhotosForRoll(await fetchPhotos());
 
-  return <PhotosClient initialImages={images} />;
+  return (
+    <>
+      {images.slice(0, 3).map((image) => (
+        <link key={image.url} rel="preload" as="image" href={image.url} fetchPriority="high" />
+      ))}
+      <PhotosClient initialImages={images} />
+    </>
+  );
 }
