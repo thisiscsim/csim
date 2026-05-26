@@ -33,6 +33,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
   const [introComplete, setIntroComplete] = useState(false);
   const isDragging = useRef(false);
   const hasMarkedReady = useRef(false);
+  const readyFrame = useRef<number | null>(null);
 
   // Mark intro as complete after animation finishes
   useEffect(() => {
@@ -51,11 +52,25 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
     watchDrag: true,
     duration: 45,
   });
+  const emblaApiRef = useRef<typeof emblaApi>(emblaApi);
+
+  useEffect(() => {
+    emblaApiRef.current = emblaApi;
+  }, [emblaApi]);
 
   const markReady = useCallback(() => {
     if (hasMarkedReady.current) return;
     hasMarkedReady.current = true;
-    setReady(true);
+
+    emblaApiRef.current?.reInit();
+    emblaApiRef.current?.scrollTo(0, true);
+
+    readyFrame.current = window.requestAnimationFrame(() => {
+      readyFrame.current = window.requestAnimationFrame(() => {
+        setReady(true);
+        readyFrame.current = null;
+      });
+    });
   }, []);
 
   const handleFirstImageLoad = useCallback(
@@ -84,14 +99,12 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
 
     return () => {
       window.clearTimeout(fallback);
+      if (readyFrame.current !== null) {
+        window.cancelAnimationFrame(readyFrame.current);
+        readyFrame.current = null;
+      }
     };
   }, [images, markReady]);
-
-  useEffect(() => {
-    if (!emblaApi || !ready) return;
-    emblaApi.reInit();
-    emblaApi.scrollTo(0, true);
-  }, [emblaApi, ready]);
 
   // Update current index when Embla selection changes
   const onSelect = useCallback(() => {
