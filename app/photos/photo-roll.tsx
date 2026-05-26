@@ -7,7 +7,7 @@ import type { PhotoImage } from '@/lib/photos';
 
 const FRAME_HEIGHT = 600; // Fixed height for all images
 const FRAME_GAP = 24; // Gap between images
-const EAGER_IMAGE_COUNT = 3;
+const EAGER_IMAGE_COUNT = 1;
 const INTRO_READY_FALLBACK_MS = 1800;
 
 // Animation constants (same as homepage)
@@ -92,32 +92,6 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
     emblaApi.reInit();
     emblaApi.scrollTo(0, true);
   }, [emblaApi, ready]);
-
-  useEffect(() => {
-    if (!emblaApi || images.length === 0) return;
-
-    const onResize = () => {
-      emblaApi.reInit();
-    };
-
-    const eagerImages = Array.from(
-      document.querySelectorAll<HTMLImageElement>('[data-photo-roll-priority="true"]')
-    );
-
-    for (const img of eagerImages) {
-      if (img.complete) {
-        onResize();
-      } else {
-        img.addEventListener('load', onResize, { once: true });
-      }
-    }
-
-    return () => {
-      for (const img of eagerImages) {
-        img.removeEventListener('load', onResize);
-      }
-    };
-  }, [emblaApi, images.length]);
 
   // Update current index when Embla selection changes
   const onSelect = useCallback(() => {

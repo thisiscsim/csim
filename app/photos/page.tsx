@@ -8,7 +8,7 @@ export default async function PhotosPage() {
 
   return (
     <>
-      {images.slice(0, 3).map((image) => (
+      {images.slice(0, 1).map((image) => (
         <link key={image.url} rel="preload" as="image" href={image.url} fetchPriority="high" />
       ))}
       <PhotosClient initialImages={images} />

@@ -17,7 +17,8 @@ interface PhotoGridProps {
 
 export default function PhotoGrid({ initialImages }: PhotoGridProps) {
   const [images, setImages] = React.useState<PhotoImage[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const [columnCount, setColumnCount] = React.useState(1);
+  const gridRef = React.useRef<HTMLDivElement>(null);
 
   // Add CSS animation
   React.useEffect(() => {
@@ -26,11 +27,11 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
       @keyframes fadeInScale {
         from {
           opacity: 0;
-          transform: scale(0.95);
+          transform: translate3d(0, 10px, 0) scale(0.96);
         }
         to {
           opacity: 1;
-          transform: scale(1);
+          transform: translate3d(0, 0, 0) scale(1);
         }
       }
     `;
@@ -56,41 +57,34 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
       const randomizedImages = shuffleArray(initialImages);
       setImages(randomizedImages);
     }
-    setLoading(false);
   }, [initialImages]);
 
-  if (loading) {
-    return (
-      <div
-        className="bg-base transition-colors duration-300 fixed inset-0 overflow-y-auto"
-        style={{
-          padding: '80px 20px 40px',
-        }}
-      >
-        <div
-          className="grid gap-1"
-          style={{
-            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-          }}
-        >
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="w-full bg-interactive animate-pulse transition-colors duration-300"
-              style={{ aspectRatio: '1 / 1' }}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  React.useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const updateColumnCount = () => {
+      const columns = window.getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean);
+      setColumnCount(Math.max(columns.length, 1));
+    };
+
+    updateColumnCount();
+
+    const observer = new ResizeObserver(updateColumnCount);
+    observer.observe(grid);
+
+    return () => observer.disconnect();
+  }, [images.length]);
+
+  const getRevealDelay = (index: number) => {
+    const row = Math.floor(index / columnCount);
+    const column = index % columnCount;
+
+    return (row + column) * 0.055;
+  };
 
   if (images.length === 0) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-base transition-colors duration-300">
-        <p className="fg-muted transition-colors duration-300">No photos found</p>
-      </div>
-    );
+    return <div className="fixed inset-0 bg-base transition-colors duration-300" />;
   }
 
   return (
@@ -102,6 +96,7 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
       }}
     >
       <motion.div
+        ref={gridRef}
         className="grid gap-1"
         style={{
           gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
@@ -114,8 +109,10 @@ export default function PhotoGrid({ initialImages }: PhotoGridProps) {
           <div
             key={`${image.name}-${i}`}
             style={{
-              animation:
-                i < 12 ? `fadeInScale 0.3s ease-out ${Math.min(i * 0.015, 0.18)}s both` : 'none',
+              animation: `fadeInScale 0.65s cubic-bezier(0.22, 1, 0.36, 1) ${getRevealDelay(
+                i
+              )}s both`,
+              willChange: 'opacity, transform',
             }}
           >
             <MorphingDialog

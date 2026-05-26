@@ -1,4 +1,29 @@
 /** @type {import('next').NextConfig} */
+if (
+  typeof globalThis.localStorage !== 'undefined' &&
+  typeof globalThis.localStorage.getItem !== 'function'
+) {
+  const memoryStorage = new Map();
+
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem(key) {
+        return memoryStorage.has(key) ? memoryStorage.get(key) : null;
+      },
+      setItem(key, value) {
+        memoryStorage.set(key, String(value));
+      },
+      removeItem(key) {
+        memoryStorage.delete(key);
+      },
+      clear() {
+        memoryStorage.clear();
+      },
+    },
+  });
+}
+
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],

@@ -1,50 +1,58 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PhotoRoll from './photo-roll';
 import PhotoGrid from './photo-grid';
 import '../craft/system.css';
 import type { PhotoImage } from '@/lib/photos';
 
 type ViewMode = 'strip' | 'grid';
+const MOBILE_QUERY = '(max-width: 767px)';
 
 interface PhotosClientProps {
   initialImages: PhotoImage[];
 }
 
 export default function PhotosClient({ initialImages }: PhotosClientProps) {
+  const [isReady, setIsReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('strip');
-  // Detect mobile viewport
+
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const mediaQuery = window.matchMedia(MOBILE_QUERY);
+
+    const syncViewport = () => {
+      const nextIsMobile = mediaQuery.matches;
+
+      setIsMobile(nextIsMobile);
+      setViewMode((currentViewMode) => (nextIsMobile ? 'grid' : currentViewMode));
+      setIsReady(true);
     };
 
-    // Initial check
-    checkMobile();
-
-    // Set initial view mode based on device
-    if (window.innerWidth < 768) {
-      setViewMode('grid');
-    }
-
-    // Listen for resize
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    syncViewport();
+    mediaQuery.addEventListener('change', syncViewport);
+    return () => mediaQuery.removeEventListener('change', syncViewport);
   }, []);
 
-  // Keyboard shortcuts for view mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       const key = e.key.toLowerCase();
-      if (key === 's') setViewMode('strip');
+      if (key === 's' && !isMobile) setViewMode('strip');
       if (key === 'g') setViewMode('grid');
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isMobile]);
+
+  if (!isReady) {
+    return (
+      <>
+        <div className="top-blur" />
+        <div className="fixed inset-0 bg-base transition-colors duration-300" />
+      </>
+    );
+  }
 
   return (
     <>

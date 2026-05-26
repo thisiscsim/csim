@@ -91,7 +91,13 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                var theme = localStorage.getItem('theme');
+                var theme = null;
+                try {
+                  theme =
+                    window.localStorage && typeof window.localStorage.getItem === 'function'
+                      ? window.localStorage.getItem('theme')
+                      : null;
+                } catch (error) {}
                 if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.documentElement.classList.add('dark');
                 }
