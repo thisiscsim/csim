@@ -125,7 +125,7 @@ const ImgComponent = memo(function ImgComponent({ _node, src, alt, ...props }: a
       <img
         src={src}
         alt={alt || ''}
-        className="w-full h-auto rounded-lg"
+        className="w-full h-auto rounded-lg border-[0.5px] border-base"
         loading="lazy"
         {...props}
       />
