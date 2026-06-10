@@ -2,6 +2,7 @@ import { notion, databaseId } from './client';
 import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
 import { NotionToMarkdown } from 'notion-to-md';
+import { rehostNotionImages } from './rehost-images';
 
 export type NotionBlogPost = {
   id: string;
@@ -28,11 +29,14 @@ function normalizeStatus(status: string): 'draft' | 'published' {
 
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
-// Cache the markdown conversion with Next.js cache
+// Cache the markdown conversion with Next.js cache. Notion's signed image URLs
+// expire after ~1 hour (shorter than this cache can effectively live), so they
+// are rewritten to permanent CDN URLs before the markdown is cached.
 const fetchPostContent = unstable_cache(
   async (pageId: string): Promise<string> => {
     const mdBlocks = await n2m.pageToMarkdown(pageId);
-    return n2m.toMarkdownString(mdBlocks).parent;
+    const markdown = n2m.toMarkdownString(mdBlocks).parent;
+    return rehostNotionImages(markdown);
   },
   ['blog-post-content'],
   {

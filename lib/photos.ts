@@ -1,5 +1,9 @@
 // Shared photo fetching logic that can be used both in API routes and server components
 
+// Number of photo-roll slides that are preloaded, eagerly fetched, and decoded
+// before the intro animation is allowed to start (first image + visible neighbors).
+export const PHOTO_ROLL_EAGER_COUNT = 3;
+
 interface BunnyFile {
   ObjectName: string;
   Length: number;

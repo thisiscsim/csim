@@ -1,5 +1,5 @@
 import PhotosClient from './photos-client';
-import { fetchPhotos, orderPhotosForRoll } from '@/lib/photos';
+import { fetchPhotos, orderPhotosForRoll, PHOTO_ROLL_EAGER_COUNT } from '@/lib/photos';
 
 // Server component - fetches data at build/request time
 export default async function PhotosPage() {
@@ -8,8 +8,16 @@ export default async function PhotosPage() {
 
   return (
     <>
-      {images.slice(0, 1).map((image) => (
-        <link key={image.url} rel="preload" as="image" href={image.url} fetchPriority="high" />
+      {/* Preload the slides shown during the intro; only the first is high priority
+          so the neighbors don't starve it of bandwidth on cold loads. */}
+      {images.slice(0, PHOTO_ROLL_EAGER_COUNT).map((image, i) => (
+        <link
+          key={image.url}
+          rel="preload"
+          as="image"
+          href={image.url}
+          fetchPriority={i === 0 ? 'high' : 'auto'}
+        />
       ))}
       <PhotosClient initialImages={images} />
     </>

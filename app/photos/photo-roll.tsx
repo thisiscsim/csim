@@ -3,12 +3,14 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { motion } from 'motion/react';
 import useEmblaCarousel from 'embla-carousel-react';
-import type { PhotoImage } from '@/lib/photos';
+import { PHOTO_ROLL_EAGER_COUNT, type PhotoImage } from '@/lib/photos';
 
 const FRAME_HEIGHT = 600; // Fixed height for all images
 const FRAME_GAP = 24; // Gap between images
-const EAGER_IMAGE_COUNT = 1;
 const INTRO_READY_FALLBACK_MS = 1800;
+// Slides beyond this index start far offscreen; they skip the entrance tween so
+// motion isn't ticking dozens of animations while the intro spring runs.
+const ANIMATED_SLIDE_COUNT = 12;
 
 // Animation constants (same as homepage)
 const INTRO_SPRING = {
@@ -33,7 +35,10 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
   const [introComplete, setIntroComplete] = useState(false);
   const isDragging = useRef(false);
   const hasMarkedReady = useRef(false);
+  const decodedPriorityCount = useRef(0);
   const readyFrame = useRef<number | null>(null);
+
+  const priorityCount = Math.min(PHOTO_ROLL_EAGER_COUNT, images.length);
 
   // Mark intro as complete after animation finishes
   useEffect(() => {
@@ -73,22 +78,32 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
     });
   }, []);
 
-  const handleFirstImageLoad = useCallback(
+  // Ready fires only once every priority (visible) image has loaded AND decoded,
+  // so the intro spring starts with a stable layout and no pending raster work.
+  const handlePriorityImageLoad = useCallback(
     (event: React.SyntheticEvent<HTMLImageElement>) => {
       const img = event.currentTarget;
 
+      const onDecoded = () => {
+        decodedPriorityCount.current += 1;
+        if (decodedPriorityCount.current >= priorityCount) {
+          markReady();
+        }
+      };
+
       if (typeof img.decode === 'function') {
-        img.decode().then(markReady).catch(markReady);
+        img.decode().then(onDecoded).catch(onDecoded);
         return;
       }
 
-      markReady();
+      onDecoded();
     },
-    [markReady]
+    [markReady, priorityCount]
   );
 
   useEffect(() => {
     hasMarkedReady.current = false;
+    decodedPriorityCount.current = 0;
     setReady(false);
     setIntroComplete(false);
     setCurrentIndex(0);
@@ -275,7 +290,8 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
           <div className="flex items-center" style={{ gap: FRAME_GAP }}>
             {images.map((image, i) => {
               const isFirst = i === 0;
-              const isPriorityImage = i < EAGER_IMAGE_COUNT;
+              const isPriorityImage = i < PHOTO_ROLL_EAGER_COUNT;
+              const skipEntranceTween = i >= ANIMATED_SLIDE_COUNT;
               return (
                 <motion.div
                   key={`${image.name}-${i}`}
@@ -289,11 +305,13 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
                   transition={
                     isFirst
                       ? INTRO_SPRING
-                      : {
-                          duration: 0.9,
-                          ease: [0.25, 0.1, 0.25, 1],
-                          delay: ready ? INTRO_ADJACENT_DELAY + (i - 1) * 0.08 : 0,
-                        }
+                      : skipEntranceTween
+                        ? { duration: 0 }
+                        : {
+                            duration: 0.9,
+                            ease: [0.25, 0.1, 0.25, 1],
+                            delay: ready ? INTRO_ADJACENT_DELAY + (i - 1) * 0.08 : 0,
+                          }
                   }
                 >
                   {/* Content fades in during scale animation */}
@@ -309,14 +327,17 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       alt={image.name}
-                      src={image.url}
+                      // Non-priority slides stay src-less until the intro settles so
+                      // their loads can't reflow the strip mid-animation on cold cache.
+                      src={isPriorityImage || introComplete ? image.url : undefined}
                       className="object-cover select-none"
                       loading={isPriorityImage ? 'eager' : 'lazy'}
-                      fetchPriority={isPriorityImage ? 'high' : 'auto'}
+                      fetchPriority={isFirst ? 'high' : 'auto'}
                       decoding="async"
                       draggable={false}
                       data-photo-roll-priority={isPriorityImage ? 'true' : undefined}
-                      onLoad={isFirst ? handleFirstImageLoad : undefined}
+                      onLoad={isPriorityImage ? handlePriorityImageLoad : undefined}
+                      onError={isPriorityImage ? handlePriorityImageLoad : undefined}
                       style={{
                         height: FRAME_HEIGHT,
                         width: 'auto',
