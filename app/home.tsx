@@ -16,23 +16,32 @@ function stagger(index: number) {
 function LazyVideo({ src }: { src: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: false, margin: '200px' });
+  // Begin fetching metadata well before the video reaches the viewport. For the
+  // large MP4s this front-loads the costly, cache-miss-prone moov lookup so the
+  // variable time-to-first-frame is absorbed before the clip is on screen.
+  const shouldPreload = useInView(containerRef, { once: true, margin: '800px' });
+  // Only autoplay/pause once the clip is actually near the viewport.
+  const isInView = useInView(containerRef, { once: false, margin: '100px' });
   const hasLoaded = useRef(false);
 
   useEffect(() => {
     const video = ref.current;
-    if (!video) return;
+    if (!video || !shouldPreload || hasLoaded.current) return;
+    video.src = src;
+    video.load();
+    hasLoaded.current = true;
+  }, [shouldPreload, src]);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || !hasLoaded.current) return;
 
     if (isInView) {
-      if (!hasLoaded.current) {
-        video.src = src;
-        hasLoaded.current = true;
-      }
       video.play().catch(() => {});
     } else {
       video.pause();
     }
-  }, [isInView, src]);
+  }, [isInView]);
 
   return (
     <div ref={containerRef}>
@@ -42,7 +51,7 @@ function LazyVideo({ src }: { src: string }) {
         loop
         muted
         playsInline
-        preload="none"
+        preload="metadata"
       />
     </div>
   );
