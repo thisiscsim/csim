@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
@@ -31,24 +32,10 @@ export const metadata: Metadata = {
   },
 };
 
-const abcMarist = localFont({
-  src: [
-    {
-      path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-      weight: '100 900',
-      style: 'normal',
-    },
-    {
-      path: '../public/fonts/ABCMaristVariableItalic-Trial.woff2',
-      weight: '100 900',
-      style: 'italic',
-    },
-  ],
-  variable: '--font-abc-marist',
-  display: 'swap', // Show fallback immediately, swap when loaded
-  preload: true,
-  fallback: ['-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-  adjustFontFallback: 'Arial', // Reduce layout shift
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
 });
 
 const jetbrainsMono = localFont({
@@ -78,7 +65,7 @@ export default async function RootLayout({
         {/* Preload critical assets */}
         <link
           rel="preload"
-          href="/fonts/ABCMaristVariable-Trial.woff2"
+          href="https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Regular.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
@@ -107,7 +94,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${abcMarist.variable} ${jetbrainsMono.variable} bg-base antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} bg-base antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider>

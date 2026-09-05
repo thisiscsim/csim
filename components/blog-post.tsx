@@ -7,7 +7,6 @@ import MarkdownContent from './markdown-content';
 interface Heading {
   id: string;
   text: string;
-  level: number;
 }
 
 const LoadingSkeleton = memo(function LoadingSkeleton() {
@@ -48,6 +47,21 @@ interface BlogPostProps {
   content: string;
 }
 
+function formatPostDate(date: string): string {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).formatToParts(new Date(date));
+
+  const day = parts.find((part) => part.type === 'day')?.value;
+  const month = parts.find((part) => part.type === 'month')?.value;
+  const year = parts.find((part) => part.type === 'year')?.value;
+
+  return `${day} ${month}, ${year}`;
+}
+
 export default function BlogPost({ post, content }: BlogPostProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [activeId, setActiveId] = useState<string>('');
@@ -56,15 +70,14 @@ export default function BlogPost({ post, content }: BlogPostProps) {
 
   // Extract headings from markdown content
   const headings = useMemo(() => {
-    const headingRegex = /^(#{1,3})\s+(.+)$/gm;
+    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
     const extractedHeadings: Heading[] = [];
     let match;
 
     while ((match = headingRegex.exec(content)) !== null) {
-      const level = match[1].length;
       const text = match[2].trim();
       const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      extractedHeadings.push({ id, text, level });
+      extractedHeadings.push({ id, text });
     }
 
     return extractedHeadings;
@@ -155,12 +168,12 @@ export default function BlogPost({ post, content }: BlogPostProps) {
       {/* Table of Contents - Fixed Left Side */}
       {headings.length > 0 && (
         <motion.aside
-          className="hidden xl:block fixed top-[170px] w-[200px] left-8"
+          className="fixed top-[155px] left-8 hidden w-[200px] font-inter xl:block"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6, ease: 'easeOut' }}
         >
-          <nav style={{ fontSize: '11px' }}>
+          <nav style={{ fontSize: '11px', lineHeight: '16px' }}>
             {/* Title that fades in when scrolled out of view - always in DOM to prevent layout shift */}
             <div
               className={`mb-4 transition-opacity duration-200 ${
@@ -171,7 +184,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="block font-mono fg-muted hover:fg-subtle transition-colors duration-300 text-left cursor-pointer"
+                className="block cursor-pointer text-left font-inter transition-colors duration-300 fg-muted hover:fg-subtle"
               >
                 {post.title}
               </button>
@@ -192,7 +205,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
                         window.scrollTo({ top: y, behavior: 'smooth' });
                       }
                     }}
-                    className={`block transition-colors duration-300 font-mono ${
+                    className={`block font-inter font-normal transition-colors duration-300 ${
                       activeId === heading.id ? 'fg-base' : 'fg-muted hover:fg-subtle'
                     }`}
                   >
@@ -206,38 +219,23 @@ export default function BlogPost({ post, content }: BlogPostProps) {
       )}
 
       {/* Main Content */}
-      <div className="pb-24 mt-[70px]">
+      <div className="mx-auto mt-[55px] w-full max-w-[574px] px-[12px] pb-[82px] font-inter">
         <motion.div
           key={post.slug}
-          className="space-y-8"
+          className="flex flex-col gap-[12px]"
           variants={VARIANTS_CONTAINER}
           initial="hidden"
           animate="visible"
         >
           <motion.header variants={VARIANTS_SECTION}>
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h1
-                  ref={titleRef}
-                  className="text-2xl font-medium fg-base transition-colors duration-300"
-                >
-                  {post.title}
-                </h1>
-                <div className="flex flex-col gap-1 text-sm fg-muted transition-colors duration-300">
-                  <div className="text-xs fg-muted font-mono transition-colors duration-300">
-                    {new Date(post.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </div>
-                  {post.categories && post.categories.length > 0 && (
-                    <div className="text-xs fg-muted font-mono transition-colors duration-300">
-                      {post.categories.join(', ')}
-                    </div>
-                  )}
-                </div>
-              </div>
+            <div className="text-[14px]/[22px] font-medium">
+              <h1
+                ref={titleRef}
+                className="font-inter text-[14px]/[22px] font-medium transition-colors duration-300 fg-base"
+              >
+                {post.title}
+              </h1>
+              <p className="transition-colors duration-300 fg-muted">{formatPostDate(post.date)}</p>
             </div>
           </motion.header>
 

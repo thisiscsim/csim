@@ -5,45 +5,50 @@
  * Modify this file to update typography settings site-wide.
  */
 
+const twkGhost = {
+  name: 'TWK Ghost',
+  path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Regular.woff2',
+  sources: [
+    {
+      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Italic.woff2',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-MediumItalic.woff2',
+      weight: '500',
+      style: 'italic',
+    },
+    {
+      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-BoldItalic.woff2',
+      weight: '700',
+      style: 'italic',
+    },
+  ],
+  variable: '--font-twk-ghost',
+  fallback: ['Georgia', 'serif'],
+} as const;
+
 export const typography = {
   // Font Families
   fonts: {
-    body: {
-      name: 'ABC Marist Variable',
-      path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-      sources: [
-        {
-          path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-          weight: '100 900',
-          style: 'normal',
-        },
-        {
-          path: '../public/fonts/ABCMaristVariableItalic-Trial.woff2',
-          weight: '100 900',
-          style: 'italic',
-        },
-      ],
-      variable: '--font-abc-marist',
-      fallback: ['sans-serif'],
-    },
-    heading: {
-      name: 'ABC Marist Variable',
-      path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-      sources: [
-        {
-          path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-          weight: '100 900',
-          style: 'normal',
-        },
-        {
-          path: '../public/fonts/ABCMaristVariableItalic-Trial.woff2',
-          weight: '100 900',
-          style: 'italic',
-        },
-      ],
-      variable: '--font-abc-marist',
-      fallback: ['sans-serif'],
-    },
+    body: twkGhost,
+    heading: twkGhost,
     mono: {
       name: 'JetBrains Mono',
       path: '../public/fonts/JetBrainsMono-Medium.woff2',
