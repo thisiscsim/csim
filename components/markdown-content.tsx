@@ -11,7 +11,7 @@ const generateId = (children: any): string => {
 };
 
 const HEADING_CLASS =
-  'font-inter -my-[10px] text-[14px]/[22px] font-semibold fg-base transition-colors duration-300 first:mt-0 last:mb-0';
+  '-my-[10px] text-[14px]/[22px] font-semibold fg-base transition-colors duration-300 first:mt-0 last:mb-0';
 
 const H1Component = memo(function H1Component({ node: _node, children, ...props }: any) {
   const id = generateId(children);
@@ -70,7 +70,7 @@ const H6Component = memo(function H6Component({ node: _node, children, ...props 
 const PComponent = memo(function PComponent({ node: _node, ...props }: any) {
   return (
     <p
-      className="font-inter text-[14px]/[22px] font-normal transition-colors duration-300 fg-base"
+      className="text-[14px]/[22px] font-normal transition-colors duration-300 fg-base"
       {...props}
     />
   );
@@ -79,7 +79,7 @@ const PComponent = memo(function PComponent({ node: _node, ...props }: any) {
 const UlComponent = memo(function UlComponent({ node: _node, ...props }: any) {
   return (
     <ul
-      className="list-disc pl-[24px] font-inter text-[14px]/[22px] font-normal transition-colors duration-300 fg-base"
+      className="list-disc pl-[24px] text-[14px]/[22px] font-normal transition-colors duration-300 fg-base"
       {...props}
     />
   );
@@ -88,7 +88,7 @@ const UlComponent = memo(function UlComponent({ node: _node, ...props }: any) {
 const OlComponent = memo(function OlComponent({ node: _node, ...props }: any) {
   return (
     <ol
-      className="list-decimal pl-[24px] font-inter text-[14px]/[22px] font-normal transition-colors duration-300 fg-base"
+      className="list-decimal pl-[24px] text-[14px]/[22px] font-normal transition-colors duration-300 fg-base"
       {...props}
     />
   );
@@ -107,7 +107,7 @@ const AComponent = memo(function AComponent({ node: _node, ...props }: any) {
 const BlockquoteComponent = memo(function BlockquoteComponent({ node: _node, ...props }: any) {
   return (
     <blockquote
-      className="border-l-4 pl-[16px] font-inter text-[14px]/[22px] italic transition-colors duration-300 border-base"
+      className="border-l-4 pl-[16px] text-[14px]/[22px] italic transition-colors duration-300 border-base"
       {...props}
     />
   );
@@ -157,7 +157,7 @@ const ImgComponent = memo(function ImgComponent({ node: _node, src, alt, ...prop
         {...props}
       />
       {shouldShowCaption && (
-        <span className="mt-1 block text-center font-inter text-sm italic transition-colors duration-300 fg-muted">
+        <span className="mt-1 block text-center text-sm italic transition-colors duration-300 fg-muted">
           {alt}
         </span>
       )}
@@ -186,7 +186,7 @@ const markdownComponents = {
 // Memoize the entire component to prevent unnecessary re-renders
 const MarkdownContent = memo(function MarkdownContent({ content }: { content: string }) {
   return (
-    <div className="flex flex-col gap-[22px] font-inter text-[14px]/[22px]">
+    <div className="flex flex-col gap-[22px] text-[14px]/[22px]">
       <ReactMarkdown components={markdownComponents}>{content}</ReactMarkdown>
     </div>
   );

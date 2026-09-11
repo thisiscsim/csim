@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import localFont from 'next/font/local';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
 import { BasicNavigation } from '@/components/basic-navigation';
@@ -38,20 +37,6 @@ const inter = Inter({
   display: 'swap',
 });
 
-const jetbrainsMono = localFont({
-  src: [
-    {
-      path: '../public/fonts/JetBrainsMono-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-jetbrains-mono',
-  display: 'swap',
-  preload: false, // Don't preload secondary font
-  fallback: ['ui-monospace', 'SF Mono', 'Monaco', 'monospace'],
-});
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -62,14 +47,6 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preload critical assets */}
-        <link
-          rel="preload"
-          href="https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Regular.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="https://csim.b-cdn.net" />
         <link rel="preconnect" href="https://csim.b-cdn.net" crossOrigin="anonymous" />
@@ -93,10 +70,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} bg-base antialiased`}
-        suppressHydrationWarning
-      >
+      <body className={`${inter.variable} bg-base antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <LenisProvider>
             {/* Scroll to top on route change */}

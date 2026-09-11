@@ -104,8 +104,8 @@ export default function MasonryGrid() {
                       }}
                     >
                       <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between gap-2">
-                        <h3 className="text-sm font-medium text-white font-mono">Project Title</h3>
-                        <p className="text-sm text-white/80 font-mono">Month 2024</p>
+                        <h3 className="text-sm font-medium text-white">Project Title</h3>
+                        <p className="text-sm text-white/80">Month 2024</p>
                       </div>
                     </div>
                   </div>

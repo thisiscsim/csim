@@ -5,68 +5,20 @@
  * Modify this file to update typography settings site-wide.
  */
 
-const twkGhost = {
-  name: 'TWK Ghost',
-  path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Regular.woff2',
-  sources: [
-    {
-      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Italic.woff2',
-      weight: '400',
-      style: 'italic',
-    },
-    {
-      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-MediumItalic.woff2',
-      weight: '500',
-      style: 'italic',
-    },
-    {
-      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-Bold.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-    {
-      path: 'https://csim.b-cdn.net/Fonts/TWKGhost/TWKGhost-BoldItalic.woff2',
-      weight: '700',
-      style: 'italic',
-    },
-  ],
-  variable: '--font-twk-ghost',
-  fallback: ['Georgia', 'serif'],
+// Inter is loaded via next/font/google in app/layout.tsx, which exposes it on
+// the `--font-inter` CSS variable. It is the single UI font for body text,
+// headings, and blog content.
+const inter = {
+  name: 'Inter',
+  variable: '--font-inter',
+  fallback: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
 } as const;
 
 export const typography = {
   // Font Families
   fonts: {
-    body: twkGhost,
-    heading: twkGhost,
-    mono: {
-      name: 'JetBrains Mono',
-      path: '../public/fonts/JetBrainsMono-Medium.woff2',
-      sources: [
-        {
-          path: '../public/fonts/JetBrainsMono-Regular.woff2',
-          weight: '400',
-          style: 'normal',
-        },
-        {
-          path: '../public/fonts/JetBrainsMono-Medium.woff2',
-          weight: '500',
-          style: 'normal',
-        },
-      ],
-      variable: '--font-jetbrains-mono',
-      fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
-    },
+    body: inter,
+    heading: inter,
   },
 
   // Type Scale

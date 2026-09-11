@@ -66,17 +66,14 @@ export default function PhotosClient({ initialImages }: PhotosClientProps) {
 
       {/* View Mode Toggle - Hidden on mobile, positioned at bottom right */}
       {!isMobile && (
-        <div
-          className="fixed bottom-4 right-8 z-50 flex gap-4 text-xs pointer-events-auto"
-          style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
-        >
+        <div className="fixed bottom-4 right-8 z-50 flex gap-4 text-xs pointer-events-auto">
           <button
             onClick={() => setViewMode('strip')}
             className={`cursor-pointer transition-colors duration-300 ${
               viewMode === 'strip' ? 'fg-base' : 'fg-muted hover:fg-subtle'
             }`}
           >
-            [S] STRIP
+            [S] Strip
           </button>
           <button
             onClick={() => setViewMode('grid')}
@@ -84,7 +81,7 @@ export default function PhotosClient({ initialImages }: PhotosClientProps) {
               viewMode === 'grid' ? 'fg-base' : 'fg-muted hover:fg-subtle'
             }`}
           >
-            [G] GRID
+            [G] Grid
           </button>
         </div>
       )}

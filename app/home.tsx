@@ -77,8 +77,8 @@ export default function HomePage({ media }: HomePageProps) {
       {/* Bio Section */}
       <div className="flex w-full max-w-full flex-col items-center justify-center gap-[12px] pb-[10px] md:w-[574px] md:px-[12px]">
         <motion.div className="w-full" {...stagger(0)}>
-          <p className="text-[17px]/[24px] fg-base">Christopher Sim</p>
-          <p className="text-[17px]/[24px] fg-subtle">Software designer based in San Francisco</p>
+          <p className="text-[14px]/[22px] font-medium fg-base">Christopher Sim</p>
+          <p className="text-[14px]/[22px] fg-subtle">Software designer based in San Francisco</p>
         </motion.div>
 
         <motion.div className="w-full space-y-[22px] text-[14px]/[22px] fg-base" {...stagger(1)}>
@@ -193,12 +193,7 @@ export default function HomePage({ media }: HomePageProps) {
         className="flex w-full max-w-full flex-col items-center justify-center px-[12px] pt-[10px] md:w-[574px]"
         {...stagger(4 + media.length)}
       >
-        <div
-          className="w-full max-w-full text-center text-[12px]/[16px] fg-muted md:w-[550px]"
-          style={{
-            fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-          }}
-        >
+        <div className="w-full max-w-full text-center text-[12px]/[16px] fg-muted md:w-[550px]">
           <p>No trackers used on this site, enjoy your privacy.</p>
           <p>Site design and content &copy; 2026 Christopher Sim.</p>
         </div>

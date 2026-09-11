@@ -168,7 +168,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
       {/* Table of Contents - Fixed Left Side */}
       {headings.length > 0 && (
         <motion.aside
-          className="fixed top-[155px] left-8 hidden w-[200px] font-inter xl:block"
+          className="fixed top-[155px] left-8 hidden w-[200px] xl:block"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6, ease: 'easeOut' }}
@@ -184,7 +184,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="block cursor-pointer text-left font-inter transition-colors duration-300 fg-muted hover:fg-subtle"
+                className="block cursor-pointer text-left transition-colors duration-300 fg-muted hover:fg-subtle"
               >
                 {post.title}
               </button>
@@ -205,7 +205,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
                         window.scrollTo({ top: y, behavior: 'smooth' });
                       }
                     }}
-                    className={`block font-inter font-normal transition-colors duration-300 ${
+                    className={`block font-normal transition-colors duration-300 ${
                       activeId === heading.id ? 'fg-base' : 'fg-muted hover:fg-subtle'
                     }`}
                   >
@@ -219,7 +219,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
       )}
 
       {/* Main Content */}
-      <div className="mx-auto mt-[55px] w-full max-w-[574px] px-[12px] pb-[82px] font-inter">
+      <div className="mx-auto mt-[55px] w-full max-w-[574px] px-[12px] pb-[82px]">
         <motion.div
           key={post.slug}
           className="flex flex-col gap-[12px]"
@@ -231,7 +231,7 @@ export default function BlogPost({ post, content }: BlogPostProps) {
             <div className="text-[14px]/[22px] font-medium">
               <h1
                 ref={titleRef}
-                className="font-inter text-[14px]/[22px] font-medium transition-colors duration-300 fg-base"
+                className="text-[14px]/[22px] font-medium transition-colors duration-300 fg-base"
               >
                 {post.title}
               </h1>
