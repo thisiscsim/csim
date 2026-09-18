@@ -13,7 +13,6 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [`var(${typography.fonts.body.variable})`, ...typography.fonts.body.fallback],
-        mono: [`var(${typography.fonts.mono.variable})`, ...typography.fonts.mono.fallback],
       },
       fontSize: Object.entries(typography.sizes).reduce(
         (acc, [key, value]) => ({

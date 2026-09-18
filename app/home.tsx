@@ -13,6 +13,8 @@ function stagger(index: number) {
   return { ...FADE_UP, transition: { ...FADE_UP.transition, delay: 0.1 + index * 0.05 } };
 }
 
+const HOME_LINK_CLASS = 'fg-base underline transition-colors duration-200 hover:fg-subtle';
+
 function LazyVideo({ src }: { src: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,34 +71,46 @@ interface HomePageProps {
 
 export default function HomePage({ media }: HomePageProps) {
   return (
-    <div className="flex flex-col items-center gap-8 md:gap-12 pb-16 md:pb-24 pt-[72px] md:pt-[82px] -mx-4 px-5 md:px-8 min-h-screen">
+    <div className="flex min-h-screen -mx-4 flex-col items-center gap-[32px] px-5 pb-16 pt-[72px] md:px-8 md:pb-[82px] md:pt-[55px]">
       <div className="top-blur" />
 
       {/* Bio Section */}
-      <div className="flex flex-col gap-3 items-center justify-center w-full md:w-[574px] max-w-full md:px-3 pb-2.5">
+      <div className="flex w-full max-w-full flex-col items-center justify-center gap-[12px] pb-[10px] md:w-[574px] md:px-[12px]">
         <motion.div className="w-full" {...stagger(0)}>
-          <p className="text-[17px]/[24px] font-medium fg-base">Christopher Sim</p>
-          <p className="text-[17px]/[24px] fg-subtle">Software designer based in San Francisco</p>
+          <p className="text-[14px]/[22px] font-medium fg-base">Christopher Sim</p>
+          <p className="text-[14px]/[22px] fg-subtle">Software designer based in San Francisco</p>
         </motion.div>
 
-        <motion.div className="text-[14px]/[20px] fg-base w-full" {...stagger(1)}>
-          <p className="mb-4">
-            Currently a designer at{' '}
+        <motion.div className="w-full space-y-[22px] text-[14px]/[22px] fg-base" {...stagger(1)}>
+          <p>
+            Currently, I&apos;m a designer at{' '}
             <a
-              href="https://harvey.ai"
+              href="https://openai.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-styled"
+              className={HOME_LINK_CLASS}
+            >
+              OpenAI
+            </a>{' '}
+            working on Codex. Previously, I was one of the earliest designers at{' '}
+            <a
+              href="https://harvey.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={HOME_LINK_CLASS}
             >
               Harvey
             </a>
-            , building the frontier AI platform for legal and professional services. Previously,
-            worked with teams at{' '}
+            , where I worked on the frontier AI platform for legal, my work has touched almost every
+            surface of the product and laid the foundations for where Harvey is today.
+          </p>
+          <p>
+            I&apos;ve also had stints at{' '}
             <a
-              href="https://flexport.com"
+              href="https://flexport.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-styled"
+              className={HOME_LINK_CLASS}
             >
               Flexport
             </a>
@@ -105,7 +119,7 @@ export default function HomePage({ media }: HomePageProps) {
               href="https://uber.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-styled"
+              className={HOME_LINK_CLASS}
             >
               Uber
             </a>
@@ -114,27 +128,27 @@ export default function HomePage({ media }: HomePageProps) {
               href="https://www.joinarc.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-styled"
+              className={HOME_LINK_CLASS}
             >
               Arc
             </a>
-            . In my free time, I&apos;m a design consultant for emerging software companies backed
-            by top VCs.
+            . In my free time, I&apos;m a design advisor for emerging software companies backed by
+            top VCs.
           </p>
           <p>
             I love working on niche problems and simplifying complexities so people can focus on
-            more valuable work. I received my master&apos;s in Human-Computer Interaction from the
+            more valuable work. I received my masters in Human-Computer Interaction from the
             University of Washington. You can reach me at{' '}
             <a
               href="https://twitter.com/thisiscsim"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-styled"
+              className={HOME_LINK_CLASS}
             >
               @thisiscsim
             </a>{' '}
             or{' '}
-            <a href="mailto:hello@csim.me" className="link-styled">
+            <a href="mailto:hello@csim.me" className={HOME_LINK_CLASS}>
               hello(at)csim.me
             </a>
             .
@@ -144,11 +158,11 @@ export default function HomePage({ media }: HomePageProps) {
 
       {/* Divider */}
       <motion.div className="w-full md:w-[550px] max-w-full" {...stagger(2)}>
-        <div className="w-8 h-px bg-[var(--fg-base)] opacity-15 mx-auto" />
+        <div className="mx-auto h-px w-[32px] bg-[var(--fg-base)] opacity-15" />
       </motion.div>
 
       {/* Media */}
-      <div className="flex flex-col items-center gap-3 w-full md:w-screen md:-mx-8">
+      <div className="flex w-full flex-col items-center gap-[12px] md:-mx-8 md:w-screen">
         {media.map((item, i) => (
           <motion.div key={item.name} className="w-full md:w-auto" {...stagger(3 + i)}>
             {item.isVideo ? (
@@ -171,18 +185,17 @@ export default function HomePage({ media }: HomePageProps) {
 
       {/* Divider */}
       <motion.div className="w-full md:w-[550px] max-w-full" {...stagger(3 + media.length)}>
-        <div className="w-8 h-px bg-[var(--fg-base)] opacity-15 mx-auto" />
+        <div className="mx-auto h-px w-[32px] bg-[var(--fg-base)] opacity-15" />
       </motion.div>
 
       {/* Footer */}
       <motion.div
-        className="flex flex-col items-center justify-center w-full md:w-[574px] max-w-full px-3"
+        className="flex w-full max-w-full flex-col items-center justify-center px-[12px] pt-[10px] md:w-[574px]"
         {...stagger(4 + media.length)}
       >
-        <div className="text-[11px]/[14px] fg-muted font-mono w-full md:w-[550px] max-w-full text-center">
+        <div className="w-full max-w-full text-center text-[12px]/[16px] fg-muted md:w-[550px]">
           <p>No trackers used on this site, enjoy your privacy.</p>
           <p>Site design and content &copy; 2026 Christopher Sim.</p>
-          <p>Made with care in California.</p>
         </div>
       </motion.div>
     </div>

@@ -33,12 +33,22 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [ready, setReady] = useState(false);
   const [introComplete, setIntroComplete] = useState(false);
+  // True only once every priority image has genuinely loaded (or errored) and
+  // decoded. Unlike `ready`, this is never forced by the intro fallback timer.
+  const [priorityImagesLoaded, setPriorityImagesLoaded] = useState(false);
   const isDragging = useRef(false);
   const hasMarkedReady = useRef(false);
   const decodedPriorityCount = useRef(0);
   const readyFrame = useRef<number | null>(null);
 
   const priorityCount = Math.min(PHOTO_ROLL_EAGER_COUNT, images.length);
+
+  // Scrolling stays locked until the visible slides have really loaded and the
+  // intro has settled. Before that, Embla has measured empty slides, so its snap
+  // points are wrong and the strip gets stuck mid-snap once the images arrive.
+  // While locked, the page has no scrollable height (the spacer below isn't
+  // rendered), so wheel, trackpad, Lenis, drag, and arrow keys are all inert.
+  const canScroll = priorityImagesLoaded && introComplete;
 
   // Mark intro as complete after animation finishes
   useEffect(() => {
@@ -87,6 +97,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
       const onDecoded = () => {
         decodedPriorityCount.current += 1;
         if (decodedPriorityCount.current >= priorityCount) {
+          setPriorityImagesLoaded(true);
           markReady();
         }
       };
@@ -106,6 +117,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
     decodedPriorityCount.current = 0;
     setReady(false);
     setIntroComplete(false);
+    setPriorityImagesLoaded(false);
     setCurrentIndex(0);
 
     if (images.length === 0) return;
@@ -138,7 +150,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
 
   // Sync Embla drag to window scroll position
   useEffect(() => {
-    if (!emblaApi || images.length === 0) return;
+    if (!emblaApi || images.length === 0 || !canScroll) return;
 
     const onPointerDown = () => {
       isDragging.current = true;
@@ -166,11 +178,11 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
       emblaApi.off('pointerUp', onPointerUp);
       emblaApi.off('scroll', onScroll);
     };
-  }, [emblaApi, images.length]);
+  }, [emblaApi, images.length, canScroll]);
 
   // Map window scroll to Embla position (the Attio approach)
   useEffect(() => {
-    if (!emblaApi || images.length === 0) return;
+    if (!emblaApi || images.length === 0 || !canScroll) return;
 
     const handleWindowScroll = () => {
       if (isDragging.current) return;
@@ -190,10 +202,12 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
 
     window.addEventListener('scroll', handleWindowScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleWindowScroll);
-  }, [emblaApi, images.length]);
+  }, [emblaApi, images.length, canScroll]);
 
   // Convert horizontal wheel to vertical scroll (like Attio does)
   useEffect(() => {
+    if (!canScroll) return;
+
     const handleWheel = (e: WheelEvent) => {
       // If horizontal scroll is dominant, convert to vertical
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
@@ -204,11 +218,11 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
 
     window.addEventListener('wheel', handleWheel, { passive: false });
     return () => window.removeEventListener('wheel', handleWheel);
-  }, []);
+  }, [canScroll]);
 
   // Arrow key navigation - scroll the window which triggers the scroll handler
   useEffect(() => {
-    if (images.length === 0) return;
+    if (images.length === 0 || !canScroll) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
@@ -226,7 +240,7 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [images.length]);
+  }, [images.length, canScroll]);
 
   // Set up scrollable container, prevent gestures, and hide scrollbar
   useEffect(() => {
@@ -280,13 +294,17 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
 
   return (
     <>
-      {/* Tall scrollable container for native scroll physics */}
-      <div style={{ height: '2000svh', pointerEvents: 'none' }} />
+      {/* Tall scrollable container for native scroll physics. Rendered only once
+          the strip is interactive, so the page can't scroll while images load. */}
+      {canScroll && <div style={{ height: '2000svh', pointerEvents: 'none' }} />}
 
       {/* Fixed carousel container */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none bg-base transition-colors duration-300">
-        {/* Embla Carousel */}
-        <div className="overflow-hidden w-full pointer-events-auto" ref={emblaRef}>
+        {/* Embla Carousel - pointer events (drag) stay off until the strip is interactive */}
+        <div
+          className={`overflow-hidden w-full ${canScroll ? 'pointer-events-auto' : 'pointer-events-none'}`}
+          ref={emblaRef}
+        >
           <div className="flex items-center" style={{ gap: FRAME_GAP }}>
             {images.map((image, i) => {
               const isFirst = i === 0;
@@ -353,7 +371,6 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
         {/* Counter - bottom left */}
         <motion.div
           className="fixed bottom-4 left-8 z-10 fg-muted pointer-events-none text-xs transition-colors duration-300"
-          style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: ready && introComplete ? 1 : 0 }}
           transition={{ duration: 0.3, delay: ready ? 0.2 : 0 }}
@@ -361,15 +378,14 @@ export default function PhotoRoll({ initialImages }: PhotoRollProps) {
           [{String(currentIndex + 1).padStart(3, '0')}/{String(images.length).padStart(3, '0')}]
         </motion.div>
 
-        {/* Navigation hint - bottom center */}
+        {/* Navigation hint - bottom center. Appears only once scrolling is unlocked. */}
         <motion.div
           className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 fg-muted pointer-events-none text-xs transition-colors duration-300"
-          style={{ fontFamily: 'var(--font-jetbrains-mono)' }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: ready && introComplete ? 1 : 0 }}
-          transition={{ duration: 0.3, delay: ready ? 0.2 : 0 }}
+          animate={{ opacity: canScroll ? 1 : 0 }}
+          transition={{ duration: 0.3, delay: canScroll ? 0.2 : 0 }}
         >
-          SCROLL OR USE ARROW KEYS
+          Scroll or use arrow keys
         </motion.div>
       </div>
     </>

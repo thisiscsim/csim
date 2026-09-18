@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import localFont from 'next/font/local';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { LenisProvider } from '@/components/LenisProvider';
 import { BasicNavigation } from '@/components/basic-navigation';
@@ -31,38 +31,10 @@ export const metadata: Metadata = {
   },
 };
 
-const abcMarist = localFont({
-  src: [
-    {
-      path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-      weight: '100 900',
-      style: 'normal',
-    },
-    {
-      path: '../public/fonts/ABCMaristVariableItalic-Trial.woff2',
-      weight: '100 900',
-      style: 'italic',
-    },
-  ],
-  variable: '--font-abc-marist',
-  display: 'swap', // Show fallback immediately, swap when loaded
-  preload: true,
-  fallback: ['-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-  adjustFontFallback: 'Arial', // Reduce layout shift
-});
-
-const jetbrainsMono = localFont({
-  src: [
-    {
-      path: '../public/fonts/JetBrainsMono-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-jetbrains-mono',
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
   display: 'swap',
-  preload: false, // Don't preload secondary font
-  fallback: ['ui-monospace', 'SF Mono', 'Monaco', 'monospace'],
 });
 
 export default async function RootLayout({
@@ -75,14 +47,6 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preload critical assets */}
-        <link
-          rel="preload"
-          href="/fonts/ABCMaristVariable-Trial.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="https://csim.b-cdn.net" />
         <link rel="preconnect" href="https://csim.b-cdn.net" crossOrigin="anonymous" />
@@ -106,10 +70,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body
-        className={`${abcMarist.variable} ${jetbrainsMono.variable} bg-base antialiased`}
-        suppressHydrationWarning
-      >
+      <body className={`${inter.variable} bg-base antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <LenisProvider>
             {/* Scroll to top on route change */}

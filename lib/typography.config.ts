@@ -5,63 +5,20 @@
  * Modify this file to update typography settings site-wide.
  */
 
+// Inter is loaded via next/font/google in app/layout.tsx, which exposes it on
+// the `--font-inter` CSS variable. It is the single UI font for body text,
+// headings, and blog content.
+const inter = {
+  name: 'Inter',
+  variable: '--font-inter',
+  fallback: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+} as const;
+
 export const typography = {
   // Font Families
   fonts: {
-    body: {
-      name: 'ABC Marist Variable',
-      path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-      sources: [
-        {
-          path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-          weight: '100 900',
-          style: 'normal',
-        },
-        {
-          path: '../public/fonts/ABCMaristVariableItalic-Trial.woff2',
-          weight: '100 900',
-          style: 'italic',
-        },
-      ],
-      variable: '--font-abc-marist',
-      fallback: ['sans-serif'],
-    },
-    heading: {
-      name: 'ABC Marist Variable',
-      path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-      sources: [
-        {
-          path: '../public/fonts/ABCMaristVariable-Trial.woff2',
-          weight: '100 900',
-          style: 'normal',
-        },
-        {
-          path: '../public/fonts/ABCMaristVariableItalic-Trial.woff2',
-          weight: '100 900',
-          style: 'italic',
-        },
-      ],
-      variable: '--font-abc-marist',
-      fallback: ['sans-serif'],
-    },
-    mono: {
-      name: 'JetBrains Mono',
-      path: '../public/fonts/JetBrainsMono-Medium.woff2',
-      sources: [
-        {
-          path: '../public/fonts/JetBrainsMono-Regular.woff2',
-          weight: '400',
-          style: 'normal',
-        },
-        {
-          path: '../public/fonts/JetBrainsMono-Medium.woff2',
-          weight: '500',
-          style: 'normal',
-        },
-      ],
-      variable: '--font-jetbrains-mono',
-      fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
-    },
+    body: inter,
+    heading: inter,
   },
 
   // Type Scale

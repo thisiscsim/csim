@@ -62,7 +62,7 @@ export function BasicNavigation() {
 
   return (
     <motion.nav
-      className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between pointer-events-auto px-5 py-4 md:px-8 md:py-6"
+      className="pointer-events-auto fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-[20px] py-[16px] md:px-[32px] md:py-[24px]"
       initial={isHomePage ? { opacity: 0, y: -20 } : { opacity: 1, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -82,8 +82,8 @@ export function BasicNavigation() {
         <Image src="/avatar.svg" alt="Avatar" width={32} height={32} className="rounded-[6px]" />
       </button>
 
-      {/* Center: Navigation Items */}
-      <div className="flex items-center gap-1">
+      {/* Right: Navigation Items */}
+      <div className="flex items-center">
         {navItems.map((item) => (
           <button
             key={item.id}
@@ -91,10 +91,10 @@ export function BasicNavigation() {
             onMouseEnter={() => setHoveredItem(item.id)}
             onMouseLeave={() => setHoveredItem(null)}
             type="button"
-            className={`font-normal transition-colors duration-200 cursor-pointer ${getNavItemClasses(item.id)}`}
+            className={`flex h-[22px] cursor-pointer items-center justify-center rounded-[4px] font-normal transition-colors duration-200 ${getNavItemClasses(item.id)}`}
             style={{
-              fontSize: '13px',
-              lineHeight: '1.4',
+              fontSize: '14px',
+              lineHeight: '14px',
               padding: '6px 10px',
             }}
           >
@@ -102,14 +102,6 @@ export function BasicNavigation() {
           </button>
         ))}
       </div>
-
-      {/* Right: Location - hidden on mobile */}
-      <span
-        className="fg-base hidden md:block shrink-0"
-        style={{ fontSize: '13px', lineHeight: '1.4' }}
-      >
-        San Francisco, CA
-      </span>
     </motion.nav>
   );
 }

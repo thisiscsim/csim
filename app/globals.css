@@ -86,12 +86,12 @@
   }
 
   body {
-    font-family: var(--font-abc-marist), sans-serif;
-  }
-
-  .font-mono {
-    font-family: var(--font-jetbrains-mono), ui-monospace, 'SF Mono', monospace !important;
-    font-weight: 500;
+    font-family:
+      var(--font-inter),
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      sans-serif;
   }
 
   /* Design token utilities */
@@ -179,16 +179,6 @@
   .font-\[family-name\:var\(--font-reckless-neue\)\] .text-sm {
     font-family: var(--font-geist), sans-serif !important;
   } */
-
-  /* Headers use ABC Marist font */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-abc-marist), sans-serif;
-  }
 
   /* Default border color */
   *,
