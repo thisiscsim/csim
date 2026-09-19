@@ -98,6 +98,10 @@ const LiComponent = memo(function LiComponent({ node: _node, ...props }: any) {
   return <li className="transition-colors duration-300 fg-base" {...props} />;
 });
 
+const StrongComponent = memo(function StrongComponent({ node: _node, ...props }: any) {
+  return <strong className="font-medium" {...props} />;
+});
+
 const AComponent = memo(function AComponent({ node: _node, ...props }: any) {
   return (
     <a className="fg-base underline hover:opacity-70 transition-opacity duration-300" {...props} />
@@ -176,6 +180,8 @@ const markdownComponents = {
   ul: UlComponent,
   ol: OlComponent,
   li: LiComponent,
+  strong: StrongComponent,
+  b: StrongComponent,
   a: AComponent,
   blockquote: BlockquoteComponent,
   pre: PreComponent,
